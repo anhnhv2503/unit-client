@@ -5,8 +5,8 @@ const Home = () => {
   useDocumentTitle("Unit");
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 ">
-      <div>
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 h-full overflow-y-scroll no-scrollbar">
+      <div className="h-full">
         <Post />
       </div>
     </div>

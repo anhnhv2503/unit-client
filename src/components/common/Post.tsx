@@ -23,7 +23,7 @@ export const Post = () => {
   };
 
   return (
-    <div className="max-w-2xl  mt-4">
+    <div className="max-w-2xl mt-4">
       {/* Post 1 */}
       <div className="bg-white p-4 rounded-lg shadow mb-4">
         <div className="flex items-center mb-2">
