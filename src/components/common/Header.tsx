@@ -28,14 +28,14 @@ const Header = () => {
       }
     );
     setTimeout(() => {
-      window.location.reload();
+      window.location.href = "/";
     }, 1000);
   };
   return (
-    <header className="bg-black ">
+    <header className="bg-black fixed top-0 left-0 right-0 z-50 ">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 "
       >
         <div className="flex lg:flex-1">
           <a onClick={handleClick} className="-m-1.5 p-1.5">
