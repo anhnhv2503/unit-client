@@ -1,35 +1,36 @@
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogPanel,
   Disclosure,
   DisclosureButton,
-  DisclosurePanel,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
 } from "@headlessui/react";
-import {
-  ArrowPathIcon,
-  Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-  PhoneIcon,
-  PlayCircleIcon,
-} from "@heroicons/react/20/solid";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const Header = () => {
   const nav = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleClick = () => {
+    toast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve("Success!");
+        }, 2000);
+      }),
+      {
+        loading: "Loading...",
+        success: "Success!",
+        error: "Cound not refresh",
+      }
+    );
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  };
   return (
     <header className="bg-black ">
       <nav
@@ -37,12 +38,12 @@ const Header = () => {
         className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a onClick={() => nav("/")} className="-m-1.5 p-1.5">
+          <a onClick={handleClick} className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
               alt=""
               src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=50"
-              className="h-8 w-auto"
+              className="h-8 w-auto cursor-pointer"
             />
           </a>
         </div>

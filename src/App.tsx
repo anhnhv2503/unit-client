@@ -17,7 +17,7 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Routes>
       </BrowserRouter>
-      <Toaster />
+      <Toaster position="top-center" />
     </>
   );
 }
