@@ -1,7 +1,7 @@
-import { HeartIcon } from "@heroicons/react/24/outline";
-import React, { FC, useRef, useState } from "react";
-import Comment from "./Comment";
 import { PostProp } from "@/types";
+import { HeartIcon } from "@heroicons/react/24/outline";
+import { FC, useRef, useState } from "react";
+import Comment from "./Comment";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -10,7 +10,6 @@ const fakeImage =
 
 export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const likeRef = useRef(0);
-  const [commentCount, setCommentCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 

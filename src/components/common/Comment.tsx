@@ -9,11 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import { Textarea } from "../ui/textarea";
-import React from "react";
-
-interface CommentProps {
-  setComment: React.Dispatch<React.SetStateAction<number>>;
-}
 
 const Comment = () => {
   return (
