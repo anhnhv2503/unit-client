@@ -94,13 +94,23 @@ const Header = () => {
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
                 <Disclosure as="div" className="-mx-3">
-                  <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold text-white hover:bg-gray-50">
+                  <DisclosureButton
+                    onClick={() => {
+                      nav("/"), setMobileMenuOpen(false);
+                    }}
+                    className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold text-white"
+                  >
                     Home
                   </DisclosureButton>
                 </Disclosure>
               </div>
               <div className="py-6">
-                <Button onClick={() => nav("/login")} variant={"secondary"}>
+                <Button
+                  onClick={() => {
+                    nav("/login"), setMobileMenuOpen(false);
+                  }}
+                  variant={"secondary"}
+                >
                   Login <span aria-hidden="true">&rarr;</span>
                 </Button>
               </div>
