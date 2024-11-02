@@ -32,7 +32,7 @@ const Header = () => {
     }, 1000);
   };
   return (
-    <header className="bg-black fixed top-0 left-0 right-0 z-50 ">
+    <header className="bg-black fixed top-0 left-0 right-0 z-10 ">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 "
@@ -84,7 +84,7 @@ const Header = () => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              className="-m-2.5 rounded-md p-2.5 text-white"
             >
               <span className="sr-only">Close menu</span>
               <XMarkIcon aria-hidden="true" className="h-6 w-6" />
