@@ -2,6 +2,7 @@ import { PostProp } from "@/types";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { FC, MouseEvent, useRef, useState } from "react";
 import Comment from "./Comment";
+import ImagePreview from "@/components/common/ImagePreview";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -133,24 +134,11 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
       </div>
 
       {isModalOpen && selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-          onClick={handleOverlayClick}
-        >
-          <div className="relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-white text-2xl font-bold"
-            >
-              &times;
-            </button>
-            <img
-              src={selectedImage}
-              alt="Full-size"
-              className="max-w-full max-h-full rounded-lg"
-            />
-          </div>
-        </div>
+        <ImagePreview
+          handleOverlayClick={handleOverlayClick}
+          closeModal={closeModal}
+          selectedImage={selectedImage}
+        />
       )}
     </div>
   );
