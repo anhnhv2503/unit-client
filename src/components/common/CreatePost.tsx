@@ -1,5 +1,3 @@
-import React from "react";
-
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
 export const CreatePost = () => {
