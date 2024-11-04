@@ -5,6 +5,7 @@ import axios from "axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { PostProps } from "@/types";
+import { CreatePost } from "../common/CreatePost";
 
 const Home = () => {
   useDocumentTitle("Unit");
@@ -52,6 +53,7 @@ const Home = () => {
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
+        <CreatePost />
         {content}
         <div className="">{isFetchingNextPage && <span>Loading...</span>}</div>
       </div>

@@ -3,6 +3,7 @@ import { HeartIcon } from "@heroicons/react/24/outline";
 import { FC, MouseEvent, useRef, useState } from "react";
 import Comment from "./Comment";
 import ImagePreview from "@/components/common/ImagePreview";
+import { useNavigate } from "react-router-dom";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -22,6 +23,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const nav = useNavigate();
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -81,14 +83,23 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     }
   };
 
+  const handleMainClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (!(e.target as HTMLElement).closest(".no-nav")) {
+      nav(`/post/${post.id}`);
+    }
+  };
+
   return (
-    <div className="max-w-2xl mt-4" key={post.id} ref={innerRef} {...props}>
-      <div className="bg-white p-4 rounded-lg shadow mb-4">
-        <div className="flex items-center mb-2">
+    <div className="max-w-2xl" key={post.id} ref={innerRef} {...props}>
+      <div
+        className="bg-white p-4  shadow  border  cursor-pointer"
+        onClick={handleMainClick}
+      >
+        <div className="flex items-center mb-2 ">
           <img
             src={fakeAvt}
             alt="Profile picture of the second user"
-            className="w-10 h-10 rounded-full mr-2"
+            className="w-10 h-10 rounded-full mr-2 no-nav"
           />
           <div>
             <div className="font-semibold">User {post.id}</div>
@@ -99,7 +110,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           <p>{post.title}</p>
         </div>
         <div
-          className="flex overflow-x-auto space-x-2 no-scrollbar cursor-grab"
+          className="flex overflow-x-auto space-x-2 no-scrollbar cursor-grab no-nav"
           ref={scrollContainerRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -111,23 +122,33 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
               key={index}
               src={image}
               alt={`Image ${index + 1}`}
-              className={`${fakeImages.length > 1 ? "w-48" : "w-full"} rounded`}
+              className={`${
+                fakeImages.length > 1 ? "w-48" : "w-full"
+              } rounded `}
               onClick={() => handleImageClick(image)}
             />
           ))}
         </div>
         <div className="flex items-center mt-2 text-gray-500 text-sm">
-          <div className="flex items-center mr-4">
+          <div className="flex items-center mr-4 no-nav">
             <HeartIcon
               onClick={handleLike}
               aria-hidden="true"
-              className="h-6 w-6 mr-1 cursor-pointer"
+              className="h-6 w-6 mr-1 cursor-pointer no-nav"
               {...(isLiked ? { fill: "red", color: "red" } : { fill: "none" })}
             />
             {likeCount}
           </div>
-          <Comment />
-          <div className="flex items-center">
+
+          <div
+            className="no-nav"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <Comment />
+          </div>
+          <div className="flex items-center no-nav">
             <i className="fas fa-share mr-1"></i>
           </div>
         </div>
