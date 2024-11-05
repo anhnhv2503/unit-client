@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { PhotoIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ChangeEvent, useState } from "react";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
@@ -21,12 +21,41 @@ const CreatePostModal = ({
   isPrimary: boolean;
 }) => {
   // const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [previewMedia, setPreviewMedia] = useState<
+    { url: string; type: string }[]
+  >([]);
 
-  const handlleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleMediaChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    const imageUrl = files.map((file) => URL.createObjectURL(file));
-    setPreviewImages(imageUrl);
+
+    // Map each file to an object with a URL and type
+    const mediaData = files.map((file) => ({
+      url: URL.createObjectURL(file),
+      type: file.type, // This keeps the original type (e.g., "image/png", "video/mp4")
+    }));
+
+    setPreviewMedia((prev) => [...prev, ...mediaData]);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.type.startsWith("image/")) {
+        const file = item.getAsFile();
+        if (file) {
+          const imageUrl = {
+            url: URL.createObjectURL(file),
+            type: file.type,
+          };
+          setPreviewMedia((prev) => [...prev, imageUrl]);
+        }
+      }
+    }
+  };
+
+  const removeMedia = (index: number) => {
+    setPreviewMedia((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -63,6 +92,8 @@ const CreatePostModal = ({
             <Textarea
               placeholder="Type your message here."
               className="w-full border border-none outline outline-none"
+              contentEditable
+              onPaste={handlePaste}
             />
           </div>
           <div className="flex mt-3">
@@ -77,25 +108,36 @@ const CreatePostModal = ({
               name="images"
               type="file"
               className="hidden"
-              onChange={handlleImageChange}
+              onChange={handleMediaChange}
               multiple
-              accept="image/*"
+              accept="*"
             />
             <div className="mt-4 flex space-x-4 overflow-x-auto p-2">
-              {previewImages?.map((url, index) => (
+              {previewMedia?.map((media, index) => (
                 <div
                   key={index}
                   className="flex-shrink-0 relative h-40 sm:h-48 md:h-56"
                 >
-                  <button className="absolute top-2 right-2 text-white text-2xl font-bold">
-                    &times;
-                  </button>
+                  <div
+                    className="absolute top-2 right-2 text-white text-2xl h-5 w-5 font-bold rounded-full bg-black bg-opacity-50 cursor-pointer z-50"
+                    onClick={() => removeMedia(index)}
+                  >
+                    <XMarkIcon />
+                  </div>
                   <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 border border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out">
-                    <img
-                      src={url}
-                      alt="Product preview"
-                      className="w-full h-full object-cover"
-                    />
+                    {media.type.startsWith("video") ? (
+                      <video
+                        src={media.url}
+                        controls
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={media.url}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                 </div>
               ))}
