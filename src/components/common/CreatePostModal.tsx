@@ -8,6 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageIcon } from "@radix-ui/react-icons";
+import { ChangeEvent, useState } from "react";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -18,6 +20,18 @@ const CreatePostModal = ({
   title: string;
   isPrimary: boolean;
 }) => {
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+  const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files;
+    const selectedFilesArray = Array.from(selectedFile!);
+
+    const fileArray = selectedFilesArray.map((file) => {
+      return URL.createObjectURL(file);
+    });
+    setSelectedImages(fileArray);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -51,8 +65,29 @@ const CreatePostModal = ({
           <div className=" items-center">
             <Textarea
               placeholder="Type your message here."
-              className="w-full border border-none"
+              className="w-full border border-none outline outline-none"
             />
+          </div>
+          <div className="">
+            {selectedImages &&
+              selectedImages.map((image) => (
+                <div key={image}>
+                  <img src={image} />
+                </div>
+              ))}
+          </div>
+          <div className="flex mt-3">
+            <label className="cursor-pointer">
+              <ImageIcon />
+              <input
+                name="images"
+                type="file"
+                className="hidden"
+                onChange={onSelectFile}
+                multiple
+                accept="image/*"
+              ></input>
+            </label>
           </div>
         </div>
         <DialogFooter>
