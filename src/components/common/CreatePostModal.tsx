@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageIcon } from "@radix-ui/react-icons";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ChangeEvent, useState } from "react";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
@@ -20,16 +20,13 @@ const CreatePostModal = ({
   title: string;
   isPrimary: boolean;
 }) => {
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  // const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-  const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files;
-    const selectedFilesArray = Array.from(selectedFile!);
-
-    const fileArray = selectedFilesArray.map((file) => {
-      return URL.createObjectURL(file);
-    });
-    setSelectedImages(fileArray);
+  const handlleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    const imageUrl = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages(imageUrl);
   };
 
   return (
@@ -68,26 +65,41 @@ const CreatePostModal = ({
               className="w-full border border-none outline outline-none"
             />
           </div>
-          <div className="">
-            {selectedImages &&
-              selectedImages.map((image) => (
-                <div key={image}>
-                  <img src={image} />
+          <div className="flex mt-3">
+            <label htmlFor="images" className="cursor-pointer">
+              <PhotoIcon
+                aria-hidden="true"
+                className="h-9 w-9 mr-1 cursor-pointer no-nav hover:bg-gray-100 p-1 rounded-md"
+              />
+            </label>
+            <input
+              id="images"
+              name="images"
+              type="file"
+              className="hidden"
+              onChange={handlleImageChange}
+              multiple
+              accept="image/*"
+            />
+            <div className="mt-4 flex space-x-4 overflow-x-auto p-2">
+              {previewImages?.map((url, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 relative h-40 sm:h-48 md:h-56"
+                >
+                  <button className="absolute top-2 right-2 text-white text-2xl font-bold">
+                    &times;
+                  </button>
+                  <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 border border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out">
+                    <img
+                      src={url}
+                      alt="Product preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
               ))}
-          </div>
-          <div className="flex mt-3">
-            <label className="cursor-pointer">
-              <ImageIcon />
-              <input
-                name="images"
-                type="file"
-                className="hidden"
-                onChange={onSelectFile}
-                multiple
-                accept="image/*"
-              ></input>
-            </label>
+            </div>
           </div>
         </div>
         <DialogFooter>
