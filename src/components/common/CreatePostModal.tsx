@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState, MouseEvent } from "react";
+import { toast } from "sonner";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -20,18 +21,52 @@ const CreatePostModal = ({
   title: string;
   isPrimary: boolean;
 }) => {
-  // const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [previewMedia, setPreviewMedia] = useState<
     { url: string; type: string }[]
   >([]);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const MAX_MEDIA_COUNT = 4;
+
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.dataset.isDragging = "true";
+      scrollContainerRef.current.dataset.startX = (
+        e.pageX - scrollContainerRef.current.offsetLeft
+      ).toString();
+      scrollContainerRef.current.dataset.scrollLeft =
+        scrollContainerRef.current.scrollLeft.toString();
+    }
+  };
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (scrollContainerRef.current?.dataset.isDragging !== "true") return;
+    e.preventDefault();
+    if (scrollContainerRef.current) {
+      const startX = Number(scrollContainerRef.current.dataset.startX);
+      const scrollLeft = Number(scrollContainerRef.current.dataset.scrollLeft);
+      const x = e.pageX - scrollContainerRef.current.offsetLeft;
+      const walk = x - startX;
+      scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+    }
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.dataset.isDragging = "false";
+    }
+  };
 
   const handleMediaChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-
-    // Map each file to an object with a URL and type
+    if (previewMedia.length > MAX_MEDIA_COUNT) {
+      toast.info(`You can only upload ${MAX_MEDIA_COUNT} files at a time.`);
+      return;
+    }
     const mediaData = files.map((file) => ({
       url: URL.createObjectURL(file),
-      type: file.type, // This keeps the original type (e.g., "image/png", "video/mp4")
+      type: file.type,
     }));
 
     setPreviewMedia((prev) => [...prev, ...mediaData]);
@@ -112,7 +147,14 @@ const CreatePostModal = ({
               multiple
               accept="*"
             />
-            <div className="mt-4 flex space-x-4 overflow-x-auto p-2">
+            <div
+              className="mt-4 flex space-x-4 overflow-x-auto p-2 no-scrollbar cursor-grab no-nav"
+              ref={scrollContainerRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUpOrLeave}
+              onMouseLeave={handleMouseUpOrLeave}
+            >
               {previewMedia?.map((media, index) => (
                 <div
                   key={index}
