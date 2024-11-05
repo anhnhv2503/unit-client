@@ -1,7 +1,15 @@
 import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 type ImagePreviewProps = {
-  selectedImage: string | undefined;
+  selectedImage: string[] | undefined;
   closeModal: () => void;
   handleOverlayClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
@@ -13,21 +21,40 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
 }) => {
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
       onClick={handleOverlayClick}
     >
-      <div className="relative">
-        <button
-          onClick={closeModal}
-          className="absolute top-2 right-2 text-white text-2xl font-bold"
+      <div className="relative w-full max-w-screen-md md:max-w-lg lg:max-w-xl">
+        <button onClick={closeModal}>&timer;</button>
+        <Carousel
+          className="w-full"
+          opts={{
+            align: "start",
+            loop: true,
+          }}
         >
-          &times;
-        </button>
-        <img
-          src={selectedImage || ""}
-          alt="Full-size"
-          className="max-w-full max-h-full rounded-lg"
-        />
+          <CarouselContent>
+            {selectedImage?.map((img, index) => (
+              <CarouselItem key={index}>
+                <Card className="w-full h-full relative">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center blur-lg opacity-100"
+                    style={{ backgroundImage: `url(${img})` }}
+                  />
+                  <CardContent className="flex items-center justify-center p-0 relative z-10">
+                    <img
+                      src={img || ""}
+                      alt="Full-size"
+                      className="w-auto max-h-[75vh] md:max-h-[85vh] object-contain rounded-lg shadow-lg"
+                    />
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </div>
   );

@@ -31,6 +31,10 @@ const Header = () => {
       window.location.href = "/";
     }, 1000);
   };
+
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <header className="bg-black fixed top-0 left-0 right-0 z-10 ">
       <nav
@@ -60,7 +64,9 @@ const Header = () => {
         <div className="hidden lg:flex lg:gap-x-12">
           <div className="relative">
             <a
-              onClick={() => nav("/")}
+              onClick={() => {
+                handleScrollTop(), nav("/");
+              }}
               className="flex items-center gap-x-1 text-sm/6 font-semibold  text-white cursor-pointer"
             >
               Home

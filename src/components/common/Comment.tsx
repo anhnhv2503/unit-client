@@ -31,7 +31,7 @@ const Comment = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Post</Button>
+          <Button type="submit">Comment</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

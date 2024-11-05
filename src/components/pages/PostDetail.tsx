@@ -25,7 +25,7 @@ export const PostDetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -68,8 +68,8 @@ export const PostDetail = () => {
     }
   };
 
-  const handleImageClick = (image: string) => {
-    setSelectedImage(image);
+  const handleImageClick = (images: string[]) => {
+    setSelectedImage(images);
     setIsModalOpen(true);
   };
 
@@ -145,7 +145,7 @@ export const PostDetail = () => {
                   className={`${
                     fakeImages.length > 1 ? "w-48" : "w-full"
                   } rounded`}
-                  onClick={() => handleImageClick(image)}
+                  onClick={() => handleImageClick(fakeImages)}
                 />
               ))}
             </div>

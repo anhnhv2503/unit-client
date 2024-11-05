@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import CreatePostModal from "@/components/common/CreatePostModal";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -14,12 +14,10 @@ export const CreatePost = () => {
           />
         </div>
         <div className="flex justify-center items-center">
-          <button className="p-2 hover:cursor-text text-gray" type="button">
-            What's new ?
-          </button>
+          <CreatePostModal title="What's New?" isPrimary={false} />
         </div>
-        <div className="">
-          <Button className="">Post</Button>
+        <div className="mt-2">
+          <CreatePostModal title="Post" isPrimary={true} />
         </div>
       </div>
     </div>
