@@ -14,7 +14,7 @@ const Comment = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="flex items-center mr-4">
+        <div className="flex items-center">
           <ChatBubbleOvalLeftIcon className="h-6 w-6 mr-1 cursor-pointer" /> 1
         </div>
       </DialogTrigger>

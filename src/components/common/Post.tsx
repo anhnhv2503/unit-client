@@ -1,9 +1,9 @@
-import { PostProp } from "@/types";
-import { HeartIcon } from "@heroicons/react/24/outline";
-import { FC, MouseEvent, useRef, useState } from "react";
-import Comment from "./Comment";
 import ImagePreview from "@/components/common/ImagePreview";
+import { PostProp } from "@/types";
+import { HeartIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { FC, MouseEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Comment from "./Comment";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -90,9 +90,14 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   };
 
   return (
-    <div className="max-w-2xl" key={post.id} ref={innerRef} {...props}>
+    <div
+      className="max-w-2xl mt-3 bg-black"
+      key={post.id}
+      ref={innerRef}
+      {...props}
+    >
       <div
-        className="bg-white p-4  shadow  border  cursor-pointer"
+        className="bg-white p-4 shadow  border  cursor-pointer rounded-md"
         onClick={handleMainClick}
       >
         <div className="flex items-center mb-2 ">
@@ -129,8 +134,8 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
             />
           ))}
         </div>
-        <div className="flex items-center mt-2 text-gray-500 text-sm">
-          <div className="flex items-center mr-4 no-nav">
+        <div className="flex items-center mt-3 p-2 text-gray-500 text-sm">
+          <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl ">
             <HeartIcon
               onClick={handleLike}
               aria-hidden="true"
@@ -141,15 +146,18 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           </div>
 
           <div
-            className="no-nav"
+            className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <Comment />
           </div>
-          <div className="flex items-center no-nav">
-            <i className="fas fa-share mr-1"></i>
+          <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl">
+            <PaperAirplaneIcon
+              aria-hidden="true"
+              className="h-6 w-6 mr-1 cursor-pointer no-nav"
+            />
           </div>
         </div>
       </div>
