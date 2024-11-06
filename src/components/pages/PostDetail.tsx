@@ -44,7 +44,7 @@ export const PostDetail = () => {
   });
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-white dark:bg-zinc-950 h-full overflow-y-scroll no-scrollbar">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-white dark:bg-black h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
         <div className="max-w-2xl mt-4">
           <Post key={post.id} post={post} />
