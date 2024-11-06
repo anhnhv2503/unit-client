@@ -50,7 +50,7 @@ export const UserProfile = () => {
   ));
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 dark:bg-white h-full overflow-y-scroll no-scrollbar">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-zinc-950 bg-white h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
         <div className="max-w-2xl mt-4">
           <div className="bg-white p-4 rounded-lg border border-slate-400">
@@ -69,7 +69,7 @@ export const UserProfile = () => {
               <>
                 {" "}
                 <div
-                  className="mt-20 p-2 text-center rounded-lg border border-slate-600 cursor-pointer"
+                  className="mt-20 p-2 text-center rounded-lg border border-slate-600 cursor-pointer dark:text-black"
                   onClick={handleFollowUser}
                 >
                   Following

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { ChangeEvent, useRef, useState, MouseEvent } from "react";
+import { ChangeEvent, MouseEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
@@ -18,8 +18,8 @@ const CreatePostModal = ({
   title,
   isPrimary,
 }: {
-  title: string;
-  isPrimary: boolean;
+  title?: string | JSX.Element;
+  isPrimary?: boolean;
 }) => {
   const [previewMedia, setPreviewMedia] = useState<
     { url: string; type: string }[]
@@ -98,19 +98,18 @@ const CreatePostModal = ({
       <DialogTrigger asChild>
         <Button
           {...(isPrimary
-            ? { className: `bg-black dark:bg-white` }
+            ? { className: `dark:bg-white dark:hover:bg-neutral-300` }
             : {
-                variant: "outline",
                 className:
-                  "bg-white shadow-none border-none cursor-text hover:bg-white text-gray-500 dark:text-gray-400",
+                  "bg-white shadow-none border-none hover:bg-white text-gray-500 dark:bg-zinc-800 dark:text-white",
               })}
         >
           {title}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px] dark:bg-white">
+      <DialogContent className="sm:max-w-[625px] dark:bg-zinc-900 bg-white">
         <DialogHeader>
-          <DialogTitle className="text-center dark:text-black">
+          <DialogTitle className="text-center dark:text-white text-black">
             New Post
           </DialogTitle>
         </DialogHeader>
@@ -122,22 +121,27 @@ const CreatePostModal = ({
               className="w-10 h-10 rounded-full mr-2 no-nav"
             />
             <div>
-              <div className="font-semibold dark:text-black">User </div>
+              <div className="font-semibold dark:text-white text-black">
+                User{" "}
+              </div>
             </div>
           </div>
           <div className=" items-center">
             <Textarea
-              placeholder="Type your message here."
+              placeholder="How are you feeling today?"
               className="w-full border border-none outline outline-none"
               contentEditable
               onPaste={handlePaste}
             />
           </div>
           <div className="flex mt-3">
-            <label htmlFor="images" className="cursor-pointer dark:text-black">
+            <label
+              htmlFor="images"
+              className="cursor-pointer dark:text-white text-black"
+            >
               <PhotoIcon
                 aria-hidden="true"
-                className="h-9 w-9 mr-1 cursor-pointer no-nav hover:bg-gray-100 p-1 rounded-md"
+                className="h-9 w-9 mr-1 cursor-pointer no-nav hover:bg-gray-100 dark:hover:bg-gray-500 p-1 rounded-md"
               />
             </label>
             <input

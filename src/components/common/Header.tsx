@@ -1,3 +1,4 @@
+import ModePopover from "@/components/common/ModePopover";
 import { useTheme } from "@/components/context/theme-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,7 +39,7 @@ const Header = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   return (
-    <header className="bg-black dark:bg-white fixed top-0 left-0 right-0 z-10 ">
+    <header className="dark:bg-black bg-white fixed top-0 left-0 right-0 z-10 ">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 "
@@ -49,13 +50,13 @@ const Header = () => {
             {theme === "dark" ? (
               <img
                 alt=""
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=150"
+                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=50"
                 className="h-8 w-auto cursor-pointer transition-all duration-100 ease-linear"
               />
             ) : (
               <img
                 alt=""
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=50"
+                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=150"
                 className="h-8 w-auto cursor-pointer transition-all duration-100 ease-linear"
               />
             )}
@@ -65,7 +66,7 @@ const Header = () => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 dark:text-white "
           >
             <span className="sr-only">Open main menu</span>
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
@@ -77,14 +78,14 @@ const Header = () => {
               onClick={() => {
                 handleScrollTop(), nav("/");
               }}
-              className="flex items-center gap-x-1 text-sm/6 font-semibold  text-white dark:text-black cursor-pointer"
+              className="flex items-center gap-x-1 text-sm/6 font-semibold  dark:text-white text-black cursor-pointer"
             >
               Home
             </a>
           </div>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button onClick={() => nav("/login")} variant={"secondary"}>
+          <Button onClick={() => nav("/login")}>
             Login <span aria-hidden="true">&rarr;</span>
           </Button>
         </div>
@@ -95,12 +96,12 @@ const Header = () => {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-64 overflow-y-auto bg-zinc-950 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-64 overflow-y-auto dark:bg-zinc-950 bg-gray-100 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-white"
+              className="-m-2.5 rounded-md p-2.5 dark:text-white text-black"
             >
               <span className="sr-only">Close menu</span>
               <XMarkIcon aria-hidden="true" className="h-6 w-6" />
@@ -114,7 +115,7 @@ const Header = () => {
                     onClick={() => {
                       nav("/"), setMobileMenuOpen(false);
                     }}
-                    className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold text-white"
+                    className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold dark:text-white text-black"
                   >
                     Home
                   </DisclosureButton>
@@ -125,11 +126,13 @@ const Header = () => {
                   onClick={() => {
                     nav("/login"), setMobileMenuOpen(false);
                   }}
-                  variant={"secondary"}
                 >
                   Login <span aria-hidden="true">&rarr;</span>
                 </Button>
               </div>
+            </div>
+            <div className="py-6">
+              <ModePopover />
             </div>
           </div>
         </DialogPanel>

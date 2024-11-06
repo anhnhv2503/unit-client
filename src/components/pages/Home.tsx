@@ -1,14 +1,15 @@
-import { useDocumentTitle } from "@uidotdev/usehooks";
-import { Post } from "../common/Post";
-import { useInView } from "react-intersection-observer";
-import axios from "axios";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import Loading from "@/components/common/loading/Loading";
 import { PostProps } from "@/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useDocumentTitle } from "@uidotdev/usehooks";
+import axios from "axios";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { CreatePost } from "../common/CreatePost";
+import { Post } from "../common/Post";
 
 const Home = () => {
-  useDocumentTitle("Unit");
+  useDocumentTitle("Home - UNIT");
   const { ref, inView } = useInView();
 
   const fetchPosts = async ({ pageParam }: { pageParam: number }) => {
@@ -41,7 +42,7 @@ const Home = () => {
     }
   }, [inView, hasNextPage]);
 
-  if (status === "pending") return <div>Loading...</div>;
+  if (status === "pending") return <Loading />;
   if (status === "error") return <div>Error: {error.message}</div>;
 
   const content = data?.pages.map((posts: PostProps[]) =>
@@ -51,11 +52,12 @@ const Home = () => {
   );
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-black dark:bg-white h-full overflow-y-scroll no-scrollbar">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
         <CreatePost />
         {content}
-        <div className="">{isFetchingNextPage && <span>Loading...</span>}</div>
+
+        {isFetchingNextPage && <Loading />}
       </div>
     </div>
   );

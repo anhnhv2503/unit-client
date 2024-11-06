@@ -7,7 +7,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3BottomLeftIcon,
+  MoonIcon,
+  PowerIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline";
 const ModePopover = () => {
   const { theme, setTheme } = useTheme();
 
@@ -16,14 +21,14 @@ const ModePopover = () => {
       <PopoverTrigger className="flex items-center justify-center">
         <Bars3BottomLeftIcon className="w-7 h-7" />
       </PopoverTrigger>
-      <PopoverContent className="w-52 bg-zinc-800 text-white border border-none dark:bg-white dark:text-black ">
+      <PopoverContent className="w-52 dark:bg-zinc-800 dark:text-white border border-none bg-white text-black ">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Setting</h4>
           </div>
           <div className="grid gap-2">
-            <div className="grid grid-cols-1 items-center gap-4 mb-2">
-              <div className="flex items-center space-x-2">
+            <div className="grid grid-cols-1 items-center gap-4 mb-10">
+              <div className="flex items-center space-x-6">
                 <Switch
                   id="theme-mode"
                   checked={theme === "dark"}
@@ -31,13 +36,18 @@ const ModePopover = () => {
                     setTheme(theme === "light" ? "dark" : "light")
                   }
                 />
-                <Label htmlFor="theme-mode">
-                  {theme === "dark" ? "Dark Mode" : "Light Mode"}
+                <Label htmlFor="theme-mode" className="">
+                  {theme === "dark" ? (
+                    <MoonIcon className="w-5 h-5" />
+                  ) : (
+                    <SunIcon className="w-5 h-5" />
+                  )}
                 </Label>
               </div>
             </div>
             <div className="grid grid-cols-1 items-center gap-4">
               <Button variant={"destructive"} className="dark:bg-red-500">
+                <PowerIcon className="w-5 h-5" />
                 Log Out
               </Button>
             </div>

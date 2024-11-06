@@ -3,6 +3,7 @@ import { PostProp } from "@/types";
 import { HeartIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { FC, MouseEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Comment from "./Comment";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
@@ -89,15 +90,19 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     }
   };
 
+  const handleSharePost = () => {
+    toast.success("Post shared to your newsfeed!");
+  };
+
   return (
     <div
-      className="max-w-2xl mt-3 bg-black border rounded-sm"
+      className="max-w-2xl mt-3 rounded-3xl"
       key={post.id}
       ref={innerRef}
       {...props}
     >
       <div
-        className="bg-white p-4 shadow  border cursor-pointer rounded-sm"
+        className="bg-white dark:bg-zinc-800 p-4 shadow  border cursor-pointer rounded-2xl"
         onClick={handleMainClick}
       >
         <div className="flex items-center mb-2 ">
@@ -112,11 +117,13 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
               nav(`/user-profile/${post.userId}`);
             }}
           >
-            <div className="font-semibold dark:text-black">User {post.id}</div>
-            <div className="text-gray-500 text-sm dark:text-black">1d</div>
+            <div className="font-semibold dark:text-white text-black">
+              User {post.id}
+            </div>
+            <div className="text-gray-500 text-sm dark:text-white">1d</div>
           </div>
         </div>
-        <div className="mb-2 dark:text-black">
+        <div className="mb-2 dark:text-white text-black">
           <p>{post.title}</p>
         </div>
         <div
@@ -139,8 +146,8 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
             />
           ))}
         </div>
-        <div className="flex items-center mt-3 p-2 text-gray-500 text-sm">
-          <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl ">
+        <div className="flex items-center mt-3 p-2 text-gray-500 dark:text-gray-200 text-sm">
+          <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
             <HeartIcon
               onClick={handleLike}
               aria-hidden="true"
@@ -151,17 +158,18 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           </div>
 
           <div
-            className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl"
+            className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <Comment />
           </div>
-          <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl">
+          <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
             <PaperAirplaneIcon
               aria-hidden="true"
               className="h-6 w-6 mr-1 cursor-pointer no-nav"
+              onClick={handleSharePost}
             />
           </div>
         </div>
