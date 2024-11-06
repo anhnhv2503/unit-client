@@ -16,7 +16,7 @@ const ModePopover = () => {
       <PopoverTrigger className="flex items-center justify-center">
         <Bars3BottomLeftIcon className="w-7 h-7" />
       </PopoverTrigger>
-      <PopoverContent className="w-52 bg-zinc-800 text-white border border-none dark:bg-white dark:text-black">
+      <PopoverContent className="w-52 bg-zinc-800 text-white border border-none dark:bg-white dark:text-black ">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Setting</h4>
