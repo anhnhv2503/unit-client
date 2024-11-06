@@ -1,26 +1,44 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.css";
-import { Toaster } from "@/components/ui/sonner";
+import NotFound from "@/components/error/NotFound";
 import Home from "@/components/pages/Home";
 import Login from "@/components/pages/Login";
 import Register from "@/components/pages/Register";
-import Header from "@/components/common/Header";
+import { Toaster } from "@/components/ui/sonner";
+import UserRoute from "@/routes/UserRoute";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./App.css";
 import { PostDetail } from "./components/pages/PostDetail";
-import NotFound from "@/components/error/NotFound";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      element: <UserRoute />,
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+        {
+          path: "/post/:id",
+          element: <PostDetail />,
+        },
+      ],
+    },
+    {
+      path: "/*",
+      element: <NotFound />,
+    },
+  ]);
   return (
     <>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/post/:id" element={<PostDetail />} />
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router} />
       <Toaster position="top-center" />
     </>
   );
