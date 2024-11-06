@@ -28,7 +28,10 @@ export const Reply: React.FC<ReplyProps> = ({ id, body, email }) => {
   };
 
   return (
-    <div className="bg-white p-4 shadow border border-b-slate-400" id={id}>
+    <div
+      className="bg-white dark:bg-zinc-800 p-4 shadow border mt-1 rounded-md"
+      id={id}
+    >
       <div className="flex items-top mb-2">
         <div className="flex-none w-10 h-10 mr-2">
           <img
@@ -38,11 +41,11 @@ export const Reply: React.FC<ReplyProps> = ({ id, body, email }) => {
           />
         </div>
         <div>
-          <div className="font-semibold dark:text-black">
+          <div className="font-semibold dark:text-white">
             {email}{" "}
             <span className="text-sm text-gray-500 font-normal">1d</span>
           </div>
-          <div className="dark:text-black">{body}</div>
+          <div className="dark:text-white">{body}</div>
         </div>
       </div>
 

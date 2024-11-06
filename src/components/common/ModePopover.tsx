@@ -9,6 +9,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import {
   Bars3BottomLeftIcon,
+  Cog6ToothIcon,
   MoonIcon,
   PowerIcon,
   SunIcon,
@@ -24,7 +25,7 @@ const ModePopover = () => {
       <PopoverContent className="w-52 dark:bg-zinc-800 dark:text-white border border-none bg-white text-black ">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Setting</h4>
+            <Cog6ToothIcon className="w-5 h-5" />
           </div>
           <div className="grid gap-2">
             <div className="grid grid-cols-1 items-center gap-4 mb-10">

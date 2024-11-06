@@ -50,14 +50,16 @@ export const UserProfile = () => {
   ));
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-zinc-950 bg-white h-full overflow-y-scroll no-scrollbar">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
         <div className="max-w-2xl mt-4">
-          <div className="bg-white p-4 rounded-lg border border-slate-400">
+          <div className="bg-white p-4 rounded-lg border dark:bg-zinc-800">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-bold text-black text-2xl">{user.name}</div>
-                <div className="text-gray-500 text-sm">{user.username}</div>
+                <div className="font-bold text-black dark:text-white text-2xl">
+                  {user.name}
+                </div>
+                <div className="text-gray-300 text-sm">{user.username}</div>
               </div>
               <img
                 src={fakeAvt}
@@ -69,7 +71,7 @@ export const UserProfile = () => {
               <>
                 {" "}
                 <div
-                  className="mt-20 p-2 text-center rounded-lg border border-slate-600 cursor-pointer dark:text-black"
+                  className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white"
                   onClick={handleFollowUser}
                 >
                   Following
@@ -79,7 +81,7 @@ export const UserProfile = () => {
               <>
                 {" "}
                 <div
-                  className="mt-20 p-2 text-center bg-black text-white rounded-lg cursor-pointer"
+                  className="mt-20 p-2 text-center bg-black text-white rounded-lg cursor-pointer dark:bg-white dark:text-black"
                   onClick={handleFollowUser}
                 >
                   Follow
