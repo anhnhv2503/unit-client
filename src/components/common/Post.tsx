@@ -106,7 +106,12 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
             alt="Profile picture of the second user"
             className="w-10 h-10 rounded-full mr-2 no-nav"
           />
-          <div>
+          <div
+            className="no-nav"
+            onClick={() => {
+              nav(`/user-profile/${post.userId}`);
+            }}
+          >
             <div className="font-semibold">User {post.id}</div>
             <div className="text-gray-500 text-sm">1d</div>
           </div>

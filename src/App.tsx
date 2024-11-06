@@ -7,6 +7,7 @@ import UserRoute from "@/routes/UserRoute";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import { PostDetail } from "./components/pages/PostDetail";
+import { UserProfile } from "./components/pages/UserProfile";
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,10 @@ function App() {
         {
           path: "/post/:id",
           element: <PostDetail />,
+        },
+        {
+          path: "/user-profile/:id",
+          element: <UserProfile />,
         },
       ],
     },
