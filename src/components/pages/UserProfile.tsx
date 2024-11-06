@@ -7,13 +7,23 @@ import { Post } from "../common/Post";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
+type UserProfileProps = {
+  id: number;
+  name: string;
+  username: string;
+};
+
 export const UserProfile = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<UserProfileProps>({
+    id: 0,
+    name: "",
+    username: "",
+  });
   const [isFollow, setIsFollow] = useState(false);
-  const { ref, inView } = useInView();
+  const { ref } = useInView();
 
   useEffect(() => {
     axios
@@ -31,8 +41,6 @@ export const UserProfile = () => {
       });
   }, []);
 
-  console.log(user);
-
   const handleFollowUser = () => {
     setIsFollow(!isFollow);
   };
@@ -42,13 +50,13 @@ export const UserProfile = () => {
   ));
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 h-full overflow-y-scroll no-scrollbar">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 dark:bg-white h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
         <div className="max-w-2xl mt-4">
           <div className="bg-white p-4 rounded-lg border border-slate-400">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-bold text-2xl">{user.name}</div>
+                <div className="font-bold text-black text-2xl">{user.name}</div>
                 <div className="text-gray-500 text-sm">{user.username}</div>
               </div>
               <img

@@ -91,13 +91,13 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
 
   return (
     <div
-      className="max-w-2xl mt-3 bg-black"
+      className="max-w-2xl mt-3 bg-black border rounded-sm"
       key={post.id}
       ref={innerRef}
       {...props}
     >
       <div
-        className="bg-white p-4 shadow  border  cursor-pointer rounded-md"
+        className="bg-white p-4 shadow  border cursor-pointer rounded-sm"
         onClick={handleMainClick}
       >
         <div className="flex items-center mb-2 ">
@@ -112,11 +112,11 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
               nav(`/user-profile/${post.userId}`);
             }}
           >
-            <div className="font-semibold">User {post.id}</div>
-            <div className="text-gray-500 text-sm">1d</div>
+            <div className="font-semibold dark:text-black">User {post.id}</div>
+            <div className="text-gray-500 text-sm dark:text-black">1d</div>
           </div>
         </div>
-        <div className="mb-2">
+        <div className="mb-2 dark:text-black">
           <p>{post.title}</p>
         </div>
         <div

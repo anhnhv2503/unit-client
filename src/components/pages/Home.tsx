@@ -51,7 +51,7 @@ const Home = () => {
   );
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-zinc-950 h-full overflow-y-scroll no-scrollbar">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-black dark:bg-white h-full overflow-y-scroll no-scrollbar">
       <div className="h-full">
         <CreatePost />
         {content}

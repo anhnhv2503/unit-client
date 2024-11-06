@@ -98,19 +98,21 @@ const CreatePostModal = ({
       <DialogTrigger asChild>
         <Button
           {...(isPrimary
-            ? { className: `bg-black` }
+            ? { className: `bg-black dark:bg-white` }
             : {
                 variant: "outline",
                 className:
-                  "bg-white shadow-none border-none cursor-text hover:bg-white text-gray-500",
+                  "bg-white shadow-none border-none cursor-text hover:bg-white text-gray-500 dark:text-gray-400",
               })}
         >
           {title}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px]">
+      <DialogContent className="sm:max-w-[625px] dark:bg-white">
         <DialogHeader>
-          <DialogTitle className="text-center">New Post</DialogTitle>
+          <DialogTitle className="text-center dark:text-black">
+            New Post
+          </DialogTitle>
         </DialogHeader>
         <div className="">
           <div className="flex items-center mb-2 ">
@@ -120,7 +122,7 @@ const CreatePostModal = ({
               className="w-10 h-10 rounded-full mr-2 no-nav"
             />
             <div>
-              <div className="font-semibold">User </div>
+              <div className="font-semibold dark:text-black">User </div>
             </div>
           </div>
           <div className=" items-center">
@@ -132,7 +134,7 @@ const CreatePostModal = ({
             />
           </div>
           <div className="flex mt-3">
-            <label htmlFor="images" className="cursor-pointer">
+            <label htmlFor="images" className="cursor-pointer dark:text-black">
               <PhotoIcon
                 aria-hidden="true"
                 className="h-9 w-9 mr-1 cursor-pointer no-nav hover:bg-gray-100 p-1 rounded-md"

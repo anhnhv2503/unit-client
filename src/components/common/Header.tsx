@@ -1,3 +1,4 @@
+import { useTheme } from "@/components/context/theme-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 
 const Header = () => {
   const nav = useNavigate();
+  const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleClick = () => {
@@ -36,7 +38,7 @@ const Header = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   return (
-    <header className="bg-black fixed top-0 left-0 right-0 z-10 ">
+    <header className="bg-black dark:bg-white fixed top-0 left-0 right-0 z-10 ">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8 "
@@ -44,11 +46,19 @@ const Header = () => {
         <div className="flex lg:flex-1">
           <a onClick={handleClick} className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
-            <img
-              alt=""
-              src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=50"
-              className="h-8 w-auto cursor-pointer"
-            />
+            {theme === "dark" ? (
+              <img
+                alt=""
+                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=150"
+                className="h-8 w-auto cursor-pointer transition-all duration-100 ease-linear"
+              />
+            ) : (
+              <img
+                alt=""
+                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=50"
+                className="h-8 w-auto cursor-pointer transition-all duration-100 ease-linear"
+              />
+            )}
           </a>
         </div>
         <div className="flex lg:hidden">
@@ -67,7 +77,7 @@ const Header = () => {
               onClick={() => {
                 handleScrollTop(), nav("/");
               }}
-              className="flex items-center gap-x-1 text-sm/6 font-semibold  text-white cursor-pointer"
+              className="flex items-center gap-x-1 text-sm/6 font-semibold  text-white dark:text-black cursor-pointer"
             >
               Home
             </a>

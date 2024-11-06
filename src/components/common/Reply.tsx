@@ -38,15 +38,15 @@ export const Reply: React.FC<ReplyProps> = ({ id, body, email }) => {
           />
         </div>
         <div>
-          <div className="font-semibold">
+          <div className="font-semibold dark:text-black">
             {email}{" "}
             <span className="text-sm text-gray-500 font-normal">1d</span>
           </div>
-          <div>{body}</div>
+          <div className="dark:text-black">{body}</div>
         </div>
       </div>
 
-      <div className="flex items-center mt-2 text-gray-500 text-sm">
+      <div className="flex items-center mt-2 text-gray-500 text-sm ">
         <div className="flex items-center mr-4">
           <HeartIcon
             onClick={handleLike}

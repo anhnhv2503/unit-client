@@ -5,12 +5,12 @@ import { Outlet } from "react-router-dom";
 const UserRoute = () => {
   return (
     <>
-      <Header />
       <div className="flex">
+        <Header />
         <div className="flex-col h-screen">
           <Sidebar />
         </div>
-        <div className="flex-1 p-6 bg-black overflow-y-auto h-screen">
+        <div className="flex-1 bg-black overflow-y-auto h-fit">
           <Outlet />
         </div>
       </div>
