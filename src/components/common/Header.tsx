@@ -11,6 +11,8 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import bowLogo from "@/assets/header-logo/bow.png";
+import wobLogo from "@/assets/header-logo/wob.png";
 
 const Header = () => {
   const nav = useNavigate();
@@ -49,15 +51,15 @@ const Header = () => {
             <span className="sr-only">Your Company</span>
             {theme === "dark" ? (
               <img
-                alt=""
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=50"
-                className="h-8 w-auto cursor-pointer transition-all duration-100 ease-linear"
+                alt="Dark Theme Logo"
+                src={wobLogo}
+                className="h-8 w-auto cursor-pointer transition ease-in-out delay-150 motion-reduce:transition-none motion-reduce:hover:transform-none"
               />
             ) : (
               <img
-                alt=""
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=gray&shade=150"
-                className="h-8 w-auto cursor-pointer transition-all duration-100 ease-linear"
+                alt="Light Theme Logo"
+                src={bowLogo}
+                className="h-8 w-auto cursor-pointer transition ease-in-out delay-150 motion-reduce:transition-none motion-reduce:hover:transform-none"
               />
             )}
           </a>
