@@ -3,11 +3,18 @@ import z from 'zod';
 //Use for Register form
 export const RegisterBody = z.object({
     email: z.string().email(),
-    password: z.string().trim().min(6, {
-        message: "Password must be at least 6 characters long"
-    }).max(255),
-    confirmPassword: z.string().trim().min(6, {
-        message: "Password must be at least 6 characters long"
+    password: z.string()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .max(255)
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" })
+        .regex(/[\s!@#$%^&*(),.?":{}|<>]/, { message: "Password must contain at least one special character or a space" })
+        .refine((password) => password.trim() === password, {
+            message: "Password must not contain leading or trailing spaces",
+        }),
+    confirmPassword: z.string().trim().min(8, {
+        message: "Password must be at least 8 characters long"
     }).max(255),
 }).strict().superRefine(({confirmPassword, password}, ctx) => {
     if(confirmPassword !== password){
