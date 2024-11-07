@@ -3,10 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const Login = () => {
   useDocumentTitle("Sign In");
@@ -22,7 +22,7 @@ const Login = () => {
     resolver: zodResolver(LoginBody),
   });
 
-  const onSubmit: SubmitHandler<LoginBodyType> = async (data) => {
+  const onSubmit: SubmitHandler<LoginBodyType> = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       reset();
