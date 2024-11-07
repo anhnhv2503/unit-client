@@ -32,6 +32,7 @@ const ModePopover = () => {
               <div className="flex items-center space-x-6">
                 <Switch
                   id="theme-mode"
+                  className="data-[state=checked]:bg-white data-[state=unchecked]:bg-zinc-800"
                   checked={theme === "dark"}
                   onCheckedChange={() =>
                     setTheme(theme === "light" ? "dark" : "light")

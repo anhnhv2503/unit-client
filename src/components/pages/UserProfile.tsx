@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
 import { Post } from "../common/Post";
-
-const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type UserProfileProps = {
   id: number;
@@ -61,11 +60,13 @@ export const UserProfile = () => {
                 </div>
                 <div className="text-gray-300 text-sm">{user.username}</div>
               </div>
-              <img
-                src={fakeAvt}
-                alt="Profile picture of the first user"
-                className="w-20 h-20 rounded-full mr-4"
-              />
+              <Avatar className="w-24 h-24">
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@UserAvatar"
+                />
+                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+              </Avatar>
             </div>
             {isFollow ? (
               <>

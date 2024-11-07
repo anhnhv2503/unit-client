@@ -2,16 +2,25 @@ import z from 'zod';
 
 //Use for Register form
 export const RegisterBody = z.object({
-    name: z.string().min(3).max(255),
     email: z.string().email(),
-    password: z.string().min(6).max(255),
-    confirmPassword: z.string().min(6).max(255),
+    password: z.string().trim().min(6, {
+        message: "Password must be at least 6 characters long"
+    }).max(255),
+    confirmPassword: z.string().trim().min(6, {
+        message: "Password must be at least 6 characters long"
+    }).max(255),
 }).strict().superRefine(({confirmPassword, password}, ctx) => {
     if(confirmPassword !== password){
         ctx.addIssue({
             code:'custom',
             message: "Passwords do not match",
             path: ['confirmPassword']
+        })
+    }else if(password.trim() === "" || confirmPassword.trim() === ""){
+        ctx.addIssue({
+            code:'custom',
+            message: "Password cannot be empty",
+             path: ['confirmPassword', 'password']
         })
     }
 })
