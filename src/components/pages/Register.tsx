@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RegisterBody, RegisterBodyType } from "@/schema/auth.schema";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { useState } from "react";
@@ -21,6 +25,28 @@ const Register = () => {
   useDocumentTitle("Sign Up");
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [password, setPassword] = useState("");
+
+  const passwordRules = [
+    { test: (pw: string) => pw.length >= 8, label: "At least 8 characters" },
+    {
+      test: (pw: string) => /[a-z]/.test(pw),
+      label: "Contains lowercase letter",
+    },
+    {
+      test: (pw: string) => /[A-Z]/.test(pw),
+      label: "Contains uppercase letter",
+    },
+    { test: (pw: string) => /[0-9]/.test(pw), label: "Contains a number" },
+    {
+      test: (pw: string) => /[\s!@#$%^&*(),.?":{}|<>]/.test(pw),
+      label: "Contains special character or space",
+    },
+    {
+      test: (pw: string) => pw.trim() === pw,
+      label: "No leading or trailing spaces",
+    },
+  ];
 
   const form = useForm<RegisterBodyType>({
     resolver: zodResolver(RegisterBody),
@@ -30,6 +56,10 @@ const Register = () => {
       confirmPassword: "",
     },
   });
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+  };
 
   function onSubmit(values: RegisterBodyType) {
     console.log(values);
@@ -77,12 +107,36 @@ const Register = () => {
                         placeholder="Password"
                         type={showPassword ? "text" : "password"}
                         {...field}
+                        onChange={(e) => {
+                          field.onChange(e); // react-hook-form handler
+                          handlePasswordChange(e.target.value); // update UI feedback
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              <ul className="text-sm">
+                {passwordRules.map((rule, index) => (
+                  <li
+                    key={index}
+                    style={{
+                      color: rule.test(password) ? "green" : "red",
+                    }}
+                    className="flex dark:text-black"
+                  >
+                    {rule.test(password) ? (
+                      <CheckIcon className="h-4 w-4 mr-2" />
+                    ) : (
+                      <XMarkIcon className="h-4 w-4 mr-2" />
+                    )}
+                    {rule.label}
+                  </li>
+                ))}
+              </ul>
+
               <FormField
                 control={form.control}
                 name="confirmPassword"
