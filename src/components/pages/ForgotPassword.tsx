@@ -1,30 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
+import {
+  ForgotPasswordBody,
+  ForgotPasswordBodyType,
+} from "@/schema/auth.schema";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+export const ForgotPassword = () => {
   useDocumentTitle("Sign In");
   const nav = useNavigate();
 
   const {
-    register: login,
+    register: forgotPassword,
     handleSubmit,
     setError,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<LoginBodyType>({
-    resolver: zodResolver(LoginBody),
+  } = useForm<ForgotPasswordBodyType>({
+    resolver: zodResolver(ForgotPasswordBody),
   });
 
-  const onSubmit: SubmitHandler<LoginBodyType> = async () => {
+  const onSubmit: SubmitHandler<ForgotPasswordBodyType> = async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      nav("/reset-password");
+      console.log(data);
       reset();
     } catch (error) {
       setError("root", { message: "Error" });
@@ -45,7 +50,7 @@ const Login = () => {
       </div>
       <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-md rounded-lg ">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
-          SIGN IN
+          FORGOT PASSWORD
         </h2>
         <div className="space-y-3">
           <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
@@ -57,9 +62,8 @@ const Login = () => {
                 Email
               </Label>
               <Input
-                {...login("email")}
+                {...forgotPassword("email")}
                 id="email"
-                type="email"
                 className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
                 placeholder="Enter your email"
               />
@@ -68,34 +72,6 @@ const Login = () => {
                   {errors.email.message}
                 </div>
               )}
-            </div>
-
-            <div>
-              <Label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </Label>
-              <Input
-                {...login("password")}
-                id="password"
-                type="password"
-                className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
-                placeholder="Enter your password"
-              />
-              {errors.password && (
-                <div className="text-red-500">{errors.password.message}</div>
-              )}
-            </div>
-
-            <div
-              className=" justify-end text-sm cursor-pointer text-blue-500 bg-gradient-to-r from-cyan-500 to-blue-500 inline-block text-transparent bg-clip-text"
-              onClick={() => {
-                nav("/forgot-password");
-              }}
-            >
-              Forgot password?{" "}
             </div>
 
             <div>
@@ -127,27 +103,17 @@ const Login = () => {
               ) : (
                 <>
                   <Button className=" w-full p-6 dark:bg-black dark:text-white dark:hover:bg-zinc-500">
-                    Sign In
+                    Send
                   </Button>
                 </>
               )}
+              {errors.root && (
+                <div className=" mt-0 text-red-500 ">{errors.root.message}</div>
+              )}
             </div>
           </form>
-          <p className="text-center dark:text-black">
-            Not a member? {""}
-            <a
-              className="cursor-pointer bg-gradient-to-r from-cyan-500 to-blue-500 inline-block text-transparent bg-clip-text"
-              onClick={() => {
-                nav("/register");
-              }}
-            >
-              Create an account{" "}
-            </a>
-          </p>
         </div>
       </div>
     </div>
   );
 };
-
-export default Login;

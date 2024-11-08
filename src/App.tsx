@@ -12,6 +12,8 @@ import "./App.css";
 import { PostDetail } from "./components/pages/PostDetail";
 import { UserProfile } from "./components/pages/UserProfile";
 import ConfirmEmail from "@/components/pages/ConfirmEmail";
+import { ResetPassword } from "./components/pages/ResetPassword";
+import { ForgotPassword } from "./components/pages/ForgotPassword";
 
 function App() {
   const router = createBrowserRouter([
@@ -26,6 +28,14 @@ function App() {
     {
       path: "/confirm",
       element: <ConfirmEmail />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
     },
     {
       element: <UserRoute />,
