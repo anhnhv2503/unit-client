@@ -1,30 +1,45 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
+import { ResetPasswordBody, ResetPasswordBodyType } from "@/schema/auth.schema";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { useState } from "react";
 
-const Login = () => {
+export const ResetPassword = () => {
   useDocumentTitle("Sign In");
   const nav = useNavigate();
 
+  const [otpValue, setOtpValue] = useState<string>("");
+
   const {
-    register: login,
+    register: resetPassword,
     handleSubmit,
     setError,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<LoginBodyType>({
-    resolver: zodResolver(LoginBody),
+  } = useForm<ResetPasswordBodyType>({
+    resolver: zodResolver(ResetPasswordBody),
   });
 
-  const onSubmit: SubmitHandler<LoginBodyType> = async () => {
+  const handleOtpChange = (value: string) => {
+    setOtpValue(value); // Capture OTP input
+  };
+
+  const onSubmit: SubmitHandler<ResetPasswordBodyType> = async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Form Data:", { ...data, pin: otpValue });
+      setOtpValue("");
       reset();
     } catch (error) {
       setError("root", { message: "Error" });
@@ -45,29 +60,26 @@ const Login = () => {
       </div>
       <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-md rounded-lg ">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
-          SIGN IN
+          RESET PASSWORD
         </h2>
         <div className="space-y-3">
           <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <Label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+            <div className="text-black flex justify-center">
+              <InputOTP
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                onChange={handleOtpChange}
+                value={otpValue} //
               >
-                Email
-              </Label>
-              <Input
-                {...login("email")}
-                id="email"
-                type="email"
-                className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <div className=" mt-0 text-red-500 ">
-                  {errors.email.message}
-                </div>
-              )}
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
             </div>
 
             <div>
@@ -78,24 +90,38 @@ const Login = () => {
                 Password
               </Label>
               <Input
-                {...login("password")}
+                {...resetPassword("password")}
                 id="password"
                 type="password"
                 className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
                 placeholder="Enter your password"
               />
               {errors.password && (
-                <div className="text-red-500">{errors.password.message}</div>
+                <div className=" mt-0 text-red-500 ">
+                  {errors.password.message}
+                </div>
               )}
             </div>
 
-            <div
-              className=" justify-end text-sm cursor-pointer text-blue-500 bg-gradient-to-r from-cyan-500 to-blue-500 inline-block text-transparent bg-clip-text"
-              onClick={() => {
-                nav("/forgot-password");
-              }}
-            >
-              Forgot password?{" "}
+            <div>
+              <Label
+                htmlFor="confirm-password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </Label>
+              <Input
+                {...resetPassword("confirmPassword")}
+                id="confirm-password"
+                type="password"
+                className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
+                placeholder="Enter your confirm-password"
+              />
+              {errors.confirmPassword && (
+                <div className="text-red-500">
+                  {errors.confirmPassword.message}
+                </div>
+              )}
             </div>
 
             <div>
@@ -127,27 +153,14 @@ const Login = () => {
               ) : (
                 <>
                   <Button className=" w-full p-6 dark:bg-black dark:text-white dark:hover:bg-zinc-500">
-                    Sign In
+                    Reset
                   </Button>
                 </>
               )}
             </div>
           </form>
-          <p className="text-center dark:text-black">
-            Not a member? {""}
-            <a
-              className="cursor-pointer bg-gradient-to-r from-cyan-500 to-blue-500 inline-block text-transparent bg-clip-text"
-              onClick={() => {
-                nav("/register");
-              }}
-            >
-              Create an account{" "}
-            </a>
-          </p>
         </div>
       </div>
     </div>
   );
 };
-
-export default Login;
