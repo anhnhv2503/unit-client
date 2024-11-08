@@ -63,6 +63,7 @@ const Register = () => {
 
   function onSubmit(values: RegisterBodyType) {
     console.log(values);
+    nav(`/confirm?email=${values.email}`);
   }
   return (
     <div
@@ -92,7 +93,7 @@ const Register = () => {
                     <FormControl>
                       <Input placeholder="Email" {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="dark:text-red-600" />
                   </FormItem>
                 )}
               />
@@ -113,7 +114,7 @@ const Register = () => {
                         }}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="dark:text-red-600" />
                   </FormItem>
                 )}
               />
@@ -152,19 +153,19 @@ const Register = () => {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="dark:text-red-600" />
                   </FormItem>
                 )}
               />
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="showPassword"
-                  className="w-4 h-4 data-[state=checked]:bg-zinc-900 data-[state=checked]:border-zinc-500"
+                  className="w-4 h-4 data-[state=checked]:bg-zinc-900 data-[state=checked]:border-zinc-500 dark:text-white "
                   onCheckedChange={() => setShowPassword(!showPassword)}
                 />
                 <label
                   htmlFor="showPassword"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-black"
                 >
                   Show Password
                 </label>

@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import "./App.css";
 import { PostDetail } from "./components/pages/PostDetail";
 import { UserProfile } from "./components/pages/UserProfile";
+import ConfirmEmail from "@/components/pages/ConfirmEmail";
 
 function App() {
   const router = createBrowserRouter([
@@ -21,6 +22,10 @@ function App() {
     {
       path: "/register",
       element: <Register />,
+    },
+    {
+      path: "/confirm",
+      element: <ConfirmEmail />,
     },
     {
       element: <UserRoute />,
