@@ -16,7 +16,7 @@ export const login = async (email: string, password: string) => {
 };
 
 export const sendResetPasswordEmail = async (email: string) => {
-  return axiosInstance.post("auth/send-reset-password-Code", { email: email });
+  return axiosInstance.get(`auth/send-reset-password-Code?email=${email}`);
 };
 
 export const resetPassword = async (
@@ -26,10 +26,10 @@ export const resetPassword = async (
   ConfirmPassword: string
 ) => {
   return axiosInstance.post("auth/reset-password", {
-    email,
-    code,
-    password,
-    ConfirmPassword,
+    ConfirmPassword: ConfirmPassword,
+    code: code,
+    email: email,
+    password: password,
   });
 };
 

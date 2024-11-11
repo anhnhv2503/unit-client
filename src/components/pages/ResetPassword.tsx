@@ -2,11 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ResetPasswordBody, ResetPasswordBodyType } from "@/schema/auth.schema";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   InputOTP,
   InputOTPGroup,
@@ -14,15 +18,22 @@ import {
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useState } from "react";
+import { resetPassword } from "@/services/authService";
+import toast, { Toaster } from "react-hot-toast";
 
 export const ResetPassword = () => {
   useDocumentTitle("Sign In");
   const nav = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const email = searchParams.get("email");
 
   const [otpValue, setOtpValue] = useState<string>("");
+  const [isToggle, setIsToggle] = useState(false);
+  const [isToggleConfirm, setIsToggleConfirm] = useState(false);
 
   const {
-    register: resetPassword,
+    register: resetPasswordData,
     handleSubmit,
     setError,
     reset,
@@ -37,11 +48,24 @@ export const ResetPassword = () => {
 
   const onSubmit: SubmitHandler<ResetPasswordBodyType> = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Form Data:", { ...data, pin: otpValue });
+      const response = await resetPassword(
+        email,
+        otpValue,
+        data.password,
+        data.confirmPassword
+      );
+      console.log(response);
+      toast.success("Password reset successful", {
+        duration: 1000,
+      });
+      setTimeout(() => {
+        nav("/login");
+      }, 1500);
       setOtpValue("");
       reset();
     } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
       setError("root", { message: "Error" });
     }
   };
@@ -50,6 +74,7 @@ export const ResetPassword = () => {
     <div
       className={`flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gradient-to-r from-cyan-500 to-blue-500 h-screen`}
     >
+      <Toaster />
       <div className="absolute top-4 left-4">
         <Button
           onClick={() => nav(-1)} // Navigate back
@@ -89,13 +114,30 @@ export const ResetPassword = () => {
               >
                 Password
               </Label>
-              <Input
-                {...resetPassword("password")}
-                id="password"
-                type="password"
-                className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <Input
+                  {...resetPasswordData("password")}
+                  id="password"
+                  type={isToggle ? "text" : "password"}
+                  className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
+                  placeholder="Enter your password"
+                />
+                {isToggle ? (
+                  <>
+                    <EyeIcon
+                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                      onClick={() => setIsToggle(!isToggle)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <EyeSlashIcon
+                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                      onClick={() => setIsToggle(!isToggle)}
+                    />
+                  </>
+                )}
+              </div>
               {errors.password && (
                 <div className=" mt-0 text-red-500 ">
                   {errors.password.message}
@@ -110,13 +152,30 @@ export const ResetPassword = () => {
               >
                 Confirm Password
               </Label>
-              <Input
-                {...resetPassword("confirmPassword")}
-                id="confirm-password"
-                type="password"
-                className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
-                placeholder="Enter your confirm-password"
-              />
+              <div className="relative">
+                <Input
+                  {...resetPasswordData("confirmPassword")}
+                  id="confirm-password"
+                  type={isToggleConfirm ? "text" : "password"}
+                  className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
+                  placeholder="Enter your confirm-password"
+                />
+                {isToggleConfirm ? (
+                  <>
+                    <EyeIcon
+                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                      onClick={() => setIsToggleConfirm(!isToggleConfirm)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <EyeSlashIcon
+                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                      onClick={() => setIsToggleConfirm(!isToggleConfirm)}
+                    />
+                  </>
+                )}
+              </div>
               {errors.confirmPassword && (
                 <div className="text-red-500">
                   {errors.confirmPassword.message}

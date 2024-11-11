@@ -5,11 +5,14 @@ import {
   ForgotPasswordBody,
   ForgotPasswordBodyType,
 } from "@/schema/auth.schema";
+import { sendResetPasswordEmail } from "@/services/authService";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { set } from "zod";
 
 export const ForgotPassword = () => {
   useDocumentTitle("Sign In");
@@ -27,12 +30,18 @@ export const ForgotPassword = () => {
 
   const onSubmit: SubmitHandler<ForgotPasswordBodyType> = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      nav("/reset-password");
       console.log(data);
+      const response = await sendResetPasswordEmail(data.email);
+      console.log(response);
+
+      toast.success("Password reset code sent successful");
+      setTimeout(() => {
+        nav(`/reset-password?email=${data.email}`);
+      }, 1000);
       reset();
     } catch (error) {
-      setError("root", { message: "Error" });
+      toast.error(error.response.data.Message);
+      console.log(error);
     }
   };
 
@@ -40,6 +49,7 @@ export const ForgotPassword = () => {
     <div
       className={`flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gradient-to-r from-cyan-500 to-blue-500 h-screen`}
     >
+      <Toaster />
       <div className="absolute top-4 left-4">
         <Button
           onClick={() => nav(-1)} // Navigate back

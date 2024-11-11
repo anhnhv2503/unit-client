@@ -3,17 +3,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
 import { login } from "@/services/authService";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { decodeToken } from "@/lib/utils";
+import { useState } from "react";
 
 const Login = () => {
   useDocumentTitle("Sign In");
   const nav = useNavigate();
+  const [isToggle, setIsToggle] = useState(false);
 
   const {
     register: loginData,
@@ -40,10 +46,12 @@ const Login = () => {
           "refreshToken",
           JSON.stringify(response.refreshToken)
         );
-        toast.success("Login successful");
+        toast.success("Login successful", {
+          duration: 1000,
+        });
         setTimeout(() => {
           nav("/");
-        }, 1000);
+        }, 1500);
         reset();
       }
     } catch (error) {
@@ -99,13 +107,31 @@ const Login = () => {
               >
                 Password
               </Label>
-              <Input
-                {...loginData("password")}
-                id="password"
-                type="password"
-                className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <Input
+                  {...loginData("password")}
+                  id="password"
+                  type={isToggle ? "text" : "password"}
+                  className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
+                  placeholder="Enter your password"
+                />
+
+                {isToggle ? (
+                  <>
+                    <EyeIcon
+                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                      onClick={() => setIsToggle(!isToggle)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <EyeSlashIcon
+                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                      onClick={() => setIsToggle(!isToggle)}
+                    />
+                  </>
+                )}
+              </div>
               {errors.password && (
                 <div className="text-red-500">{errors.password.message}</div>
               )}

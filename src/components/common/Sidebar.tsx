@@ -1,7 +1,6 @@
 import CreatePostModal from "@/components/common/CreatePostModal";
 import ModePopover from "@/components/common/ModePopover";
 import {
-  BellIcon,
   ChatBubbleOvalLeftEllipsisIcon,
   HomeIcon,
   MagnifyingGlassIcon,
