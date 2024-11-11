@@ -14,6 +14,7 @@ import { UserProfile } from "./components/pages/UserProfile";
 import ConfirmEmail from "@/components/pages/ConfirmEmail";
 import { ResetPassword } from "./components/pages/ResetPassword";
 import { ForgotPassword } from "./components/pages/ForgotPassword";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 function App() {
   const router = createBrowserRouter([
@@ -48,21 +49,27 @@ function App() {
           path: "/post/:id",
           element: <PostDetail />,
         },
-        {
-          path: "/user-profile/:id",
-          element: <UserProfile />,
-        },
+
         {
           path: "/search",
           element: <Search />,
         },
         {
-          path: "/notify",
-          element: <Notification />,
+          path: "/user-profile/:id",
+          element: <UserProfile />,
         },
         {
-          path: "/chat",
-          element: <Chat />,
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: "/notify",
+              element: <Notification />,
+            },
+            {
+              path: "/chat",
+              element: <Chat />,
+            },
+          ],
         },
       ],
     },

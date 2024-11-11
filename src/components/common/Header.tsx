@@ -8,16 +8,24 @@ import {
   DisclosureButton,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import bowLogo from "@/assets/header-logo/bow.png";
 import wobLogo from "@/assets/header-logo/wob.png";
+import { set } from "zod";
+
+const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
 const Header = () => {
   const nav = useNavigate();
   const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    setUserId(JSON.parse(localStorage.getItem("user_id")));
+  }, [userId]);
 
   const handleClick = () => {
     toast.promise(
@@ -78,7 +86,8 @@ const Header = () => {
           <div className="relative">
             <a
               onClick={() => {
-                handleScrollTop(), nav("/");
+                handleScrollTop();
+                nav("/");
               }}
               className="flex items-center gap-x-1 text-sm/6 font-semibold  dark:text-white text-black cursor-pointer"
             >
@@ -87,9 +96,18 @@ const Header = () => {
           </div>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button onClick={() => nav("/login")}>
-            Login <span aria-hidden="true">&rarr;</span>
-          </Button>
+          {userId ? (
+            <>
+              <img
+                src={fakeAvt}
+                alt="Profile picture of the second user"
+                className="w-10 h-10 rounded-full mr-2 no-nav cursor-pointer"
+                onClick={() => nav(`/user-profile/1`)}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </nav>
       <Dialog
@@ -115,7 +133,8 @@ const Header = () => {
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton
                     onClick={() => {
-                      nav("/"), setMobileMenuOpen(false);
+                      nav("/");
+                      setMobileMenuOpen(false);
                     }}
                     className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold dark:text-white text-black"
                   >
@@ -124,13 +143,27 @@ const Header = () => {
                 </Disclosure>
               </div>
               <div className="py-6">
-                <Button
-                  onClick={() => {
-                    nav("/login"), setMobileMenuOpen(false);
-                  }}
-                >
-                  Login <span aria-hidden="true">&rarr;</span>
-                </Button>
+                {/* {userId ? (
+                  <>
+                    <img
+                      src={fakeAvt}
+                      alt="Profile picture of the second user"
+                      className="w-10 h-10 rounded-full mr-2 no-nav cursor-pointer"
+                      onClick={() => nav(`/user-profile/1`)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => {
+                        nav("/login");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Login <span aria-hidden="true">&rarr;</span>
+                    </Button>
+                  </>
+                )} */}
               </div>
             </div>
             <div className="py-6">

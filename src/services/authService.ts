@@ -1,5 +1,13 @@
 import axiosInstance from "./axiosClient";
 
+export const getHeader = () => {
+  const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
+  return {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+};
+
 export const login = async (email: string, password: string) => {
   return axiosInstance.post("auth/SignIn", {
     email: email,
@@ -23,4 +31,14 @@ export const resetPassword = async (
     password,
     ConfirmPassword,
   });
+};
+
+export const logout = async () => {
+  return axiosInstance.post(
+    "auth/SignOut",
+    {},
+    {
+      headers: getHeader(),
+    }
+  );
 };

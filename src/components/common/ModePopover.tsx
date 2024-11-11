@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import { logout } from "@/services/authService";
 import {
   Bars3BottomLeftIcon,
   Cog6ToothIcon,
@@ -14,11 +15,39 @@ import {
   PowerIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 const ModePopover = () => {
   const { theme, setTheme } = useTheme();
+  const nav = useNavigate();
+
+  const accessToken = JSON.parse(localStorage.getItem("user_id"));
+
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+      console.log(response);
+      toast.success("Logout successful");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user_id");
+      nav("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Popover>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            zIndex: 10000,
+          },
+        }}
+      />
       <PopoverTrigger className="flex items-center justify-center">
         <Bars3BottomLeftIcon className="w-7 h-7" />
       </PopoverTrigger>
@@ -48,10 +77,24 @@ const ModePopover = () => {
               </div>
             </div>
             <div className="grid grid-cols-1 items-center gap-4">
-              <Button variant={"destructive"} className="dark:bg-red-500">
-                <PowerIcon className="w-5 h-5" />
-                Log Out
-              </Button>
+              {accessToken ? (
+                <>
+                  <Button
+                    variant={"destructive"}
+                    className="dark:bg-red-500"
+                    onClick={handleLogout}
+                  >
+                    <PowerIcon className="w-5 h-5" />
+                    Log Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={() => nav("/login")}>
+                    Login <span aria-hidden="true">&rarr;</span>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

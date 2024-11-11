@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { decodeToken } from "@/lib/utils";
 
 const Login = () => {
   useDocumentTitle("Sign In");
@@ -25,18 +27,27 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<LoginBodyType> = async (data) => {
     try {
+      console.log(data);
       const response = await login(data.email, data.password);
-      console.log(response.data);
-      // await new Promise((resolve) =>
-      //   setTimeout(async () => {
-      //     console.log(data);
-      //     // const response = await login(data.email, data.password);
-      //     resolve(console.log(response));
-      //   }, 1000)
-      // );
-      reset();
+      console.log(response);
+      if (response.accessToken) {
+        decodeToken(response.accessToken);
+        localStorage.setItem(
+          "accessToken",
+          JSON.stringify(response.accessToken)
+        );
+        localStorage.setItem(
+          "refreshToken",
+          JSON.stringify(response.refreshToken)
+        );
+        toast.success("Login successful");
+        setTimeout(() => {
+          nav("/");
+        }, 1000);
+        reset();
+      }
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.Message);
       setError("root", { message: "Error" });
     }
   };
@@ -45,6 +56,7 @@ const Login = () => {
     <div
       className={`flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gradient-to-r from-cyan-500 to-blue-500 h-screen`}
     >
+      <Toaster />
       <div className="absolute top-4 left-4">
         <Button
           onClick={() => nav(-1)} // Navigate back
