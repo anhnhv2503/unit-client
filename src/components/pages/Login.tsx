@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
+import { login } from "@/services/authService";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
@@ -13,7 +14,7 @@ const Login = () => {
   const nav = useNavigate();
 
   const {
-    register: login,
+    register: loginData,
     handleSubmit,
     setError,
     reset,
@@ -22,9 +23,17 @@ const Login = () => {
     resolver: zodResolver(LoginBody),
   });
 
-  const onSubmit: SubmitHandler<LoginBodyType> = async () => {
+  const onSubmit: SubmitHandler<LoginBodyType> = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await login(data.email, data.password);
+      console.log(response);
+      await new Promise((resolve) =>
+        setTimeout(async () => {
+          console.log(data);
+          // const response = await login(data.email, data.password);
+          resolve(console.log(response));
+        }, 1000)
+      );
       reset();
     } catch (error) {
       setError("root", { message: "Error" });
@@ -57,7 +66,7 @@ const Login = () => {
                 Email
               </Label>
               <Input
-                {...login("email")}
+                {...loginData("email")}
                 id="email"
                 type="email"
                 className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
@@ -78,7 +87,7 @@ const Login = () => {
                 Password
               </Label>
               <Input
-                {...login("password")}
+                {...loginData("password")}
                 id="password"
                 type="password"
                 className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
