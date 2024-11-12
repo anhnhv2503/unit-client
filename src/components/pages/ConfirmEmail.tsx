@@ -13,6 +13,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { confirmRegister } from "@/services/authService";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -39,8 +40,16 @@ const ConfirmEmail = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast.info(`Code: ${data.code}`);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      const response = await confirmRegister(emailParam!, data.code);
+      if (response.status === 200) {
+        toast.success("Your account has been confirmed. Please login.");
+      }
+      nav("/login");
+    } catch (error) {
+      toast.error("An error occurred. Please try again later.");
+    }
   }
 
   return (

@@ -1,3 +1,4 @@
+import SmallLoading from "@/components/common/loading/SmallLoading";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RegisterBody, RegisterBodyType } from "@/schema/auth.schema";
+import { register } from "@/services/authService";
 import {
   ArrowLeftIcon,
   CheckIcon,
@@ -26,6 +28,8 @@ const Register = () => {
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const passwordRules = [
     { test: (pw: string) => pw.length >= 8, label: "At least 8 characters" },
@@ -61,9 +65,22 @@ const Register = () => {
     setPassword(value);
   };
 
-  function onSubmit(values: RegisterBodyType) {
-    console.log(values);
-    nav(`/confirm?email=${values.email}`);
+  async function onSubmit(values: RegisterBodyType) {
+    setLoading(true);
+    try {
+      const response = await register(
+        values.email,
+        values.password,
+        values.confirmPassword
+      );
+
+      nav(`/confirm?email=${values.email}`);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.Message);
+      setLoading(false);
+    }
   }
   return (
     <div
@@ -71,7 +88,7 @@ const Register = () => {
     >
       <div className="absolute top-4 left-4">
         <Button
-          onClick={() => nav(-1)} // Navigate back
+          onClick={() => nav(-1)}
           className="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200"
         >
           <ArrowLeftIcon className="w-6 h-6" />
@@ -170,9 +187,19 @@ const Register = () => {
                   Show Password
                 </label>
               </div>
-              <Button className="w-full p-6 dark:bg-black dark:text-white dark:hover:bg-zinc-500">
-                Sign Up
-              </Button>
+              {error && (
+                <div className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-red-500 dark:text-red-500">
+                  <p>{error}</p>
+                </div>
+              )}
+
+              {loading ? (
+                <SmallLoading />
+              ) : (
+                <Button className="w-full p-6 dark:bg-black dark:text-white dark:hover:bg-zinc-500">
+                  Sign Up
+                </Button>
+              )}
             </form>
           </Form>
 
