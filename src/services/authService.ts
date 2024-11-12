@@ -43,17 +43,25 @@ export const logout = async () => {
   );
 };
 
-export const register = async (email:string, password:string, confirmPasword:string) => {
+export const register = async (
+  email: string,
+  password: string,
+  confirmPasword: string
+) => {
   return axiosInstance.post("auth/SignUp", {
     email: email,
     password: password,
     confirmPassword: confirmPasword,
   });
-}
+};
 
-export const confirmRegister = async (email:string, code:string) => {
+export const confirmRegister = async (email: string, code: string) => {
   return axiosInstance.post("auth/Confirm-Signup", {
     email: email,
     confirmCode: code,
   });
-}
+};
+
+export const resendConfirmRegister = async (email: string) => {
+  return axiosInstance.get(`auth/Resend-Confirmation-Code?email=${email}`);
+};

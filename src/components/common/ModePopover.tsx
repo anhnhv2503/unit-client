@@ -22,7 +22,7 @@ const ModePopover = () => {
   const { theme, setTheme } = useTheme();
   const nav = useNavigate();
 
-  const accessToken = JSON.parse(localStorage.getItem("user_id"));
+  const accessToken = JSON.parse(localStorage.getItem("user_id")!);
 
   const handleLogout = async () => {
     try {

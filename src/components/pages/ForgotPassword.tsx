@@ -12,7 +12,6 @@ import { useDocumentTitle } from "@uidotdev/usehooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { set } from "zod";
 
 export const ForgotPassword = () => {
   useDocumentTitle("Sign In");
@@ -21,7 +20,6 @@ export const ForgotPassword = () => {
   const {
     register: forgotPassword,
     handleSubmit,
-    setError,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordBodyType>({
@@ -40,7 +38,11 @@ export const ForgotPassword = () => {
       }, 1000);
       reset();
     } catch (error) {
-      toast.error(error.response.data.Message);
+      const errorMessage =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.response?.data?.Message || "An unknown error occurred";
+      toast.error(errorMessage);
+
       console.log(error);
     }
   };

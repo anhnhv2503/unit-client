@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const nav = useNavigate();
-  const user_id = JSON.parse(localStorage.getItem("user_id"));
+  const user_id = JSON.parse(localStorage.getItem("user_id")!);
   return (
     <div className="dark:bg-black bg-white dark:text-white text-black sm:w-16 w-full sm:h-screen h-16 fixed sm:left-0 bottom-0 flex sm:flex-col flex-row sm:justify-between items-center">
       <ul className="flex sm:flex-col flex-row sm:space-y-6 space-y-0 sm:space-x-0 space-x-6 sm:items-center items-center justify-center w-full sm:mt-auto sm:mb-auto">

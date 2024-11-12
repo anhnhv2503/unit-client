@@ -49,23 +49,26 @@ export const ResetPassword = () => {
   const onSubmit: SubmitHandler<ResetPasswordBodyType> = async (data) => {
     try {
       const response = await resetPassword(
-        email,
+        email!,
         otpValue,
         data.password,
         data.confirmPassword
       );
       console.log(response);
       toast.success("Password reset successful", {
-        duration: 1000,
+        duration: 500,
       });
       setTimeout(() => {
         nav("/login");
-      }, 1500);
+      }, 1000);
       setOtpValue("");
       reset();
     } catch (error) {
+      const errorMessage =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.response?.data?.message || "An unknown error occurred";
+      toast.error(errorMessage);
       console.log(error);
-      toast.error(error.response.data.message);
       setError("root", { message: "Error" });
     }
   };

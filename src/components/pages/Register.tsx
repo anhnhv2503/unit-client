@@ -68,23 +68,22 @@ const Register = () => {
   async function onSubmit(values: RegisterBodyType) {
     setLoading(true);
     try {
-      const response = await register(
-        values.email,
-        values.password,
-        values.confirmPassword
-      );
+      await register(values.email, values.password, values.confirmPassword);
 
       nav(`/confirm?email=${values.email}`);
       setLoading(false);
     } catch (error) {
       console.log(error);
-      setError(error.response.data.Message);
+      const errorMessage =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.response?.data?.Message || "An unknown error occurred";
+      setError(errorMessage);
       setLoading(false);
     }
   }
   return (
     <div
-      className={`flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gradient-to-r from-purple-500 to-pink-500 h-screen`}
+      className={`flex min-h-full max-h-screen flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gradient-to-r from-purple-500 to-pink-500 h-screen`}
     >
       <div className="absolute top-4 left-4">
         <Button
@@ -108,7 +107,11 @@ const Register = () => {
                   <FormItem>
                     <FormLabel className="dark:text-black">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Email" {...field} />
+                      <Input
+                        placeholder="Email"
+                        {...field}
+                        className="text-black"
+                      />
                     </FormControl>
                     <FormMessage className="dark:text-red-600" />
                   </FormItem>
@@ -122,6 +125,7 @@ const Register = () => {
                     <FormLabel className="dark:text-black">Password</FormLabel>
                     <FormControl>
                       <Input
+                        className="text-black"
                         placeholder="Password"
                         type={showPassword ? "text" : "password"}
                         {...field}
@@ -136,7 +140,7 @@ const Register = () => {
                 )}
               />
 
-              <ul className="text-sm">
+              <ul className="text-sm mt-0">
                 {passwordRules.map((rule, index) => (
                   <li
                     key={index}
@@ -165,6 +169,7 @@ const Register = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        className="text-black"
                         placeholder="Confirm Password"
                         type={showPassword ? "text" : "password"}
                         {...field}

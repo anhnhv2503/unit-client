@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { decodeToken } from "@/lib/utils";
 import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
 import { login } from "@/services/authService";
 import {
@@ -11,10 +10,11 @@ import {
 } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
-import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { decodeToken } from "@/lib/utils";
+import { useState } from "react";
 
 const Login = () => {
   useDocumentTitle("Sign In");
@@ -47,15 +47,24 @@ const Login = () => {
           JSON.stringify(response.refreshToken)
         );
         toast.success("Login successful", {
-          duration: 1000,
+          duration: 500,
         });
         setTimeout(() => {
           nav("/");
-        }, 1500);
+        }, 1000);
         reset();
       }
     } catch (error) {
-      toast.error(error.response.data.Message);
+      const errorMessage =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.response?.data?.Message || "An unknown error occurred";
+      if (errorMessage === "User is not confirmed.") {
+        setTimeout(() => {
+          nav(`/confirm?email=${data.email}`);
+        }, 500);
+      }
+
+      toast.error(errorMessage);
       setError("root", { message: "Error" });
     }
   };

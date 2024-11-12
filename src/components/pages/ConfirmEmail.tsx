@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -13,7 +12,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { confirmRegister } from "@/services/authService";
+import { confirmRegister, resendConfirmRegister } from "@/services/authService";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -43,14 +42,31 @@ const ConfirmEmail = () => {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       const response = await confirmRegister(emailParam!, data.code);
+      console.log(response);
       if (response.status === 200) {
-        toast.success("Your account has been confirmed. Please login.");
+        toast.success("Your account has been confirmed. Please login.", {
+          duration: 500,
+        });
       }
-      nav("/login");
+      setTimeout(() => {
+        nav("/login");
+      }, 1000);
     } catch (error) {
+      console.log(error);
       toast.error("An error occurred. Please try again later.");
     }
   }
+
+  const resendCode = async () => {
+    try {
+      const response = await resendConfirmRegister(emailParam!);
+      toast.success("Code has been sent to your email.");
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred. Please try again later.");
+    }
+  };
 
   return (
     <div
@@ -73,39 +89,42 @@ const ConfirmEmail = () => {
             Please check your email <strong>{emailParam}</strong> to confirm
             your account.
           </p>
-          <div className="w-full flex">
+          <div className="w-full">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="w-full space-y-6"
+                className="w-full space-y-6 text-center"
               >
                 <FormField
                   control={form.control}
                   name="code"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="text-center text-black">
                       <FormLabel>Your Code</FormLabel>
                       <FormControl>
-                        <InputOTP maxLength={6} {...field}>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
+                        <div className="flex justify-center">
+                          <InputOTP maxLength={6} {...field}>
+                            <InputOTPGroup>
+                              <InputOTPSlot index={0} />
+                              <InputOTPSlot index={1} />
+                              <InputOTPSlot index={2} />
+                              <InputOTPSlot index={3} />
+                              <InputOTPSlot index={4} />
+                              <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                          </InputOTP>
+                        </div>
                       </FormControl>
-                      <FormDescription>
-                        Please enter the code sent to your email.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                <Button type="submit">Submit</Button>
+                <div className="text-center space-x-5">
+                  <Button type="button" onClick={resendCode}>
+                    Resend code
+                  </Button>
+                  <Button type="submit">Submit</Button>
+                </div>
               </form>
             </Form>
           </div>

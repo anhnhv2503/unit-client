@@ -1,6 +1,7 @@
+import bowLogo from "@/assets/header-logo/bow.png";
+import wobLogo from "@/assets/header-logo/wob.png";
 import ModePopover from "@/components/common/ModePopover";
 import { useTheme } from "@/components/context/theme-provider";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogPanel,
@@ -11,9 +12,6 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import bowLogo from "@/assets/header-logo/bow.png";
-import wobLogo from "@/assets/header-logo/wob.png";
-import { set } from "zod";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -24,7 +22,7 @@ const Header = () => {
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
-    setUserId(JSON.parse(localStorage.getItem("user_id")));
+    setUserId(JSON.parse(localStorage.getItem("user_id")!));
   }, [userId]);
 
   const handleClick = () => {
