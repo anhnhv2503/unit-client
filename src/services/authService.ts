@@ -65,3 +65,36 @@ export const confirmRegister = async (email: string, code: string) => {
 export const resendConfirmRegister = async (email: string) => {
   return axiosInstance.get(`auth/Resend-Confirmation-Code?email=${email}`);
 };
+
+export const getUserProfile = async (user_id: string, isLogin: boolean) => {
+  if (isLogin) {
+    return axiosInstance.get(`user/p`, {
+      headers: getHeader(),
+    });
+  }
+  return axiosInstance.get(`user/p/${user_id}`, {
+    headers: getHeader(),
+  });
+};
+
+export const updateProfile = async (
+  username: string,
+  phoneNumber: string,
+  DOB: string,
+  bio: string,
+  isPrivate: boolean
+) => {
+  return axiosInstance.post(
+    "user",
+    {
+      UserName: username,
+      PhoneNumber: phoneNumber,
+      DateOfBirth: DOB,
+      Bio: bio,
+      Private: isPrivate,
+    },
+    {
+      headers: getHeader(),
+    }
+  );
+};

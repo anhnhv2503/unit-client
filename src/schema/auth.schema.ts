@@ -100,6 +100,18 @@ export const ResetPasswordBody = z
 
 export type ResetPasswordBodyType = z.TypeOf<typeof ResetPasswordBody>;
 
+//Use for User Profile form
+export const UserProfileBody = z
+  .object({
+    username: z.string().max(255),
+    phonenumber: z.string().max(10),
+    dateofbirth: z.string().max(100),
+    bio: z.string().max(255),
+  })
+  .strict();
+
+export type UserProfileBodyType = z.TypeOf<typeof UserProfileBody>;
+
 //
 export const SlideSessionBody = z.object({}).strict();
 

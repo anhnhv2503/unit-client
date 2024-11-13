@@ -5,11 +5,17 @@ import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
 import { Post } from "../common/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUserProfile } from "@/services/authService";
+import { EditProfile } from "../common/EditProfile";
 
 type UserProfileProps = {
   id: number;
   name: string;
-  username: string;
+  UserName: string;
+  Bio: string;
+  PhoneNumber: string;
+  DateOfBirth: string;
+  Private: boolean;
 };
 
 export const UserProfile = () => {
@@ -19,25 +25,31 @@ export const UserProfile = () => {
   const [user, setUser] = useState<UserProfileProps>({
     id: 0,
     name: "",
-    username: "",
+    UserName: "",
+    Bio: "",
+    PhoneNumber: "",
+    DateOfBirth: "",
+    Private: false,
   });
   const [isFollow, setIsFollow] = useState(false);
   const { ref } = useInView();
+  const isLogin = JSON.parse(localStorage.getItem("user_id")!) === id;
+
+  const getUserProfileData = async () => {
+    const response = await getUserProfile(id!, isLogin);
+    setUser(response);
+    console.log(response);
+  };
 
   useEffect(() => {
     axios
-      .get(`https://jsonplaceholder.typicode.com/posts?userId=${id}`)
+      .get(`https://jsonplaceholder.typicode.com/posts?userId=1`)
       .then((res) => {
         setData(res.data);
         setIsLoading(false);
       });
 
-    axios
-      .get(`https://jsonplaceholder.typicode.com/users?id=${id}`)
-      .then((res) => {
-        setUser(res.data[0]);
-        setIsLoading(false);
-      });
+    getUserProfileData();
   }, []);
 
   const handleFollowUser = () => {
@@ -56,37 +68,54 @@ export const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <div className="font-bold text-black dark:text-white text-2xl">
-                  {user.name}
+                  {/* {user.name} */}
                 </div>
-                <div className="text-gray-300 text-sm">{user.username}</div>
+                <div className="text-gray-300 text-sm">{user.UserName}</div>
+                <div className="text-gray-300 text-sm">{user.Bio}</div>
               </div>
               <Avatar className="w-24 h-24">
                 <AvatarImage
                   src="https://github.com/shadcn.png"
                   alt="@UserAvatar"
                 />
-                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback></AvatarFallback>
               </Avatar>
             </div>
-            {isFollow ? (
+            {isLogin ? (
               <>
-                {" "}
-                <div
-                  className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white"
-                  onClick={handleFollowUser}
-                >
-                  Following
+                <div>
+                  <EditProfile
+                    username={user.UserName}
+                    phonenumber={user.PhoneNumber}
+                    bio={user.Bio}
+                    dob={user.DateOfBirth}
+                    isprivate={user.Private}
+                  />
                 </div>
               </>
             ) : (
               <>
-                {" "}
-                <div
-                  className="mt-20 p-2 text-center bg-black text-white rounded-lg cursor-pointer dark:bg-white dark:text-black"
-                  onClick={handleFollowUser}
-                >
-                  Follow
-                </div>
+                {isFollow ? (
+                  <>
+                    {" "}
+                    <div
+                      className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white"
+                      onClick={handleFollowUser}
+                    >
+                      Following
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <div
+                      className="mt-20 p-2 text-center bg-black text-white rounded-lg cursor-pointer dark:bg-white dark:text-black"
+                      onClick={handleFollowUser}
+                    >
+                      Follow
+                    </div>
+                  </>
+                )}
               </>
             )}
           </div>

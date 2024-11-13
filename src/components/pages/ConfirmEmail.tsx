@@ -43,17 +43,17 @@ const ConfirmEmail = () => {
     try {
       const response = await confirmRegister(emailParam!, data.code);
       console.log(response);
-      if (response.status === 200) {
-        toast.success("Your account has been confirmed. Please login.", {
-          duration: 500,
-        });
-      }
+      toast.success("Your account has been confirmed. Please login.", {
+        duration: 1000,
+      });
       setTimeout(() => {
         nav("/login");
       }, 1000);
     } catch (error) {
-      console.log(error);
-      toast.error("An error occurred. Please try again later.");
+      const errorMessage =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.response?.data?.Message || "An unknown error occurred";
+      toast.error(errorMessage, { duration: 1000 });
     }
   }
 

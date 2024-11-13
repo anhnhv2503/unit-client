@@ -15,6 +15,7 @@ import {
   PowerIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +24,38 @@ const ModePopover = () => {
   const nav = useNavigate();
 
   const accessToken = JSON.parse(localStorage.getItem("user_id")!);
+
+  useEffect(() => {
+    // Set a flag in sessionStorage indicating the session is active
+    sessionStorage.setItem("isActiveSession", "true");
+
+    const handleUnload = () => {
+      if (!sessionStorage.getItem("isActiveSession")) {
+        // Only remove items from localStorage if session flag is missing (e.g., tab close)
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user_id");
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      // If the document becomes hidden (e.g., user navigates away), remove session flag
+      if (document.visibilityState === "hidden") {
+        sessionStorage.removeItem("isActiveSession");
+      } else {
+        // If they return, reset the session flag
+        sessionStorage.setItem("isActiveSession", "true");
+      }
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
