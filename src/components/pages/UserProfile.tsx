@@ -1,16 +1,16 @@
+import EditProfile from "@/components/common/EditProfile";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { getUserProfile } from "@/services/authService";
 import { PostProps } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
 import { Post } from "../common/Post";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUserProfile } from "@/services/authService";
-import { EditProfile } from "../common/EditProfile";
 
 type UserProfileProps = {
-  id: number;
-  name: string;
+  UserId: string;
   UserName: string;
   Bio: string;
   PhoneNumber: string;
@@ -23,8 +23,7 @@ export const UserProfile = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserProfileProps>({
-    id: 0,
-    name: "",
+    UserId: "",
     UserName: "",
     Bio: "",
     PhoneNumber: "",
@@ -34,11 +33,26 @@ export const UserProfile = () => {
   const [isFollow, setIsFollow] = useState(false);
   const { ref } = useInView();
   const isLogin = JSON.parse(localStorage.getItem("user_id")!) === id;
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const getUserProfileData = async () => {
-    const response = await getUserProfile(id!, isLogin);
-    setUser(response);
-    console.log(response);
+  const openModal = () => {
+    if (user.UserId) {
+      setModalOpen(true);
+    } else {
+      console.log("User data is not yet loaded.");
+    }
+  };
+  const closeModal = () => setModalOpen(false);
+
+  const handleSave = (data: {
+    UserId: string;
+    UserName: string;
+    Bio: string;
+    PhoneNumber: string;
+    DateOfBirth: string;
+    Private: boolean;
+  }) => {
+    setUser(data);
   };
 
   useEffect(() => {
@@ -49,8 +63,12 @@ export const UserProfile = () => {
         setIsLoading(false);
       });
 
+    const getUserProfileData = async () => {
+      const response = await getUserProfile(id!, isLogin);
+      setUser(response);
+    };
     getUserProfileData();
-  }, []);
+  }, [id]);
 
   const handleFollowUser = () => {
     setIsFollow(!isFollow);
@@ -70,7 +88,9 @@ export const UserProfile = () => {
                 <div className="font-bold text-black dark:text-white text-2xl">
                   {/* {user.name} */}
                 </div>
-                <div className="text-gray-300 text-sm">{user.UserName}</div>
+                <div className="text-black dark:text-white text-sm">
+                  {user.UserName}
+                </div>
                 <div className="text-gray-300 text-sm">{user.Bio}</div>
               </div>
               <Avatar className="w-24 h-24">
@@ -84,13 +104,15 @@ export const UserProfile = () => {
             {isLogin ? (
               <>
                 <div>
-                  <EditProfile
-                    username={user.UserName}
-                    phonenumber={user.PhoneNumber}
-                    bio={user.Bio}
-                    dob={user.DateOfBirth}
-                    isprivate={user.Private}
-                  />
+                  <Button onClick={openModal}>Edit Profile</Button>
+                  {isModalOpen && (
+                    <EditProfile
+                      isOpen={isModalOpen}
+                      onClose={closeModal}
+                      onSave={handleSave}
+                      initialData={user}
+                    />
+                  )}
                 </div>
               </>
             ) : (
@@ -136,7 +158,7 @@ export const UserProfile = () => {
                     cy="12"
                     r="10"
                     stroke="currentColor"
-                    stroke-width="4"
+                    strokeWidth="4"
                   ></circle>
                   <path
                     className="opacity-75"

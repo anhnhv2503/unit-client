@@ -1,168 +1,185 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "../ui/switch";
-import ImageUpload from "./ImageUpload";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useDocumentTitle } from "@uidotdev/usehooks";
-// import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Switch } from "@/components/ui/switch";
 import { UserProfileBody, UserProfileBodyType } from "@/schema/auth.schema";
-import { useState } from "react";
-import { updateProfile } from "@/services/authService";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { Dialog, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { Fragment, useState } from "react";
+import { useForm } from "react-hook-form";
+import ImageUpload from "./ImageUpload";
 
-interface EditProfileProps {
-  username: string;
-  bio: string;
-  phonenumber: string;
-  dob: string;
-  isprivate: boolean;
+interface EditProfileModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (profileData: UserProfileProps) => void;
+  initialData: UserProfileProps;
 }
 
-export const EditProfile = ({
-  username,
-  bio,
-  phonenumber,
-  dob,
-  isprivate,
-}: EditProfileProps) => {
-  useDocumentTitle("Sign In");
-  //   const nav = useNavigate();
-  const [isOn, setIsOn] = useState(isprivate ? isprivate : false);
-  console.log(username, bio, phonenumber, dob, isprivate);
+type UserProfileProps = {
+  UserId: string;
+  UserName: string;
+  Bio: string;
+  PhoneNumber: string;
+  DateOfBirth: string;
+  Private: boolean;
+};
 
+const EditProfile: React.FC<EditProfileModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  initialData,
+}) => {
+  const [profileData, setProfileData] = useState<UserProfileProps>(initialData);
   const handleToggle = (checked: boolean) => {
-    setIsOn(checked);
+    setProfileData({ ...profileData, Private: checked });
   };
 
-  const {
-    register: userProfileData,
-    handleSubmit,
-    setError,
-    reset,
-  } = useForm<UserProfileBodyType>({
-    defaultValues: {
-      username: "username",
-      bio: bio,
-      phonenumber: phonenumber,
-      dateofbirth: dob,
-    },
-    resolver: zodResolver(UserProfileBody),
-  });
+  const { register: userProfileData, handleSubmit } =
+    useForm<UserProfileBodyType>({
+      resolver: zodResolver(UserProfileBody),
+      defaultValues: {
+        username: profileData.UserName,
+        bio: profileData.Bio,
+        phonenumber: profileData.PhoneNumber,
+        dateofbirth: profileData.DateOfBirth,
+      },
+    });
 
-  const onSubmit: SubmitHandler<UserProfileBodyType> = async (data) => {
-    let date;
-    if (data.dateofbirth) {
-      date = new Date(data.dateofbirth).toISOString();
-    }
-    try {
-      console.log(date!, isOn);
-      const response = await updateProfile(
-        data.username,
-        data.phonenumber,
-        date!,
-        data.bio,
-        isOn
-      );
-      toast.success("Profile updated successfully", {
-        duration: 500,
-      });
-      console.log(response);
-      reset();
-    } catch (error) {
-      const errorMessage =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (error as any)?.response?.data?.Message || "An unknown error occurred";
-      console.log(error);
-      toast.error(errorMessage);
-      setError("root", { message: "Error" });
-    }
-  };
-
+  function onSubmit(values: UserProfileBodyType) {
+    console.log(values);
+  }
   return (
-    <Dialog>
-      <DialogTrigger className="w-full">
-        <div className="mt-20 p-2 text-center rounded-lg border cursor-pointer dark:text-white dark:border-white">
-          Edit Profile
-        </div>
-      </DialogTrigger>
+    <Transition appear show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={onClose}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
 
-      <DialogContent className="sm:max-w-[425px] w-9/12">
-        <DialogHeader>
-          <DialogTitle className="text-center dark:text-white text-black">
-            New Post
-          </DialogTitle>
-        </DialogHeader>
-        <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex justify-between items-center">
-            <div>
-              <Label htmlFor="name" className="block text-lg font-medium ">
-                Name
-              </Label>
-              <Input
-                {...userProfileData("username")}
-                id="name"
-                type="text"
-                className="w-full mt-1 p-6 input border-none "
-                placeholder="Your name"
-              />
-            </div>
-            <ImageUpload />
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Edit Profile
+                </Dialog.Title>
+                <button
+                  onClick={onClose}
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+
+                <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <Label
+                        htmlFor="name"
+                        className="block text-lg font-medium dark:text-black"
+                      >
+                        Name
+                      </Label>
+                      <Input
+                        {...userProfileData("username")}
+                        id="name"
+                        type="text"
+                        className="w-full mt-1 p-6 input border-none dark:text-black"
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <ImageUpload />
+                  </div>
+                  <div className=" items-center">
+                    <Label
+                      htmlFor="bio"
+                      className="block text-lg font-medium dark:text-black"
+                    >
+                      Bio
+                    </Label>
+                    <Input
+                      {...userProfileData("bio")}
+                      id="bio"
+                      type="text"
+                      className="w-full mt-1 p-6 input border-none dark:text-black"
+                      placeholder="Write bio"
+                    />
+                  </div>
+                  <div className=" items-center">
+                    <Label
+                      htmlFor="phone"
+                      className="block text-lg font-medium dark:text-black"
+                    >
+                      PhoneNumber
+                    </Label>
+                    <Input
+                      {...userProfileData("phonenumber")}
+                      id="phone"
+                      type="text"
+                      className="w-full mt-1 p-6 input border-none dark:text-black"
+                      placeholder="Input phone"
+                    />
+                  </div>
+                  <div className=" items-center">
+                    <Label
+                      htmlFor="dob"
+                      className="block text-lg font-medium dark:text-black"
+                    >
+                      DateOfBirth
+                    </Label>
+                    <Input
+                      {...userProfileData("dateofbirth")}
+                      id="dob"
+                      type="Date"
+                      className="w-full mt-1 p-6 input border-none dark:text-black"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Label
+                      htmlFor="bio"
+                      className="block text-lg font-medium dark:text-black"
+                    >
+                      Private Profile
+                    </Label>
+                    <Switch
+                      checked={profileData.Private}
+                      onCheckedChange={handleToggle}
+                      className="data-[state=checked]:bg-gray-300 data-[state=unchecked]:bg-zinc-800 dark:data-[state=checked]:bg-gray-300 dark:data-[state=unchecked]:bg-zinc-500"
+                    />
+                  </div>
+                  <div className="w-full flex justify-center">
+                    <Button className="w-full mt-7 dark:bg-black dark:text-white">
+                      Done
+                    </Button>
+                  </div>
+                </form>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
-          <div className=" items-center">
-            <Label htmlFor="bio" className="block text-lg font-medium">
-              Bio
-            </Label>
-            <Input
-              {...userProfileData("bio")}
-              id="bio"
-              type="text"
-              className="w-full mt-1 p-6 input border-none "
-              placeholder="Write bio"
-            />
-          </div>
-          <div className=" items-center">
-            <Label htmlFor="phone" className="block text-lg font-medium">
-              PhoneNumber
-            </Label>
-            <Input
-              {...userProfileData("phonenumber")}
-              id="phone"
-              type="text"
-              className="w-full mt-1 p-6 input border-none "
-              placeholder="Input phone"
-            />
-          </div>
-          <div className=" items-center">
-            <Label htmlFor="dob" className="block text-lg font-medium">
-              DateOfBirth
-            </Label>
-            <Input
-              {...userProfileData("dateofbirth")}
-              id="dob"
-              type="Date"
-              className="w-full mt-1 p-6 input border-none "
-            />
-          </div>
-          <div className="flex justify-between items-center">
-            <Label htmlFor="bio" className="block text-lg font-medium">
-              Private Profile
-            </Label>
-            <Switch checked={isOn} onCheckedChange={handleToggle} />
-          </div>
-          <div className="w-full flex justify-center">
-            <Button className="w-full mt-7">Done</Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </Dialog>
+    </Transition>
   );
 };
+
+export default EditProfile;
