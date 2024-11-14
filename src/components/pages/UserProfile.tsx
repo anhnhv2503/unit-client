@@ -2,12 +2,9 @@ import EditProfile from "@/components/common/EditProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getUserProfile } from "@/services/authService";
-import { PostProps } from "@/types";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
-import { Post } from "../common/Post";
 
 type UserProfileProps = {
   UserId: string;
@@ -56,16 +53,10 @@ export const UserProfile = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/posts?userId=1`)
-      .then((res) => {
-        setData(res.data);
-        setIsLoading(false);
-      });
-
     const getUserProfileData = async () => {
       const response = await getUserProfile(id!, isLogin);
-      setUser(response);
+      setUser(response.data);
+      console.log(response);
     };
     getUserProfileData();
   }, [id]);
@@ -74,9 +65,9 @@ export const UserProfile = () => {
     setIsFollow(!isFollow);
   };
 
-  const content = data?.map((posts: PostProps) => (
-    <Post key={posts.id} post={posts} innerRef={ref} />
-  ));
+  // const content = data?.map((posts: PostProps, index) => (
+  //   <Post key={index} post={posts} innerRef={ref} />
+  // ));
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
@@ -85,9 +76,7 @@ export const UserProfile = () => {
           <div className="bg-white p-4 rounded-lg border dark:bg-zinc-800">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-bold text-black dark:text-white text-2xl">
-                  {/* {user.name} */}
-                </div>
+                <div className="font-bold text-black dark:text-white text-2xl"></div>
                 <div className="text-black dark:text-white text-sm">
                   {user.UserName}
                 </div>
@@ -169,7 +158,7 @@ export const UserProfile = () => {
               </div>
             </>
           ) : (
-            <>{content}</>
+            <></>
           )}
         </div>
       </div>

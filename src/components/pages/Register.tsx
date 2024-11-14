@@ -87,7 +87,7 @@ const Register = () => {
     >
       <div className="absolute top-4 left-4">
         <Button
-          onClick={() => nav(-1)}
+          onClick={() => nav("/login")}
           className="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200"
         >
           <ArrowLeftIcon className="w-6 h-6" />

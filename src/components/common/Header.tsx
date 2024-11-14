@@ -9,7 +9,8 @@ import {
   DisclosureButton,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -19,11 +20,8 @@ const Header = () => {
   const nav = useNavigate();
   const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userId, setUserId] = useState("");
 
-  useEffect(() => {
-    setUserId(JSON.parse(localStorage.getItem("user_id")!));
-  }, [userId]);
+  const currentUser = JSON.parse(localStorage.getItem("user_id")!);
 
   const handleClick = () => {
     toast.promise(
@@ -94,13 +92,13 @@ const Header = () => {
           </div>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {userId ? (
+          {currentUser ? (
             <>
               <img
                 src={fakeAvt}
                 alt="Profile picture of the second user"
                 className="w-10 h-10 rounded-full mr-2 no-nav cursor-pointer"
-                onClick={() => nav(`/user-profile/1`)}
+                onClick={() => nav(`/user-profile/${currentUser}`)}
               />
             </>
           ) : (
@@ -140,29 +138,7 @@ const Header = () => {
                   </DisclosureButton>
                 </Disclosure>
               </div>
-              <div className="py-6">
-                {/* {userId ? (
-                  <>
-                    <img
-                      src={fakeAvt}
-                      alt="Profile picture of the second user"
-                      className="w-10 h-10 rounded-full mr-2 no-nav cursor-pointer"
-                      onClick={() => nav(`/user-profile/1`)}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      onClick={() => {
-                        nav("/login");
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      Login <span aria-hidden="true">&rarr;</span>
-                    </Button>
-                  </>
-                )} */}
-              </div>
+              <div className="py-6"></div>
             </div>
             <div className="py-6">
               <ModePopover />

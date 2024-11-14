@@ -16,8 +16,8 @@ import {
   SunIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const ModePopover = () => {
   const { theme, setTheme } = useTheme();
@@ -61,11 +61,11 @@ const ModePopover = () => {
     try {
       const response = await logout();
       console.log(response);
-      toast.success("Logout successful");
+      toast.success("Logout successful", { duration: 1000 });
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user_id");
-      nav("/");
+      nav("/login");
     } catch (error) {
       console.log(error);
     }
@@ -73,14 +73,6 @@ const ModePopover = () => {
 
   return (
     <Popover>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            zIndex: 10000,
-          },
-        }}
-      />
       <PopoverTrigger className="flex items-center justify-center">
         <Bars3BottomLeftIcon className="w-7 h-7" />
       </PopoverTrigger>

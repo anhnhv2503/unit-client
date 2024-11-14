@@ -1,5 +1,5 @@
 import ImagePreview from "@/components/common/ImagePreview";
-import { PostProp } from "@/types";
+import { MediaItem, PostProp } from "@/types";
 import { HeartIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { FC, MouseEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,15 +7,6 @@ import { toast } from "sonner";
 import Comment from "./Comment";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
-
-const fakeImages = [
-  "https://images.pexels.com/photos/19827916/pexels-photo-19827916/free-photo-of-beach.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/13082851/pexels-photo-13082851.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  "https://images.pexels.com/photos/15894618/pexels-photo-15894618/free-photo-of-green-rocky-mountain-and-dry-yellow-field.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  "https://images.pexels.com/photos/27054240/pexels-photo-27054240/free-photo-of-balconies-over-street-pavement-with-large-lush-flower-plants.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/26550066/pexels-photo-26550066/free-photo-of-da-nang-city-name-on-beach.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/18591653/pexels-photo-18591653/free-photo-of-waves-splashing-on-seashore-on-sunset.jpeg?auto=compress&cs=tinysrgb&w=600",
-];
 
 export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const likeRef = useRef(0);
@@ -25,6 +16,13 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
   const nav = useNavigate();
+
+  const processMedia = (media: string[]): MediaItem[] => {
+    return media.map((url) => ({
+      url,
+      type: url.endsWith(".mp4") || url.endsWith(".mov") ? "video" : "image",
+    }));
+  };
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -97,7 +95,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   return (
     <div
       className="max-w-2xl mt-3 rounded-3xl"
-      key={post.id}
+      key={post.postId}
       ref={innerRef}
       {...props}
     >
@@ -107,7 +105,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
       >
         <div className="flex items-center mb-2 ">
           <img
-            src={fakeAvt}
+            src={post.profilePicture || fakeAvt}
             alt="Profile picture of the second user"
             className="w-10 h-10 rounded-full mr-2 no-nav"
           />
@@ -118,13 +116,13 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
             }}
           >
             <div className="font-semibold dark:text-white text-black">
-              User {post.id}
+              {post.userName}
             </div>
             <div className="text-gray-500 text-sm dark:text-white">1d</div>
           </div>
         </div>
         <div className="mb-2 dark:text-white text-black">
-          <p>{post.title}</p>
+          <p>{post.content}</p>
         </div>
         <div
           className="flex overflow-x-auto space-x-2 no-scrollbar cursor-grab no-nav"
@@ -134,16 +132,29 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           onMouseUp={handleMouseUpOrLeave}
           onMouseLeave={handleMouseUpOrLeave}
         >
-          {fakeImages.map((image, index) => (
-            <img
-              key={index}
-              src={image}
-              alt={`Image ${index + 1}`}
-              className={`${
-                fakeImages.length > 1 ? "w-48" : "w-full"
-              } rounded `}
-              onClick={() => handleImageClick(fakeImages)}
-            />
+          {processMedia(post.media).map((media, index) => (
+            <div className="" key={index}>
+              {media.type === "image" ? (
+                <img
+                  key={index}
+                  src={media.url}
+                  alt={`Image ${index + 1}`}
+                  className={`${
+                    post.media.length > 1 ? "w-64" : "w-full"
+                  } rounded `}
+                  onClick={() => handleImageClick(post.media)}
+                />
+              ) : (
+                <video
+                  key={index}
+                  src={media.url}
+                  className={`${
+                    post.media.length > 1 ? "w-48" : "w-full"
+                  } rounded `}
+                  onClick={() => handleImageClick(post.media)}
+                />
+              )}
+            </div>
           ))}
         </div>
         <div className="flex items-center mt-3 p-2 text-gray-500 dark:text-gray-200 text-sm">

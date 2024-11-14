@@ -1,13 +1,16 @@
+import SmallLoading from "@/components/common/loading/SmallLoading";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { createPost } from "@/services/postService";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ChangeEvent, MouseEvent, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -25,6 +28,9 @@ const CreatePostModal = ({
     { url: string; type: string }[]
   >([]);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [content, setContent] = useState<string>("");
+  const [images, setImages] = useState<File[]>([]);
+  const [isUpload, setIsUpload] = useState<boolean>(false);
 
   const MAX_MEDIA_COUNT = 4;
 
@@ -60,6 +66,7 @@ const CreatePostModal = ({
 
   const handleMediaChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
+    setImages(files);
     if (previewMedia.length > MAX_MEDIA_COUNT) {
       toast.info(`You can only upload ${MAX_MEDIA_COUNT} files at a time.`);
       return;
@@ -93,6 +100,29 @@ const CreatePostModal = ({
     setPreviewMedia((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleCreatePost = async () => {
+    const formData = new FormData();
+    formData.append("content", content);
+    images.forEach((image) => {
+      formData.append("media", image);
+    });
+
+    try {
+      const res = await createPost(formData);
+      if (res) {
+        toast.success("Posted");
+        setContent("");
+        setImages([]);
+        setPreviewMedia([]);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -112,6 +142,7 @@ const CreatePostModal = ({
           <DialogTitle className="text-center dark:text-white text-black">
             New Post
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="">
           <div className="flex items-center mb-2 ">
@@ -130,8 +161,9 @@ const CreatePostModal = ({
             <Textarea
               placeholder="How are you feeling today?"
               className="w-full border border-none outline outline-none"
-              contentEditable
               onPaste={handlePaste}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
             />
           </div>
           <div className="flex mt-3">
@@ -193,7 +225,17 @@ const CreatePostModal = ({
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Post</Button>
+          {isUpload ? (
+            <SmallLoading />
+          ) : (
+            <Button
+              type="submit"
+              onClick={handleCreatePost}
+              disabled={!content}
+            >
+              Post
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

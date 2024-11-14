@@ -1,8 +1,8 @@
 import Loading from "@/components/common/loading/Loading";
+import { getPosts } from "@/services/postService";
 import { PostProps } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDocumentTitle } from "@uidotdev/usehooks";
-import axios from "axios";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { CreatePost } from "../common/CreatePost";
@@ -12,11 +12,9 @@ const Home = () => {
   useDocumentTitle("Home - UNIT");
   const { ref, inView } = useInView();
 
-  const fetchPosts = async ({ pageParam }: { pageParam: number }) => {
-    const response = await axios.get(
-      `https://jsonplaceholder.typicode.com/posts?_page=${pageParam}`
-    );
-    return response.data;
+  const fetchPosts = async () => {
+    const res = await getPosts();
+    return res.data;
   };
 
   const {
@@ -40,14 +38,14 @@ const Home = () => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage]);
+  }, [inView, hasNextPage, data]);
 
   if (status === "pending") return <Loading />;
   if (status === "error") return <div>Error: {error.message}</div>;
 
   const content = data?.pages.map((posts: PostProps[]) =>
     posts.map((post) => {
-      return <Post key={post.id} post={post} innerRef={ref} />;
+      return <Post key={post.postId} post={post} innerRef={ref} />;
     })
   );
 

@@ -1,8 +1,13 @@
 import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 const UserRoute = () => {
+  const user = JSON.parse(localStorage.getItem("user_id")!);
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
   return (
     <>
       <div className="flex">

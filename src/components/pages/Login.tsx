@@ -1,20 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { decodeToken } from "@/lib/utils";
 import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
 import { login } from "@/services/authService";
-import {
-  ArrowLeftIcon,
-  EyeIcon,
-  EyeSlashIcon,
-} from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
-import { decodeToken } from "@/lib/utils";
 import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   useDocumentTitle("Sign In");
@@ -33,18 +29,16 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<LoginBodyType> = async (data) => {
     try {
-      console.log(data);
       const response = await login(data.email, data.password);
-      console.log(response);
-      if (response.accessToken) {
-        decodeToken(response.accessToken);
+      if (response.data.accessToken) {
+        decodeToken(response.data.accessToken);
         localStorage.setItem(
           "accessToken",
-          JSON.stringify(response.accessToken)
+          JSON.stringify(response.data.accessToken)
         );
         localStorage.setItem(
           "refreshToken",
-          JSON.stringify(response.refreshToken)
+          JSON.stringify(response.data.refreshToken)
         );
         toast.success("Login successful", {
           duration: 500,
@@ -74,14 +68,6 @@ const Login = () => {
       className={`flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gradient-to-r from-cyan-500 to-blue-500 h-screen`}
     >
       <Toaster />
-      <div className="absolute top-4 left-4">
-        <Button
-          onClick={() => nav(-1)} // Navigate back
-          className="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200"
-        >
-          <ArrowLeftIcon className="w-6 h-6" />
-        </Button>
-      </div>
       <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-md rounded-lg ">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
           SIGN IN
