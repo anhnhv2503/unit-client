@@ -1,12 +1,8 @@
 import axiosInstance from "@/services/axiosClient";
 
 export const getPosts = async () => {
-  const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
-  return axiosInstance.get("/post", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  // const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
+  return axiosInstance.get("/post");
 };
 
 export const createPost = async (data: any) => {

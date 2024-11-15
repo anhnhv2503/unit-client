@@ -1,12 +1,5 @@
 import axiosInstance from "./axiosClient";
 
-export const getHeader = () => {
-  const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
-  return {
-    Authorization: `Bearer ${token}`,
-  };
-};
-
 export const login = async (email: string, password: string) => {
   return axiosInstance.post("auth/SignIn", {
     email: email,
@@ -33,13 +26,7 @@ export const resetPassword = async (
 };
 
 export const logout = async () => {
-  return axiosInstance.post(
-    "auth/SignOut",
-    {},
-    {
-      headers: getHeader(),
-    }
-  );
+  return axiosInstance.post("auth/SignOut");
 };
 
 export const register = async (
@@ -67,26 +54,17 @@ export const resendConfirmRegister = async (email: string) => {
 
 export const getUserProfile = async (user_id: string, isLogin: boolean) => {
   if (isLogin) {
-    return axiosInstance.get(`user/p`, {
-      headers: getHeader(),
-    });
+    return axiosInstance.get(`user/p`);
   }
-  return axiosInstance.get(`user/p/${user_id}`, {
-    headers: getHeader(),
-  });
+  return axiosInstance.get(`user/p/${user_id}`);
 };
 
 export const updateProfile = async (form: FormData) => {
-  return axiosInstance.post("user", form, {
-    headers: getHeader(),
-  });
+  return axiosInstance.post("user", form);
 };
 
 export const searchUser = async (searchKey: string) => {
   return axiosInstance.get(
-    `user?username=${searchKey}&fields=UserName,ProfilesPicture,Bio,UserId`,
-    {
-      headers: getHeader(),
-    }
+    `user?username=${searchKey}&fields=UserName,ProfilesPicture,Bio,UserId`
   );
 };

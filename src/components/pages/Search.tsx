@@ -19,15 +19,11 @@ type SearchProps = {
 const Search = () => {
   useDocumentTitle("Search - UNIT");
   const nav = useNavigate();
-  const [input, setInput] = useState("");
   const [data, setData] = useState<SearchProps[]>([]);
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
     const res = await searchUser(e.target.value);
-    console.log(res.data);
     setData(res.data);
   };
-  console.log(input);
 
   return (
     <div className="flex flex-col items-center px-6 py-12 lg:px-8 min-h-screen dark:bg-black bg-white overflow-y-scroll no-scrollbar">

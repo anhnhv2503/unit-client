@@ -14,6 +14,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     const res = await getPosts();
+    console.log("res", res);
     return res.data;
   };
 
