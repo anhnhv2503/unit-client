@@ -1,10 +1,9 @@
 import EditProfile from "@/components/common/EditProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { getUserProfile } from "@/services/authService";
 import { useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
+import { CreatePost } from "../common/CreatePost";
 
 type UserProfileProps = {
   UserId: string;
@@ -13,12 +12,13 @@ type UserProfileProps = {
   PhoneNumber: string;
   DateOfBirth: string;
   Private: boolean;
+  ProfilePicture: string;
 };
 
 export const UserProfile = () => {
   const { id } = useParams();
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [data, setData] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserProfileProps>({
     UserId: "",
     UserName: "",
@@ -26,9 +26,9 @@ export const UserProfile = () => {
     PhoneNumber: "",
     DateOfBirth: "",
     Private: false,
+    ProfilePicture: "",
   });
   const [isFollow, setIsFollow] = useState(false);
-  const { ref } = useInView();
   const isLogin = JSON.parse(localStorage.getItem("user_id")!) === id;
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -41,50 +41,57 @@ export const UserProfile = () => {
   };
   const closeModal = () => setModalOpen(false);
 
-  const handleSave = (data: {
-    UserId: string;
-    UserName: string;
-    Bio: string;
-    PhoneNumber: string;
-    DateOfBirth: string;
-    Private: boolean;
-  }) => {
-    setUser(data);
-  };
-
   useEffect(() => {
     const getUserProfileData = async () => {
       const response = await getUserProfile(id!, isLogin);
-      setUser(response.data);
+      if (!response.data.ProfilePicture) {
+        setUser({
+          ...response.data,
+          ProfilePicture: "https://github.com/shadcn.png",
+        });
+      } else {
+        setUser({
+          ...response.data,
+          ProfilePicture: `${
+            response.data.ProfilePicture
+          }?t=${new Date().getTime()}`, // Add timestamp
+        });
+      }
+
       console.log(response);
     };
     getUserProfileData();
-  }, [id]);
+  }, [isModalOpen, id]);
 
   const handleFollowUser = () => {
     setIsFollow(!isFollow);
   };
+
+  console.log(user.ProfilePicture);
 
   // const content = data?.map((posts: PostProps, index) => (
   //   <Post key={index} post={posts} innerRef={ref} />
   // ));
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
-      <div className="h-full">
+    <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
+      <div className="h-full w-4/5 lg:w-2/5">
         <div className="max-w-2xl mt-4">
           <div className="bg-white p-4 rounded-lg border dark:bg-zinc-800">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-bold text-black dark:text-white text-2xl"></div>
-                <div className="text-black dark:text-white text-sm">
+                <div className="font-bold text-black dark:text-white text-xl lg:text-2xl">
                   {user.UserName}
                 </div>
-                <div className="text-gray-300 text-sm">{user.Bio}</div>
+                <div className="text-gray-300 text-sm mt-2">{user.Bio}</div>
               </div>
-              <Avatar className="w-24 h-24">
+              <Avatar className="w-12 h-12 lg:w-24 lg:h-24">
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  src={
+                    user.ProfilePicture !== null
+                      ? user.ProfilePicture
+                      : "https://github.com/shadcn.png"
+                  }
                   alt="@UserAvatar"
                 />
                 <AvatarFallback></AvatarFallback>
@@ -92,13 +99,16 @@ export const UserProfile = () => {
             </div>
             {isLogin ? (
               <>
-                <div>
-                  <Button onClick={openModal}>Edit Profile</Button>
+                <div
+                  onClick={openModal}
+                  className="mt-20 p-2 text-center rounded-lg border cursor-pointer dark:text-white dark:border-white"
+                >
+                  Edit Profile
                   {isModalOpen && (
                     <EditProfile
                       isOpen={isModalOpen}
                       onClose={closeModal}
-                      onSave={handleSave}
+                      // onSave={handleSave}
                       initialData={user}
                     />
                   )}
@@ -132,7 +142,10 @@ export const UserProfile = () => {
           </div>
         </div>
         <div className="max-w-2xl">
-          {isLoading ? (
+          <div>
+            <CreatePost />
+          </div>
+          {/* {isLoading ? (
             <>
               <div className="flex justify-center my-10">
                 <svg
@@ -159,7 +172,7 @@ export const UserProfile = () => {
             </>
           ) : (
             <></>
-          )}
+          )} */}
         </div>
       </div>
     </div>

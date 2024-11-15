@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface ImageUploadProps {}
+interface ImageUploadProps {
+  setUserAvatar: (value: string | null) => void;
+}
 
-const ImageUpload: React.FC<ImageUploadProps> = () => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ setUserAvatar }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,11 +15,12 @@ const ImageUpload: React.FC<ImageUploadProps> = () => {
       const reader = new FileReader();
       reader.onload = () => {
         setSelectedImage(reader.result as string);
+        setUserAvatar(selectedImage);
       };
       reader.readAsDataURL(file);
     }
   };
-  //   console.log(selectedImage);
+  console.log(selectedImage);
 
   return (
     <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 relative overflow-hidden">

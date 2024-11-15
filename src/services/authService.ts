@@ -4,7 +4,6 @@ export const getHeader = () => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
   return {
     Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
   };
 };
 
@@ -77,22 +76,15 @@ export const getUserProfile = async (user_id: string, isLogin: boolean) => {
   });
 };
 
-export const updateProfile = async (
-  username: string,
-  phoneNumber: string,
-  DOB: string,
-  bio: string,
-  isPrivate: boolean
-) => {
-  return axiosInstance.post(
-    "user",
-    {
-      UserName: username,
-      PhoneNumber: phoneNumber,
-      DateOfBirth: DOB,
-      Bio: bio,
-      Private: isPrivate,
-    },
+export const updateProfile = async (form: FormData) => {
+  return axiosInstance.post("user", form, {
+    headers: getHeader(),
+  });
+};
+
+export const searchUser = async (searchKey: string) => {
+  return axiosInstance.get(
+    `user?username=${searchKey}&fields=UserName,ProfilesPicture,Bio,UserId`,
     {
       headers: getHeader(),
     }

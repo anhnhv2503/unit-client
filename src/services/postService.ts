@@ -8,6 +8,7 @@ export const getPosts = async () => {
     },
   });
 };
+
 export const createPost = async (data: any) => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
   return axiosInstance.post("/post", data, {
