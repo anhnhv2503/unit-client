@@ -12,10 +12,9 @@ const Home = () => {
   useDocumentTitle("Home - UNIT");
   const { ref, inView } = useInView();
 
-  const fetchPosts = async () => {
-    const res = await getPosts();
-    console.log("res", res);
-    return res.data;
+  const fetchPosts = async ({ pageParam }: { pageParam: string }) => {
+    const res = await getPosts(pageParam);
+    return res;
   };
 
   const {
@@ -28,10 +27,11 @@ const Home = () => {
   } = useInfiniteQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,
-    initialPageParam: 1,
+    initialPageParam: "",
     getNextPageParam: (lastPage, allPage) => {
-      const nextPage = lastPage.length > 0 ? allPage.length + 1 : undefined;
-      return nextPage;
+      const parsedResponse = JSON.parse(lastPage.headers["x-pagination"]);
+
+      return parsedResponse.HasNext ? parsedResponse.NextPageKey : "";
     },
   });
 
@@ -39,16 +39,16 @@ const Home = () => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, data]);
+  }, [inView, hasNextPage]);
 
   if (status === "pending") return <Loading />;
   if (status === "error") return <div>Error: {error.message}</div>;
 
-  const content = data?.pages.map((posts: PostProps[]) =>
-    posts.map((post) => {
+  const content = data.pages.map((page) => {
+    return page.data.map((post: PostProps) => {
       return <Post key={post.postId} post={post} innerRef={ref} />;
-    })
-  );
+    });
+  });
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
