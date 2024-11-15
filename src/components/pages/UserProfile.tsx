@@ -4,6 +4,11 @@ import { getUserProfile } from "@/services/authService";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreatePost } from "../common/CreatePost";
+import { getPostByUserId } from "@/services/postService";
+import { Post } from "@/components/common/Post";
+import { PostProps } from "@/types";
+import Loading from "@/components/common/loading/Loading";
+import { useDocumentTitle } from "@uidotdev/usehooks";
 
 type UserProfileProps = {
   UserId: string;
@@ -16,9 +21,10 @@ type UserProfileProps = {
 };
 
 export const UserProfile = () => {
+  useDocumentTitle("My Profile - UNIT");
   const { id } = useParams();
-  // const [data, setData] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserProfileProps>({
     UserId: "",
     UserName: "",
@@ -41,37 +47,47 @@ export const UserProfile = () => {
   };
   const closeModal = () => setModalOpen(false);
 
-  useEffect(() => {
-    const getUserProfileData = async () => {
-      const response = await getUserProfile(id!, isLogin);
-      if (!response.data.ProfilePicture) {
-        setUser({
-          ...response.data,
-          ProfilePicture: "https://github.com/shadcn.png",
-        });
-      } else {
-        setUser({
-          ...response.data,
-          ProfilePicture: `${
-            response.data.ProfilePicture
-          }?t=${new Date().getTime()}`, // Add timestamp
-        });
-      }
+  const getUserProfileData = async () => {
+    const response = await getUserProfile(id!, isLogin);
+    if (!response.data.ProfilePicture) {
+      setUser({
+        ...response.data,
+        ProfilePicture: "https://github.com/shadcn.png",
+      });
+    } else {
+      setUser({
+        ...response.data,
+        ProfilePicture: `${
+          response.data.ProfilePicture
+        }?t=${new Date().getTime()}`,
+      });
+    }
+  };
 
-      console.log(response);
-    };
+  const getPostsByUserIdData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getPostByUserId(id!);
+      setData(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getUserProfileData();
-  }, [isModalOpen, id]);
+    getPostsByUserIdData();
+  }, [id]);
 
   const handleFollowUser = () => {
     setIsFollow(!isFollow);
   };
 
-  console.log(user.ProfilePicture);
-
-  // const content = data?.map((posts: PostProps, index) => (
-  //   <Post key={index} post={posts} innerRef={ref} />
-  // ));
+  const content = data?.map((posts: PostProps, index) => (
+    <Post key={index} post={posts} />
+  ));
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
@@ -101,18 +117,18 @@ export const UserProfile = () => {
               <>
                 <div
                   onClick={openModal}
-                  className="mt-20 p-2 text-center rounded-lg border cursor-pointer dark:text-white dark:border-white"
+                  className="mt-20 p-2 font-semibold text-center rounded-lg border cursor-pointer bg-black text-white dark:text-black dark:bg-white"
                 >
                   Edit Profile
-                  {isModalOpen && (
-                    <EditProfile
-                      isOpen={isModalOpen}
-                      onClose={closeModal}
-                      // onSave={handleSave}
-                      initialData={user}
-                    />
-                  )}
                 </div>
+                {isModalOpen && (
+                  <EditProfile
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    // onSave={handleSave}
+                    initialData={user}
+                  />
+                )}
               </>
             ) : (
               <>
@@ -145,34 +161,13 @@ export const UserProfile = () => {
           <div>
             <CreatePost />
           </div>
-          {/* {isLoading ? (
+          {isLoading ? (
             <>
-              <div className="flex justify-center my-10">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              </div>
+              <Loading />
             </>
           ) : (
-            <></>
-          )} */}
+            <>{content}</>
+          )}
         </div>
       </div>
     </div>
