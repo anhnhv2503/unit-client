@@ -17,3 +17,10 @@ export const createPost = async (data: any) => {
     },
   });
 };
+
+export const refreshTokens = async () => {
+  const refreshToken = JSON.parse(localStorage.getItem("refreshToken")!);
+  return axiosInstance.post("/auth/refresh-token", {
+    refreshToken: refreshToken,
+  });
+};
