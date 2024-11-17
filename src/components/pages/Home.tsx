@@ -28,10 +28,10 @@ const Home = () => {
     queryKey: ["posts"],
     queryFn: fetchPosts,
     initialPageParam: "",
-    getNextPageParam: (lastPage, allPage) => {
+    getNextPageParam: (lastPage) => {
       const parsedResponse = JSON.parse(lastPage.headers["x-pagination"]);
 
-      return parsedResponse.HasNext ? parsedResponse.NextPageKey : "";
+      return parsedResponse.NextPageKey;
     },
   });
 

@@ -21,14 +21,10 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (res) => {
-    console.log("res", res);
     return res;
   },
   async (error) => {
-    // console.log("error", error.config);
     const originalRequest = error.config;
-
-    console.log(originalRequest);
 
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -41,8 +37,6 @@ axiosInstance.interceptors.response.use(
         const response = await axiosInstance.post("/auth/refresh-token", {
           refreshToken: refreshToken,
         });
-
-        console.log("response", response);
 
         localStorage.setItem(
           "accessToken",
