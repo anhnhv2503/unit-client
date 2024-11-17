@@ -10,7 +10,7 @@ const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832
 
 export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const likeRef = useRef(0);
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -201,7 +201,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
               e.stopPropagation();
             }}
           >
-            <Comment />
+            <Comment commentCount={post.commentCount} />
           </div>
           <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
             <PaperAirplaneIcon
