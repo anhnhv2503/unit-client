@@ -28,11 +28,16 @@ export const refreshTokens = async () => {
   });
 };
 
-export const getPostByUserId = async (userId: string) => {
+export const getPostByUserId = async (userId: string, pageParam?: string) => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
-  return axiosInstance.get(`/post?userId=${userId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axiosInstance.get(
+    `/post?userId=${userId}&size=15&page=${
+      pageParam || ""
+    }&orderBy=createdAt desc`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

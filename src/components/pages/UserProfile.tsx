@@ -1,14 +1,16 @@
 import EditProfile from "@/components/common/EditProfile";
+import Loading from "@/components/common/loading/Loading";
+import { Post } from "@/components/common/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserProfile } from "@/services/authService";
+import { getPostByUserId } from "@/services/postService";
+import { PostProps } from "@/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useDocumentTitle } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
 import { CreatePost } from "../common/CreatePost";
-import { getPostByUserId } from "@/services/postService";
-import { Post } from "@/components/common/Post";
-import { PostProps } from "@/types";
-import Loading from "@/components/common/loading/Loading";
-import { useDocumentTitle } from "@uidotdev/usehooks";
 
 type UserProfileProps = {
   UserId: string;
@@ -23,8 +25,7 @@ type UserProfileProps = {
 export const UserProfile = () => {
   useDocumentTitle("My Profile - UNIT");
   const { id } = useParams();
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { ref, inView } = useInView();
   const [user, setUser] = useState<UserProfileProps>({
     UserId: "",
     UserName: "",
@@ -64,30 +65,50 @@ export const UserProfile = () => {
     }
   };
 
-  const getPostsByUserIdData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getPostByUserId(id!);
-      setData(response.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-    }
+  const fetchPosts = async ({ pageParam }: { pageParam: string }) => {
+    const res = await getPostByUserId(id!, pageParam);
+    return res;
   };
+
+  const {
+    data,
+    status,
+    error,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    initialPageParam: "",
+    getNextPageParam: (lastPage) => {
+      const parsedResponse = JSON.parse(lastPage.headers["x-pagination"]);
+
+      return parsedResponse.NextPageKey;
+    },
+  });
 
   useEffect(() => {
     getUserProfileData();
-    getPostsByUserIdData();
   }, [id]);
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage]);
 
   const handleFollowUser = () => {
     setIsFollow(!isFollow);
   };
 
-  const content = data?.map((posts: PostProps, index) => (
-    <Post key={index} post={posts} />
-  ));
+  if (status === "pending") return <Loading />;
+  if (status === "error") return <div>Error: {error.message}</div>;
+
+  const content = data.pages.map((page) => {
+    return page.data.map((post: PostProps) => {
+      return <Post key={post.postId} post={post} innerRef={ref} />;
+    });
+  });
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
@@ -125,7 +146,6 @@ export const UserProfile = () => {
                   <EditProfile
                     isOpen={isModalOpen}
                     onClose={closeModal}
-                    // onSave={handleSave}
                     initialData={user}
                   />
                 )}
@@ -161,13 +181,8 @@ export const UserProfile = () => {
           <div>
             <CreatePost />
           </div>
-          {isLoading ? (
-            <>
-              <Loading />
-            </>
-          ) : (
-            <>{content}</>
-          )}
+          {isFetchingNextPage && <Loading />}
+          <>{content}</>
         </div>
       </div>
     </div>
