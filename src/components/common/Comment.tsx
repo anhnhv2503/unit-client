@@ -11,7 +11,7 @@ import {
 import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import { Textarea } from "../ui/textarea";
 
-const Comment = ({ commentCount }: { commentCount: number }) => {
+const Comment = ({ commentCount }: { commentCount?: number }) => {
   return (
     <Dialog>
       <DialogTrigger>

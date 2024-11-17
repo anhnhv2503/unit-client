@@ -84,7 +84,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
 
   const handleMainClick = (e: MouseEvent<HTMLDivElement>) => {
     if (!(e.target as HTMLElement).closest(".no-nav")) {
-      nav(`/post/${post.postId}`);
+      nav(`/post?postId=${post.postId}&userId=${post.userId}`);
     }
   };
 
@@ -119,7 +119,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
 
   return (
     <div
-      className="max-w-2xl mt-3 rounded-3xl"
+      className="max-w-2xl mt-3 rounded-3xl w-full"
       key={post.postId}
       ref={innerRef}
       {...props}
@@ -152,7 +152,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           <p>{post.content}</p>
         </div>
         <div
-          className="flex overflow-x-auto space-x-2 no-scrollbar cursor-grab no-nav"
+          className={`flex overflow-x-auto space-x-2 no-scrollbar cursor-grab`}
           ref={scrollContainerRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}

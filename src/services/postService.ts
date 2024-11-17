@@ -41,3 +41,12 @@ export const getPostByUserId = async (userId: string, pageParam?: string) => {
     }
   );
 };
+
+export const getPostDetail = async (postId: string, userId: string) => {
+  const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
+  return axiosInstance.get(`/post?postId=${postId}&userId=${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
-import Comment from "./Comment";
 import { HeartIcon } from "@heroicons/react/24/outline";
+import React, { useRef, useState } from "react";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
@@ -59,8 +58,6 @@ export const Reply: React.FC<ReplyProps> = ({ id, body, email }) => {
           />
           {likeCount}
         </div>
-
-        <Comment />
 
         <div className="flex items-center">
           <i className="fas fa-share mr-1"></i>
