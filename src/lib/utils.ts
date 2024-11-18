@@ -9,7 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 export function decodeToken(token: string) {
   try {
     const decoded = jwtDecode(token);
-    localStorage.setItem("user_id", JSON.stringify(decoded.username));
+    localStorage.setItem(
+      "user_id",
+      JSON.stringify((decoded as { username: string }).username)
+    );
     // console.log("Decoded payload:", decoded);
     return decoded;
   } catch (error) {

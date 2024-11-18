@@ -27,6 +27,7 @@ export const PostDetail = () => {
     likeCount: 0,
     commentCount: 0,
     reactions: [],
+    isLiked: false,
   });
 
   const [comments, setComments] = useState<CommentResponse[]>([]);

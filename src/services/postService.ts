@@ -12,7 +12,7 @@ export const getPosts = async (pageParam?: string) => {
   );
 };
 
-export const createPost = async (data: any) => {
+export const createPost = async (data: object) => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
   return axiosInstance.post("/post", data, {
     headers: {

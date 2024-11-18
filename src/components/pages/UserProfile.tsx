@@ -90,7 +90,8 @@ export const UserProfile = () => {
 
   useEffect(() => {
     getUserProfileData();
-  }, [id]);
+  }, [isModalOpen, id]);
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();

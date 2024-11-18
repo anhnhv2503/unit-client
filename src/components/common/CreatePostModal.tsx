@@ -30,7 +30,7 @@ const CreatePostModal = ({
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [content, setContent] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
-  const [isUpload, setIsUpload] = useState<boolean>(false);
+  const [isUpload] = useState<boolean>(false);
 
   const MAX_MEDIA_COUNT = 4;
 

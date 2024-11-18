@@ -16,7 +16,7 @@ type ImagePreviewProps = {
 
 const ImagePreview: React.FC<ImagePreviewProps> = ({
   handleOverlayClick,
-  closeModal,
+  // closeModal,
   selectedImage,
 }) => {
   return (
