@@ -201,7 +201,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
               e.stopPropagation();
             }}
           >
-            <Comment commentCount={post.commentCount} />
+            <Comment commentCount={post.commentCount} postId={post.postId} />
           </div>
           <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
             <PaperAirplaneIcon

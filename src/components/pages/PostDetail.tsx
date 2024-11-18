@@ -2,39 +2,12 @@ import Loading from "@/components/common/loading/Loading";
 import { Post } from "@/components/common/Post";
 import { Reply } from "@/components/common/Reply";
 import { Button } from "@/components/ui/button";
+import { getCommentsByPostId } from "@/services/commentService";
 import { getPostDetail } from "@/services/postService";
-import { PostProps } from "@/types";
+import { CommentResponse, PostProps } from "@/types";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
-const replies = [
-  {
-    id: "1",
-    body: "This is the first reply.",
-    email: "user1@example.com",
-  },
-  {
-    id: "2",
-    body: "I totally agree with your point!",
-    email: "user2@example.com",
-  },
-  {
-    id: "3",
-    body: "Thanks for sharing this insight.",
-    email: "user3@example.com",
-  },
-  {
-    id: "4",
-    body: "Could you elaborate on that?",
-    email: "user4@example.com",
-  },
-  {
-    id: "5",
-    body: "This was really helpful, thanks!",
-    email: "user5@example.com",
-  },
-];
 
 export const PostDetail = () => {
   const nav = useNavigate();
@@ -56,6 +29,8 @@ export const PostDetail = () => {
     reactions: [],
   });
 
+  const [comments, setComments] = useState<CommentResponse[]>([]);
+
   const getPost = async () => {
     setIsLoading(true);
     try {
@@ -68,8 +43,20 @@ export const PostDetail = () => {
     }
   };
 
+  const getComments = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getCommentsByPostId(postId!);
+      setComments(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getPost();
+    getComments();
   }, [postId, userId]);
 
   return (
@@ -87,8 +74,15 @@ export const PostDetail = () => {
         </div>
         <div className="">
           {isLoading ? <Loading /> : <Post post={post} />}
-          {replies.map((reply) => (
-            <Reply key={reply.id} {...reply} />
+          {comments.length > 0 ? (
+            <h2 className="text-lg font-semibold mt-4">Comments</h2>
+          ) : (
+            <h2 className="text-lg font-semibold mt-4 text-gray-500 text-center">
+              No comments yet
+            </h2>
+          )}
+          {comments.map((comment) => (
+            <Reply key={comment.CommentId} {...comment} />
           ))}
         </div>
       </div>
