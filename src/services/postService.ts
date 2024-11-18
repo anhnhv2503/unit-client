@@ -50,3 +50,18 @@ export const getPostDetail = async (postId: string, userId: string) => {
     },
   });
 };
+
+export const likeOrUnlikePost = async (
+  postId: string,
+  userId: string,
+  like: boolean
+) => {
+  return axiosInstance.post(`/post/${postId}`, {
+    userId: userId,
+    like: like,
+  });
+};
+
+export const getLikeOfPost = async (postId: string) => {
+  return axiosInstance.get(`/post?postId=${postId}&LikeList=true`);
+};

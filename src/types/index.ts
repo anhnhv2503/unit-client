@@ -11,6 +11,7 @@ export type PostProps = {
   reactions: Reaction[];
   profilePicture?: string;
   userName?: string;
+  isLiked: boolean;
 };
 
 export interface MediaItem {

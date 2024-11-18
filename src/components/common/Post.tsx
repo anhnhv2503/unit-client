@@ -1,4 +1,5 @@
 import ImagePreview from "@/components/common/ImagePreview";
+import { likeOrUnlikePost } from "@/services/postService";
 import { MediaItem, PostProp } from "@/types";
 import { HeartIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { FC, MouseEvent, useRef, useState } from "react";
@@ -9,9 +10,9 @@ import Comment from "./Comment";
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
 
 export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
-  const likeRef = useRef(0);
+  const likeRef = useRef(post.likeCount);
   const [likeCount, setLikeCount] = useState(post.likeCount);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.isLiked);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
@@ -59,17 +60,35 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     setIsModalOpen(true);
   };
 
-  const handleLike = () => {
+  const handleLike = async () => {
     setIsLiked(!isLiked);
 
     if (isLiked) {
+      await likeOrUnlikePost(post.postId, post.userId, !isLiked);
+      // handleGetLikeOfPost();
       likeRef.current -= 1;
       setLikeCount(likeRef.current);
     } else {
+      await likeOrUnlikePost(post.postId, post.userId, !isLiked);
+      // handleGetLikeOfPost();
+
       likeRef.current += 1;
       setLikeCount(likeRef.current);
     }
   };
+
+  // const handleGetLikeOfPost = async () => {
+  //   try {
+  //     const response = await getLikeOfPost(post.postId);
+  //     console.log(response);
+  //     setLikeOfPost(response.data);
+  //   } catch (error) {
+  //     if (error.status === 404) {
+  //       setLikeOfPost([]);
+  //       console.log("No like found");
+  //     }
+  //   }
+  // };
 
   const closeModal = () => {
     setIsModalOpen(false);
