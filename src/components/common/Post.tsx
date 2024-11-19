@@ -1,13 +1,16 @@
 import ImagePreview from "@/components/common/ImagePreview";
 import { likeOrUnlikePost } from "@/services/postService";
 import { MediaItem, PostProp } from "@/types";
-import { HeartIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleOvalLeftIcon,
+  HeartIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/24/outline";
 import { FC, MouseEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Comment from "./Comment";
 
-const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
+const fakeAvt = `https://github.com/shadcn.png`;
 
 export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const likeRef = useRef(post.likeCount);
@@ -218,9 +221,12 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
             className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white"
             onClick={(e) => {
               e.stopPropagation();
+              nav(`/post?postId=${post.postId}&userId=${post.userId}`);
             }}
           >
-            <Comment commentCount={post.commentCount} postId={post.postId} />
+            <div className="flex items-center">
+              <ChatBubbleOvalLeftIcon className="h-6 w-6 mr-1 cursor-pointer" />
+            </div>
           </div>
           <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
             <PaperAirplaneIcon

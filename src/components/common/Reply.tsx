@@ -1,5 +1,4 @@
 import { CommentResponse } from "@/types";
-import { HeartIcon } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
 
 const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
@@ -53,7 +52,7 @@ export const Reply: React.FC<CommentResponse> = ({
 
   return (
     <div
-      className="bg-white dark:bg-zinc-800 p-4 shadow border mt-1 rounded-md"
+      className="bg-white dark:bg-zinc-800 p-4 shadow border dark:border-b-gray-500 rounded-sm"
       id={CommentId}
     >
       <div className="flex items-top mb-2">
@@ -77,13 +76,13 @@ export const Reply: React.FC<CommentResponse> = ({
 
       <div className="flex items-center mt-2 text-gray-500 text-sm ">
         <div className="flex items-center mr-4">
-          <HeartIcon
+          {/* <HeartIcon
             onClick={handleLike}
             aria-hidden="true"
             className="h-6 w-6 mr-1 cursor-pointer"
             {...(isLiked ? { fill: "red", color: "red" } : { fill: "none" })}
           />
-          {likeCount}
+          {likeCount} */}
         </div>
 
         <div className="flex items-center">

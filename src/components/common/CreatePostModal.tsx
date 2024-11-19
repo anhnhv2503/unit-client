@@ -15,7 +15,7 @@ import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ChangeEvent, MouseEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 
-const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
+const fakeAvt = `https://github.com/shadcn.png`;
 
 const CreatePostModal = ({
   title,
