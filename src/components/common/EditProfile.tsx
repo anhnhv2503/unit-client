@@ -45,7 +45,6 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log(file);
       const reader = new FileReader();
       setSelectedImage(file);
       reader.onload = () => {

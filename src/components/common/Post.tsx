@@ -174,7 +174,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           <p>{post.content}</p>
         </div>
         <div
-          className={`flex overflow-x-auto space-x-2 no-scrollbar cursor-grab`}
+          className={`flex overflow-x-auto space-x-2 no-scrollbar cursor-grab no-nav`}
           ref={scrollContainerRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
