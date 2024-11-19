@@ -66,7 +66,7 @@ const CreatePostModal = ({
 
   const handleMediaChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    setImages(files);
+    setImages((prev) => [...prev, ...files]);
     if (previewMedia.length > MAX_MEDIA_COUNT) {
       toast.info(`You can only upload ${MAX_MEDIA_COUNT} files at a time.`);
       return;
