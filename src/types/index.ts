@@ -37,6 +37,7 @@ export interface PostProp extends React.HTMLAttributes<HTMLDivElement> {
 export interface CommentResponse {
   AuthorId: string;
   AuthorUserName: string;
+  ProfilePicture: string;
   PostId: string;
   CommentId: string;
   Content: string;

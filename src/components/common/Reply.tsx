@@ -1,17 +1,21 @@
 import { CommentResponse } from "@/types";
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const fakeAvt = `https://images.pexels.com/photos/19640832/pexels-photo-19640832/free-photo-of-untitled.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load`;
+const fakeAvt = `https://github.com/shadcn.png`;
 
 export const Reply: React.FC<CommentResponse> = ({
   CommentId,
   Content,
   AuthorUserName,
   CreatedAt,
+  AuthorId,
+  AuthorProfilePicture,
 }) => {
   const likeRef = useRef(0);
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const nav = useNavigate();
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -58,14 +62,17 @@ export const Reply: React.FC<CommentResponse> = ({
       <div className="flex items-top mb-2">
         <div className="flex-none w-10 h-10 mr-2">
           <img
-            src={fakeAvt}
+            src={AuthorProfilePicture || fakeAvt}
             alt="Profile picture of the second user"
             className="w-10 h-10 rounded-full mr-2"
           />
         </div>
         <div>
-          <div className="font-semibold dark:text-white">
-            {AuthorUserName}{" "}
+          <div
+            className="font-semibold dark:text-white cursor-pointer"
+            onClick={() => nav(`/user-profile/${AuthorId}`)}
+          >
+            <span className="hover:text-indigo-400">{AuthorUserName} </span>
             <span className="text-sm text-gray-500 font-normal">
               {calculateTime(CreatedAt)}
             </span>
@@ -75,15 +82,7 @@ export const Reply: React.FC<CommentResponse> = ({
       </div>
 
       <div className="flex items-center mt-2 text-gray-500 text-sm ">
-        <div className="flex items-center mr-4">
-          {/* <HeartIcon
-            onClick={handleLike}
-            aria-hidden="true"
-            className="h-6 w-6 mr-1 cursor-pointer"
-            {...(isLiked ? { fill: "red", color: "red" } : { fill: "none" })}
-          />
-          {likeCount} */}
-        </div>
+        <div className="flex items-center mr-4"></div>
 
         <div className="flex items-center">
           <i className="fas fa-share mr-1"></i>
