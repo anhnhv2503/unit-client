@@ -184,7 +184,7 @@ export const UserProfile = () => {
         </div>
         <div className="max-w-2xl">
           <div>
-            <CreatePost avatar={user.ProfilePicture} />
+            <CreatePost avatar={user.ProfilePicture} onRefresh={refetch} />
           </div>
           {isFetching ? (
             <Loading />

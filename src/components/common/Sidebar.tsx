@@ -31,14 +31,6 @@ const Sidebar = () => {
           </a>
         </li>
         <li className="p-2 sm:p-4 hover:bg-gray-300 hover:text-zinc-800 rounded-lg transition hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none">
-          {/* <CreatePostModal
-            title={
-              <>
-                <PlusIcon className="w-7 h-7" />
-              </>
-            }
-            isPrimary={false}
-          /> */}
           <a
             onClick={() => nav("/search")}
             className="flex items-center justify-center cursor-pointer relative"
