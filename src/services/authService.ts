@@ -68,3 +68,7 @@ export const searchUser = async (searchKey: string) => {
     `user?username=${searchKey}&fields=UserName,ProfilesPicture,Bio,UserId`
   );
 };
+
+export const getUserAvatar = async () => {
+  return axiosInstance.get("user/p?fields=ProfilePicture");
+};

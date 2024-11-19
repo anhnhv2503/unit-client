@@ -74,7 +74,11 @@ export const PostDetail = () => {
           </div>
         </div>
         <div className="">
-          {isLoading ? <Loading /> : <Post post={post} />}
+          {!isLoading && post.userId !== "" ? (
+            <Post post={post} />
+          ) : (
+            <Loading />
+          )}
           {comments.length > 0 ? (
             <h2 className="text-lg font-semibold mt-4">Comments</h2>
           ) : (

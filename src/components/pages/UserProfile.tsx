@@ -77,6 +77,8 @@ export const UserProfile = () => {
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
+    refetch,
+    isFetching,
   } = useInfiniteQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,
@@ -90,6 +92,7 @@ export const UserProfile = () => {
 
   useEffect(() => {
     getUserProfileData();
+    refetch();
   }, [isModalOpen, id]);
 
   useEffect(() => {
@@ -107,7 +110,8 @@ export const UserProfile = () => {
 
   const content = data.pages.map((page) => {
     return page.data.map((post: PostProps) => {
-      return <Post key={post.postId} post={post} innerRef={ref} />;
+      const currentPost = { ...post, profilePicture: user.ProfilePicture };
+      return <Post key={post.postId} post={currentPost} innerRef={ref} />;
     });
   });
 
@@ -180,10 +184,16 @@ export const UserProfile = () => {
         </div>
         <div className="max-w-2xl">
           <div>
-            <CreatePost />
+            <CreatePost avatar={user.ProfilePicture} />
           </div>
-          {isFetchingNextPage && <Loading />}
-          <>{content}</>
+          {isFetching ? (
+            <Loading />
+          ) : (
+            <>
+              {isFetchingNextPage && <Loading />}
+              <>{content}</>
+            </>
+          )}
         </div>
       </div>
     </div>

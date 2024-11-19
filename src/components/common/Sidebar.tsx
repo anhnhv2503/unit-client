@@ -1,10 +1,9 @@
-import CreatePostModal from "@/components/common/CreatePostModal";
 import ModePopover from "@/components/common/ModePopover";
 import {
+  BellIcon,
   ChatBubbleOvalLeftEllipsisIcon,
   HomeIcon,
   MagnifyingGlassIcon,
-  PlusIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
@@ -31,15 +30,24 @@ const Sidebar = () => {
             <MagnifyingGlassIcon className="w-7 h-7" />
           </a>
         </li>
-        <li className="p-2 sm:p-4 hover:text-zinc-800 rounded-lg transition hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none">
-          <CreatePostModal
+        <li className="p-2 sm:p-4 hover:bg-gray-300 hover:text-zinc-800 rounded-lg transition hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none">
+          {/* <CreatePostModal
             title={
               <>
                 <PlusIcon className="w-7 h-7" />
               </>
             }
             isPrimary={false}
-          />
+          /> */}
+          <a
+            onClick={() => nav("/search")}
+            className="flex items-center justify-center cursor-pointer relative"
+          >
+            <BellIcon className="w-7 h-7" />
+            <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-2 -translate-y-2">
+              99+
+            </span>
+          </a>
         </li>
         <li className="p-2 sm:p-4 hover:bg-gray-300 hover:text-zinc-800 rounded-lg transition hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none">
           <a
