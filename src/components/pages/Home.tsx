@@ -72,7 +72,7 @@ const Home = () => {
           <Loading />
         ) : (
           <>
-            <CreatePost avatar={userAvatar} />
+            <CreatePost avatar={userAvatar} onRefresh={refetch} />
             {content}
           </>
         )}

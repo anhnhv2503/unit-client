@@ -4,9 +4,10 @@ const fakeAvt = "https://github.com/shadcn.png";
 
 interface CreatePostProps {
   avatar?: string;
+  onRefresh: () => Promise<any>;
 }
 
-export const CreatePost = ({ avatar }: CreatePostProps) => {
+export const CreatePost = ({ avatar, onRefresh }: CreatePostProps) => {
   return (
     <div className="bg-white dark:bg-zinc-800 p-4 shadow border rounded-2xl mt-4">
       <div className="flex justify-between items-top mb-2">
@@ -18,10 +19,18 @@ export const CreatePost = ({ avatar }: CreatePostProps) => {
           />
         </div>
         <div className="flex justify-center items-center">
-          <CreatePostModal title="What's New?" isPrimary={false} />
+          <CreatePostModal
+            title="What's New?"
+            isPrimary={false}
+            onRefresh={onRefresh}
+          />
         </div>
         <div className="mt-2">
-          <CreatePostModal title="Post" isPrimary={true} />
+          <CreatePostModal
+            title="Post"
+            isPrimary={true}
+            onRefresh={onRefresh}
+          />
         </div>
       </div>
     </div>

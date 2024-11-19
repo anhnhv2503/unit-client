@@ -20,9 +20,11 @@ const fakeAvt = `https://github.com/shadcn.png`;
 const CreatePostModal = ({
   title,
   isPrimary,
+  onRefresh,
 }: {
   title?: string | JSX.Element;
   isPrimary?: boolean;
+  onRefresh: () => Promise<any>;
 }) => {
   const [previewMedia, setPreviewMedia] = useState<
     { url: string; type: string }[]
@@ -30,7 +32,8 @@ const CreatePostModal = ({
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [content, setContent] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
-  const [isUpload] = useState<boolean>(false);
+  const [isUpload, setIsUpLoad] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const MAX_MEDIA_COUNT = 4;
 
@@ -101,6 +104,7 @@ const CreatePostModal = ({
   };
 
   const handleCreatePost = async () => {
+    setIsUpLoad(true);
     const formData = new FormData();
     formData.append("content", content);
     images.forEach((image) => {
@@ -110,13 +114,15 @@ const CreatePostModal = ({
     try {
       const res = await createPost(formData);
       if (res) {
+        setIsUpLoad(false);
         toast.success("Posted");
         setContent("");
         setImages([]);
         setPreviewMedia([]);
+        setIsOpen(false);
         setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+          onRefresh();
+        }, 500);
       }
     } catch (error) {
       console.log(error);
@@ -124,7 +130,7 @@ const CreatePostModal = ({
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           {...(isPrimary
