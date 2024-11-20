@@ -51,7 +51,7 @@ const Home = () => {
   }, [inView, hasNextPage]);
 
   useEffect(() => {
-    refetch();
+    // refetch();
     getAvatar();
     // Additional logic (e.g., reset states, refetch data, etc.)
   }, []);

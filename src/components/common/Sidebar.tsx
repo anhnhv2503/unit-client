@@ -32,7 +32,7 @@ const Sidebar = () => {
         </li>
         <li className="p-2 sm:p-4 hover:bg-gray-300 hover:text-zinc-800 rounded-lg transition hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none">
           <a
-            onClick={() => nav("/search")}
+            onClick={() => nav("/notify")}
             className="flex items-center justify-center cursor-pointer relative"
           >
             <BellIcon className="w-7 h-7" />

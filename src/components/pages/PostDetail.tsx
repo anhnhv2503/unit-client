@@ -98,7 +98,11 @@ export const PostDetail = () => {
           </div>
         </div>
         <div className="">
-          {isLoading ? <SmallLoading /> : <Post post={post} />}
+          {!isLoading && post.userId !== "" ? (
+            <Post post={post} />
+          ) : (
+            <SmallLoading />
+          )}
           <div className="max-w-2xl mt-2 rounded-3xl w-full">
             <div className="bg-white dark:bg-black p-4 shadow rounded-3xl">
               <form onSubmit={handleComment} className="flex flex-col gap-4">
