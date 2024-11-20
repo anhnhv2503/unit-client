@@ -77,18 +77,20 @@ const Notification = () => {
                   {/* Content */}
                   <div className="min-w-0 flex-auto">
                     <div className="flex items-center flex-wrap">
-                      <span className="font-bold text-gray-900 text-sm sm:text-base">
+                      <span className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">
                         {person.name}
                       </span>
                       <span className="text-gray-500 ml-2 text-xs sm:text-sm">
                         3w
                       </span>
                     </div>
-                    <p className="mt-1 text-gray-500 text-xs sm:text-sm md:text-base">
+                    <p className="mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base">
                       {person.email}
                       <br />
-                      lasjdfjasdkl;fjaskldfjkabsndfkjlhasifjewpiajsldnfjlsdjfkl;
-                      asdl;kfjal;sejr asdfasdf
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Minus adipisci nihil voluptas possimus officia assumenda
+                      iste nisi placeat nostrum porro id, tempora error expedita
+                      eveniet voluptates ea architecto dolore quaerat?
                     </p>
                   </div>
                 </li>
