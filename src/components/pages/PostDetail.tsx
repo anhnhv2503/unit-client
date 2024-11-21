@@ -99,34 +99,40 @@ export const PostDetail = () => {
         </div>
         <div className="">
           {!isLoading && post.userId !== "" ? (
-            <Post post={post} />
+            <>
+              <Post post={post} />
+              <div className="max-w-2xl mt-2 rounded-3xl w-full">
+                <div className="bg-white dark:bg-black p-4 shadow rounded-3xl">
+                  <form
+                    onSubmit={handleComment}
+                    className="flex flex-col gap-4"
+                  >
+                    <Textarea
+                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:text-gray-300"
+                      rows={1}
+                      placeholder="Write your comment here..."
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      className="self-end bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={!content.trim() || commentLoading}
+                    >
+                      <PaperAirplaneIcon
+                        aria-hidden="true"
+                        className="h-6 w-6 mr-1 cursor-pointer no-nav"
+                      />
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            </>
           ) : (
             <SmallLoading />
           )}
-          <div className="max-w-2xl mt-2 rounded-3xl w-full">
-            <div className="bg-white dark:bg-black p-4 shadow rounded-3xl">
-              <form onSubmit={handleComment} className="flex flex-col gap-4">
-                <Textarea
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:text-gray-300"
-                  rows={1}
-                  placeholder="Write your comment here..."
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  required
-                />
-                <Button
-                  type="submit"
-                  className="self-end bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!content.trim() || commentLoading}
-                >
-                  <PaperAirplaneIcon
-                    aria-hidden="true"
-                    className="h-6 w-6 mr-1 cursor-pointer no-nav"
-                  />
-                </Button>
-              </form>
-            </div>
-          </div>
+
           {comments.length > 0 ? (
             <h2 className="text-lg font-semibold">Comments</h2>
           ) : (

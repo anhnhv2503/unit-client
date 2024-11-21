@@ -20,7 +20,6 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
   const nav = useNavigate();
-  console.log(post);
 
   const processMedia = (media: string[]): MediaItem[] => {
     return media.map((url) => ({

@@ -21,7 +21,6 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const currentUser = JSON.parse(localStorage.getItem("user_id")!);
-
   const handleClick = () => {
     toast.promise(
       new Promise((resolve) => {
@@ -90,20 +89,7 @@ const Header = () => {
             </a>
           </div>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {currentUser ? (
-            <>
-              <img
-                src={fakeAvt}
-                alt="Profile picture of the second user"
-                className="w-10 h-10 rounded-full mr-2 no-nav cursor-pointer"
-                onClick={() => nav(`/user-profile/${currentUser}`)}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </nav>
       <Dialog
         open={mobileMenuOpen}
