@@ -72,3 +72,7 @@ export const searchUser = async (searchKey: string) => {
 export const getUserAvatar = async () => {
   return axiosInstance.get("user/p?fields=ProfilePicture");
 };
+
+export const followUser = async (userId: string) => {
+  return axiosInstance.post("user", { userId });
+};

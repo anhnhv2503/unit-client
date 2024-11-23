@@ -20,7 +20,6 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
   const nav = useNavigate();
-  console.log(post);
 
   const processMedia = (media: string[]): MediaItem[] => {
     return media.map((url) => ({
@@ -64,20 +63,31 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     setIsModalOpen(true);
   };
 
+  const throttle = useRef(false);
+
   const handleLike = async () => {
-    setIsLiked(!isLiked);
+    if (throttle.current) return;
 
-    if (isLiked) {
-      await likeOrUnlikePost(post.postId, post.userId, !isLiked);
-      // handleGetLikeOfPost();
-      likeRef.current -= 1;
-      setLikeCount(likeRef.current);
-    } else {
-      await likeOrUnlikePost(post.postId, post.userId, !isLiked);
-      // handleGetLikeOfPost();
+    throttle.current = true;
+    setTimeout(() => {
+      throttle.current = false;
+    }, 700); // Adjust interval as needed
 
-      likeRef.current += 1;
-      setLikeCount(likeRef.current);
+    setIsLiked((prev) => !prev);
+
+    try {
+      await likeOrUnlikePost(post.postId, post.userId, !isLiked);
+
+      if (isLiked) {
+        likeRef.current -= 1;
+        setLikeCount(likeRef.current);
+      } else {
+        likeRef.current += 1;
+        setLikeCount(likeRef.current);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update like status.");
     }
   };
 
