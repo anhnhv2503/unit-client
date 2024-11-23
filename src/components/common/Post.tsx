@@ -9,6 +9,7 @@ import {
 import { FC, MouseEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useWebSocket } from "../context/NotificationProvider";
 
 const fakeAvt = `https://github.com/shadcn.png`;
 
@@ -76,8 +77,9 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     setIsLiked((prev) => !prev);
 
     try {
-      await likeOrUnlikePost(post.postId, post.userId, !isLiked);
+      const res = await likeOrUnlikePost(post.postId, post.userId, !isLiked);
 
+      console.log(res);
       if (isLiked) {
         likeRef.current -= 1;
         setLikeCount(likeRef.current);

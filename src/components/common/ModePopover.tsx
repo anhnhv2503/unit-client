@@ -18,10 +18,12 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useWebSocket } from "../context/NotificationProvider";
 
 const ModePopover = () => {
   const { theme, setTheme } = useTheme();
   const nav = useNavigate();
+  const { disconnect } = useWebSocket();
 
   const accessToken = JSON.parse(localStorage.getItem("user_id")!);
 
@@ -59,8 +61,8 @@ const ModePopover = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await logout();
-      console.log(response);
+      await logout();
+      disconnect();
       toast.success("Logout successful", { duration: 1000 });
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");

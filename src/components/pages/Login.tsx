@@ -11,11 +11,13 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useWebSocket } from "../context/NotificationProvider";
 
 const Login = () => {
   useDocumentTitle("Sign In");
   const nav = useNavigate();
   const [isToggle, setIsToggle] = useState(false);
+  const { connect } = useWebSocket();
 
   const {
     register: loginData,
@@ -32,6 +34,10 @@ const Login = () => {
       const response = await login(data.email, data.password);
       if (response.data.accessToken) {
         decodeToken(response.data.accessToken);
+        if (connect) {
+          connect();
+        }
+
         localStorage.setItem(
           "accessToken",
           JSON.stringify(response.data.accessToken)
