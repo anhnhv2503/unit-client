@@ -1,4 +1,6 @@
+import ReplyComment from "@/components/common/ReplyComment";
 import { CommentResponse } from "@/types";
+import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,11 +13,13 @@ export const Reply: React.FC<CommentResponse> = ({
   CreatedAt,
   AuthorId,
   AuthorProfilePicture,
+  PostId,
 }) => {
   const likeRef = useRef(0);
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const nav = useNavigate();
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -54,40 +58,57 @@ export const Reply: React.FC<CommentResponse> = ({
     }
   };
 
+  const handleReplyClick = () => {
+    setIsReplyModalOpen(true);
+  };
+
   return (
-    <div
-      className="bg-white dark:bg-zinc-800 p-4 shadow border dark:border-b-gray-500 rounded-sm"
-      id={CommentId}
-    >
-      <div className="flex items-top mb-2">
-        <div className="flex-none w-10 h-10 mr-2">
-          <img
-            src={AuthorProfilePicture || fakeAvt}
-            alt="Profile picture of the second user"
-            className="w-10 h-10 rounded-full mr-2"
-          />
-        </div>
-        <div>
-          <div
-            className="font-semibold dark:text-white cursor-pointer"
-            onClick={() => nav(`/user-profile/${AuthorId}`)}
-          >
-            <span className="hover:text-indigo-400">{AuthorUserName} </span>
-            <span className="text-sm text-gray-500 font-normal">
-              {calculateTime(CreatedAt)}
-            </span>
+    <>
+      <div
+        className="bg-white dark:bg-zinc-800 p-4 shadow border dark:border-b-gray-500 rounded-sm"
+        id={CommentId}
+      >
+        <div className="flex items-top mb-2">
+          <div className="flex-none w-10 h-10 mr-2">
+            <img
+              src={AuthorProfilePicture || fakeAvt}
+              alt="Profile picture of the second user"
+              className="w-10 h-10 rounded-full mr-2"
+            />
           </div>
-          <div className="dark:text-white">{Content}</div>
+          <div>
+            <div
+              className="font-semibold dark:text-white cursor-pointer"
+              onClick={() => nav(`/user-profile/${AuthorId}`)}
+            >
+              <span className="hover:text-indigo-400">{AuthorUserName} </span>
+              <span className="text-sm text-gray-500 font-normal">
+                {calculateTime(CreatedAt)}
+              </span>
+            </div>
+            <div className="dark:text-white">{Content}</div>
+          </div>
+        </div>
+
+        <div className="flex items-center mt-2 text-gray-500 text-sm ">
+          <div className="flex items-center" onClick={handleReplyClick}>
+            <ChatBubbleOvalLeftIcon className="h-6 w-6 mr-1 cursor-pointer" />
+          </div>
         </div>
       </div>
-
-      <div className="flex items-center mt-2 text-gray-500 text-sm ">
-        <div className="flex items-center mr-4"></div>
-
-        <div className="flex items-center">
-          <i className="fas fa-share mr-1"></i>
-        </div>
-      </div>
-    </div>
+      {isReplyModalOpen && (
+        <ReplyComment
+          isOpen={isReplyModalOpen}
+          onClose={() => setIsReplyModalOpen(false)}
+          CommentId={CommentId}
+          Content={Content}
+          AuthorUserName={AuthorUserName}
+          CreatedAt={CreatedAt}
+          AuthorId={AuthorId}
+          AuthorProfilePicture={AuthorProfilePicture}
+          PostId={PostId}
+        />
+      )}
+    </>
   );
 };
