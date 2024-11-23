@@ -2,15 +2,16 @@ import EditProfile from "@/components/common/EditProfile";
 import Loading from "@/components/common/loading/Loading";
 import { Post } from "@/components/common/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUserProfile } from "@/services/authService";
+import { followUser, getUserProfile } from "@/services/authService";
 import { getPostByUserId } from "@/services/postService";
 import { PostProps } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDocumentTitle } from "@uidotdev/usehooks";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
 import { CreatePost } from "../common/CreatePost";
+import { ViewFollow } from "../common/ViewFollow";
 
 type UserProfileProps = {
   UserId: string;
@@ -20,6 +21,8 @@ type UserProfileProps = {
   DateOfBirth: string;
   Private: boolean;
   ProfilePicture: string;
+  NumberOfFollwers: number;
+  isFollowed: boolean;
 };
 
 export const UserProfile = () => {
@@ -34,10 +37,13 @@ export const UserProfile = () => {
     DateOfBirth: "",
     Private: false,
     ProfilePicture: "",
+    isFollowed: false,
+    NumberOfFollwers: 0,
   });
-  const [isFollow, setIsFollow] = useState(false);
+  const [isFollow, setIsFollow] = useState(user.isFollowed);
   const isLogin = JSON.parse(localStorage.getItem("user_id")!) === id;
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalFollowOpen, setModalFollowOpen] = useState(false);
   const [userLoaded, setUserLoaded] = useState(false);
 
   const openModal = () => {
@@ -47,7 +53,12 @@ export const UserProfile = () => {
       console.log("User data is not yet loaded.");
     }
   };
+
   const closeModal = () => setModalOpen(false);
+
+  const openModalFollow = () => setModalFollowOpen(true);
+
+  const closeModalFollow = () => setModalFollowOpen(false);
 
   const getUserProfileData = async () => {
     try {
@@ -58,6 +69,7 @@ export const UserProfile = () => {
         ProfilePicture:
           profileData.ProfilePicture ?? "https://github.com/shadcn.png",
       });
+      setIsFollow(profileData.isFollowed);
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
     } finally {
@@ -102,9 +114,43 @@ export const UserProfile = () => {
     }
   }, [inView, hasNextPage]);
 
-  const handleFollowUser = () => {
-    setIsFollow(!isFollow);
+  const throttle = useRef(false);
+  console.log(user);
+
+  const handleFollowUser = async () => {
+    if (throttle.current) return;
+
+    throttle.current = true;
+    setTimeout(() => {
+      throttle.current = false;
+    }, 700); // Adjust interval as needed
+
+    setIsFollow((prev) => !prev);
+
+    try {
+      const form = new FormData();
+      form.append("follow", id!);
+      const response = await followUser(form);
+      console.log(response);
+    } catch (err) {
+      console.error("Failed to follow user:", err);
+    }
   };
+
+  if (status === "pending") return <Loading />;
+  if (status === "error")
+    return (
+      <div className="text-center text-red-500">
+        {user.Private ? "This profile is private." : `Error: ${error.message}`}
+      </div>
+    );
+
+  const content = data.pages.map((page) => {
+    return page.data.map((post: PostProps) => {
+      const currentPost = { ...post, profilePicture: user.ProfilePicture };
+      return <Post key={post.postId} post={currentPost} innerRef={ref} />;
+    });
+  });
 
   if (!userLoaded) return <Loading />;
 
@@ -132,6 +178,9 @@ export const UserProfile = () => {
                   />
                   <AvatarFallback></AvatarFallback>
                 </Avatar>
+              </div>
+              <div className="inline-block text-gray-300 text-sm mt-2 cursor-pointer border-b-2  hover:border-b-2 hover:border-gray-300">
+                {user.NumberOfFollwers} Followers
               </div>
               {isLogin ? (
                 <>
@@ -183,21 +232,6 @@ export const UserProfile = () => {
       </div>
     );
 
-  if (status === "pending") return <Loading />;
-  if (status === "error")
-    return (
-      <div className="text-center text-red-500">
-        {user.Private ? "This profile is private." : `Error: ${error.message}`}
-      </div>
-    );
-
-  const content = data.pages.map((page) => {
-    return page.data.map((post: PostProps) => {
-      const currentPost = { ...post, profilePicture: user.ProfilePicture };
-      return <Post key={post.postId} post={currentPost} innerRef={ref} />;
-    });
-  });
-
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
       <div className="h-full w-4/5 lg:w-2/5">
@@ -210,6 +244,7 @@ export const UserProfile = () => {
                 </div>
                 <div className="text-gray-300 text-sm mt-2">{user.Bio}</div>
               </div>
+
               <Avatar className="w-12 h-12 lg:w-24 lg:h-24">
                 <AvatarImage
                   src={
@@ -222,11 +257,23 @@ export const UserProfile = () => {
                 <AvatarFallback></AvatarFallback>
               </Avatar>
             </div>
+            <div
+              onClick={openModalFollow}
+              className="inline-block text-gray-300 text-sm mt-2 cursor-pointer border-b-2  hover:border-b-2 hover:border-gray-300"
+            >
+              {user.NumberOfFollwers} Followers
+            </div>
+            {isModalFollowOpen && (
+              <ViewFollow
+                isOpen={isModalFollowOpen}
+                onClose={closeModalFollow}
+              />
+            )}
             {isLogin ? (
               <>
                 <div
                   onClick={openModal}
-                  className="mt-20 p-2 font-semibold text-center rounded-lg border cursor-pointer bg-black text-white dark:text-black dark:bg-white"
+                  className="mt-14 p-2 font-semibold text-center rounded-lg border cursor-pointer bg-black text-white dark:text-black dark:bg-white"
                 >
                   Edit Profile
                 </div>

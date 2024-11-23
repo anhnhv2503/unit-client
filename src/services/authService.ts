@@ -73,6 +73,6 @@ export const getUserAvatar = async () => {
   return axiosInstance.get("user/p?fields=ProfilePicture");
 };
 
-export const followUser = async (userId: string) => {
-  return axiosInstance.post("user", { userId });
+export const followUser = async (form: FormData) => {
+  return axiosInstance.post("user", form);
 };

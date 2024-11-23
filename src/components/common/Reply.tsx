@@ -1,7 +1,7 @@
 import ReplyComment from "@/components/common/ReplyComment";
 import { CommentResponse } from "@/types";
 import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const fakeAvt = `https://github.com/shadcn.png`;
@@ -15,23 +15,23 @@ export const Reply: React.FC<CommentResponse> = ({
   AuthorProfilePicture,
   PostId,
 }) => {
-  const likeRef = useRef(0);
-  const [likeCount, setLikeCount] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+  // const likeRef = useRef(0);
+  // const [likeCount, setLikeCount] = useState(0);
+  // const [isLiked, setIsLiked] = useState(false);
   const nav = useNavigate();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
+  // const handleLike = () => {
+  //   setIsLiked(!isLiked);
 
-    if (isLiked) {
-      likeRef.current -= 1;
-      setLikeCount(likeRef.current);
-    } else {
-      likeRef.current += 1;
-      setLikeCount(likeRef.current);
-    }
-  };
+  //   if (isLiked) {
+  //     likeRef.current -= 1;
+  //     setLikeCount(likeRef.current);
+  //   } else {
+  //     likeRef.current += 1;
+  //     setLikeCount(likeRef.current);
+  //   }
+  // };
 
   const calculateTime = (date: string) => {
     const now = new Date();
