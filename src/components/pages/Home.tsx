@@ -8,11 +8,19 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { CreatePost } from "../common/CreatePost";
 import { Post } from "../common/Post";
+// import { useWebSocket } from "../context/NotificationProvider";
 
 const Home = () => {
   useDocumentTitle("Home - UNIT");
   const { ref, inView } = useInView();
   const [userAvatar, setUserAvatar] = useState<string>("");
+  // const { connect } = useWebSocket();
+
+  // useEffect(() => {
+  //   if (connect) {
+  //     connect();
+  //   }
+  // }, []);
 
   const fetchPosts = async ({ pageParam }: { pageParam: string }) => {
     const res = await getPosts(pageParam);
