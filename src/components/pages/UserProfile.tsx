@@ -22,11 +22,12 @@ type UserProfileProps = {
   Private: boolean;
   ProfilePicture: string;
   NumberOfFollwers: number;
+  NumberOfFollowing: number;
   isFollowed: boolean;
 };
 
 export const UserProfile = () => {
-  useDocumentTitle("My Profile - UNIT");
+  useDocumentTitle("Profile - UNIT");
   const { id } = useParams();
   const { ref, inView } = useInView();
   const [user, setUser] = useState<UserProfileProps>({
@@ -39,12 +40,15 @@ export const UserProfile = () => {
     ProfilePicture: "",
     isFollowed: false,
     NumberOfFollwers: 0,
+    NumberOfFollowing: 0,
   });
   const [isFollow, setIsFollow] = useState(user.isFollowed);
   const isLogin = JSON.parse(localStorage.getItem("user_id")!) === id;
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalFollowOpen, setModalFollowOpen] = useState(false);
   const [userLoaded, setUserLoaded] = useState(false);
+  const currentUser = JSON.parse(localStorage.getItem("user_id")!);
+  const [selectedTab, setSelectedTab] = useState("");
 
   const openModal = () => {
     if (user.UserId) {
@@ -73,7 +77,7 @@ export const UserProfile = () => {
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
     } finally {
-      setUserLoaded(true); // Mark user data as fully loaded
+      setUserLoaded(true);
     }
   };
 
@@ -115,7 +119,6 @@ export const UserProfile = () => {
   }, [inView, hasNextPage]);
 
   const throttle = useRef(false);
-  console.log(user);
 
   const handleFollowUser = async () => {
     if (throttle.current) return;
@@ -123,7 +126,7 @@ export const UserProfile = () => {
     throttle.current = true;
     setTimeout(() => {
       throttle.current = false;
-    }, 700); // Adjust interval as needed
+    }, 700);
 
     setIsFollow((prev) => !prev);
 
@@ -165,7 +168,9 @@ export const UserProfile = () => {
                   <div className="font-bold text-black dark:text-white text-xl lg:text-2xl">
                     {user.UserName}
                   </div>
-                  <div className="text-gray-300 text-sm mt-2">{user.Bio}</div>
+                  <div className="text-black dark:text-white text-sm mt-2">
+                    {user.Bio}
+                  </div>
                 </div>
                 <Avatar className="w-12 h-12 lg:w-24 lg:h-24">
                   <AvatarImage
@@ -242,7 +247,9 @@ export const UserProfile = () => {
                 <div className="font-bold text-black dark:text-white text-xl lg:text-2xl">
                   {user.UserName}
                 </div>
-                <div className="text-gray-300 text-sm mt-2">{user.Bio}</div>
+                <div className="text-black dark:text-white text-sm mt-2">
+                  {user.Bio}
+                </div>
               </div>
 
               <Avatar className="w-12 h-12 lg:w-24 lg:h-24">
@@ -258,15 +265,23 @@ export const UserProfile = () => {
               </Avatar>
             </div>
             <div
-              onClick={openModalFollow}
-              className="inline-block text-gray-300 text-sm mt-2 cursor-pointer border-b-2  hover:border-b-2 hover:border-gray-300"
+              onClick={() => (openModalFollow(), setSelectedTab("followers"))}
+              className="inline-block text-black dark:text-white text-sm mt-2 cursor-pointer border-b-2  hover:border-b-2 hover:border-gray-300"
             >
-              {user.NumberOfFollwers} Followers
+              Followers {user.NumberOfFollwers}
+            </div>
+            <div
+              onClick={() => (openModalFollow(), setSelectedTab("following"))}
+              className="inline-block text-black dark:text-white text-sm mt-2 cursor-pointer border-b-2  hover:border-b-2 hover:border-gray-300 ml-4"
+            >
+              Following {user.NumberOfFollowing}
             </div>
             {isModalFollowOpen && (
               <ViewFollow
                 isOpen={isModalFollowOpen}
                 onClose={closeModalFollow}
+                userId={id}
+                selectedTab={selectedTab}
               />
             )}
             {isLogin ? (
@@ -314,7 +329,9 @@ export const UserProfile = () => {
         </div>
         <div className="max-w-2xl">
           <div>
-            <CreatePost avatar={user.ProfilePicture} onRefresh={refetch} />
+            {currentUser === id && (
+              <CreatePost avatar={user.ProfilePicture} onRefresh={refetch} />
+            )}
           </div>
           {isFetching ? (
             <Loading />
