@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useWebSocket } from "../context/NotificationProvider";
+
 const people = [
   {
     name: "Leslie Alexander",
@@ -53,7 +56,88 @@ const people = [
   },
 ];
 
+interface NotificationProps {
+  id: string; // Unique identifier (e.g., a UUID)
+  type: string;
+  username: string;
+  postId?: string;
+  userId?: string;
+  pictureProfile?: string;
+  timestamp: string; // ISO string for sorting
+}
+
 const Notification = () => {
+  const [notifications, setNotifications] = useState<NotificationProps[]>([]);
+  const { messages } = useWebSocket();
+
+  const generateMessage = (data: NotificationProps): string => {
+    const { type, username } = data;
+
+    switch (type) {
+      case "CommentPost":
+        return `${username} commented on your post.`;
+      case "LikePost":
+        return `${username} liked your post.`;
+      case "ReplyComment":
+        return `${username} replied to your comment.`;
+      case "LikeComment":
+        return `${username} liked your comment.`;
+      case "FollowRequest":
+        return `${username} sent you a follow request.`;
+      default:
+        return "You have a new notification.";
+    }
+  };
+
+  console.log(messages);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        // const response = await fetch("/api/notifications"); // Replace with your API endpoint
+        // const data: NotificationProps[] = await response.json();
+        // setNotifications(data); // Populate state with API data
+      } catch (error) {
+        console.error("Failed to fetch notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // Listen for real-time WebSocket updates
+  useEffect(() => {
+    if (messages.length > 0) {
+      const newNotifications = messages.map((message) => {
+        const parsedMessage = JSON.parse(message); // Ensure the message is in NotificationProps format
+        return {
+          ...parsedMessage,
+          id: parsedMessage.id || crypto.randomUUID(), // Ensure each message has a unique ID
+          timestamp: parsedMessage.timestamp || new Date().toISOString(),
+        };
+      });
+
+      // Merge API notifications with WebSocket messages
+      setNotifications((prev) => {
+        const merged = [...newNotifications, ...prev];
+
+        // Deduplicate by `id`
+        const unique = merged.reduce<NotificationProps[]>((acc, current) => {
+          if (!acc.some((notif) => notif.id === current.id)) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+
+        // Sort by `timestamp` (latest first)
+        return unique.sort(
+          (a, b) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+      });
+    }
+  }, [messages]);
+
   return (
     <div className="flex flex-col items-center px-4 py-6 lg:px-8 min-h-screen bg-white dark:bg-black overflow-y-scroll no-scrollbar">
       <div className="w-full flex justify-center mt-3">

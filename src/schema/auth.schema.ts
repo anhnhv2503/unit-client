@@ -103,7 +103,10 @@ export type ResetPasswordBodyType = z.TypeOf<typeof ResetPasswordBody>;
 //Use for User Profile form
 export const UserProfileBody = z
   .object({
-    username: z.string().max(255),
+    username: z
+      .string()
+      .max(255)
+      .regex(/^\S*$/, "Username must not contain spaces"), // No spaces allowed
     phonenumber: z.string().max(10),
     dateofbirth: z.string().max(100),
     bio: z.string().max(255),
