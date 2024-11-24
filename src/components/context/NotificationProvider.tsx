@@ -1,41 +1,105 @@
-import { createContext, ReactNode, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-interface Notification {
-  id: string;
-  message: string;
-  timestamp: Date;
-}
+type WebSocketContextType = {
+  sendMessage: (message: string) => void;
+  isConnected: boolean;
+  messages: string[];
+  connect: () => void;
+  disconnect: () => void;
+};
 
-interface NotificationContextProps {
-  notifications: Notification[];
-  addNotification: (notification: Notification) => void;
-  removeNotification: (id: string) => void;
-}
+const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
-const NotificationContext = createContext<NotificationContextProps | undefined>(
-  undefined
-);
+export const useWebSocket = () => {
+  const context = useContext(WebSocketContext);
+  if (!context) {
+    throw new Error("useWebSocket must be used within a WebSocketProvider");
+  }
+  return context;
+};
 
-export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
+const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState<string[]>([]);
+  const socketRef = useRef<WebSocket | null>(null);
+  const webSocketURL =
+    "wss://v3jhk6p1a6.execute-api.ap-southeast-1.amazonaws.com/develop/";
 
-  const addNotification = (notification: Notification) => {
-    setNotifications((prev) => [notification, ...prev]);
+  // Retrieve `userId` immediately
+  const userId = useRef<string | null>(null);
+  useEffect(() => {
+    userId.current = JSON.parse(localStorage.getItem("user_id") || "null");
+  }, []);
+  console.log(userId.current);
+
+  const connect = () => {
+    if (!userId.current || socketRef.current) return; // Skip if no `userId` or already connected
+
+    const socket = new WebSocket(`${webSocketURL}?userId=${userId.current}`);
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      console.log("WebSocket connected");
+      setIsConnected(true);
+    };
+
+    socket.onmessage = (event) => {
+      console.log("WebSocket message received:", event.data);
+      const data = JSON.parse(event.data);
+      setMessages((prev) => [...prev, data]);
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket disconnected");
+      setIsConnected(false);
+      socketRef.current = null;
+    };
   };
 
-  const removeNotification = (id: string) => {
-    setNotifications((prev) =>
-      prev.filter((notification) => notification.id !== id)
-    );
+  const disconnect = () => {
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+    }
   };
+
+  const sendMessage = (message: string) => {
+    if (socketRef.current && isConnected) {
+      socketRef.current.send(message);
+    } else {
+      console.warn("WebSocket is not connected");
+    }
+  };
+
+  // Automatically connect when provider mounts
+  useEffect(() => {
+    if (userId.current) {
+      connect();
+    }
+    return () => {
+      disconnect(); // Cleanup on unmount
+    };
+  }, []); // Only run on mount
 
   return (
-    <NotificationContext.Provider
-      value={{ notifications, addNotification, removeNotification }}
+    <WebSocketContext.Provider
+      value={{ connect, sendMessage, isConnected, messages, disconnect }}
     >
       {children}
-    </NotificationContext.Provider>
+    </WebSocketContext.Provider>
   );
 };
+
+export default WebSocketProvider;
