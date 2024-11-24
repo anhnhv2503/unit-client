@@ -2,13 +2,13 @@ import axiosInstance from "@/services/axiosClient";
 
 export const getFollowers = async (userId: string) => {
   return axiosInstance.get(
-    `user/p/${userId}?Followers=true&include=Followers&size=10&pageNumber=1&fields=UserId,UserName,ProfilePicture`
+    `user/p/${userId}?Followers=true&include=Followers&size=10&pageNumber=1`
   );
 };
 
 export const getFollowing = async (userId: string) => {
   return axiosInstance.get(
-    `user/p/${userId}?Following=true&include=Following&size=10&pageNumber=1&fields=UserId,UserName,ProfilePicture`
+    `user/p/${userId}?Following=true&include=Following&size=10&pageNumber=1`
   );
 };
 

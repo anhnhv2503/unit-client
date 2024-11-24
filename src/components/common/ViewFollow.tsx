@@ -1,4 +1,6 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { followUser } from "@/services/authService";
 import {
   getFollowers,
   getFollowing,
@@ -19,6 +21,7 @@ type FollowProps = {
   UserId: string;
   UserName: string;
   ProfilePicture: string;
+  isFollowed: boolean;
 };
 
 export const ViewFollow: React.FC<ViewFollowModalProps> = ({
@@ -30,14 +33,24 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
   const [activeTab, setActiveTab] = useState(selectedTab);
   const [followers, setFollowers] = useState<FollowProps[]>([]);
   const [following, setFollowing] = useState<FollowProps[]>([]);
+  const [followingMsg, setFollowingMsg] = useState<string>("");
 
   const fetchFollowers = async () => {
-    const response = await getFollowers(userId!);
-    setFollowers(response.data);
+    try {
+      const response = await getFollowers(userId!);
+      setFollowers(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const fetchFollowing = async () => {
-    const response = await getFollowing(userId!);
-    setFollowing(response.data);
+    try {
+      const response = await getFollowing(userId!);
+      setFollowing(response.data);
+    } catch (error) {
+      console.log((error as any).response.data.message);
+      setFollowingMsg((error as any).response.data.message);
+    }
   };
 
   useEffect(() => {
@@ -54,6 +67,17 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
     const response = await unfollowUser(userId);
     if (response.status === 200) {
       toast.success("User unfollowed successfully");
+      fetchFollowing();
+      fetchFollowers();
+    }
+  };
+
+  const handleFollowBack = async (userId: string) => {
+    const formData = new FormData();
+    formData.append("follow", userId);
+    const response = await followUser(formData);
+    if (response.status === 200) {
+      fetchFollowers();
       fetchFollowing();
     }
   };
@@ -133,11 +157,19 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                           className="flex items-center justify-between px-4 py-2"
                         >
                           <div className="flex items-center">
-                            <img
-                              src={item.ProfilePicture}
-                              alt={`Profile picture of ${item.UserName}`}
-                              className="rounded-full w-10 h-10"
-                            />
+                            <Avatar className="rounded-full w-10 h-10">
+                              <AvatarImage
+                                src={
+                                  item.ProfilePicture !== null
+                                    ? item.ProfilePicture
+                                    : "https://github.com/shadcn.png"
+                                }
+                                alt="@UserAvatar"
+                              />
+                              <AvatarFallback>
+                                {item.UserName.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
                             <div className="ml-3">
                               <p className="font-semibold text-gray-800 dark:text-white">
                                 {item.UserName}
@@ -147,6 +179,13 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                               </p>
                             </div>
                           </div>
+                          {!item.isFollowed && (
+                            <Button
+                              onClick={() => handleFollowBack(item.UserId)}
+                            >
+                              Follow Back
+                            </Button>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -158,11 +197,19 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                           className="flex items-center justify-between px-4 py-2"
                         >
                           <div className="flex items-center">
-                            <img
-                              src={item.ProfilePicture}
-                              alt={`Profile picture of ${item.UserName}`}
-                              className="rounded-full w-10 h-10"
-                            />
+                            <Avatar className="rounded-full w-10 h-10">
+                              <AvatarImage
+                                src={
+                                  item.ProfilePicture !== null
+                                    ? item.ProfilePicture
+                                    : "https://github.com/shadcn.png"
+                                }
+                                alt="@UserAvatar"
+                              />
+                              <AvatarFallback>
+                                {item.UserName.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
                             <div className="ml-3">
                               <p className="font-semibold text-gray-800 dark:text-white">
                                 {item.UserName}
@@ -181,6 +228,11 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                           </Button>
                         </div>
                       ))}
+                      {following.length === 0 && (
+                        <div className="text-center py-4">
+                          <p className="text-gray-400">{followingMsg}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
