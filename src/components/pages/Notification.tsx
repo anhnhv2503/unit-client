@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useWebSocket } from "../context/NotificationProvider";
 import { getAllNotifications } from "@/services/notificationService";
 import { v4 as uuidv4 } from "uuid";
+import Loading from "../common/loading/Loading";
 interface NotificationProps {
   id: string; // Unique identifier (e.g., a UUID)
 
@@ -15,12 +16,21 @@ interface NotificationProps {
 
 const Notification = () => {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
+  const [loading, setLoading] = useState(false);
   const { messages } = useWebSocket();
 
   const getAllNotification = async () => {
+    setLoading(true);
     try {
       const res = await getAllNotifications();
-      setNotifications(res.data);
+      setNotifications(
+        res.data.sort(
+          (a, b) =>
+            Math.abs(new Date(a.createdAt).getTime() - Date.now()) -
+            Math.abs(new Date(b.createdAt).getTime() - Date.now())
+        )
+      );
+      setLoading(false);
       // console.log(res.data);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
@@ -72,22 +82,40 @@ const Notification = () => {
       setNotifications((prev) => {
         const merged = [...newNotifications, ...prev];
 
-        // Deduplicate by `id`
-        // const unique = merged.reduce<NotificationProps[]>((acc, current) => {
-        //   if (!acc.some((notif) => notif.id === current.id)) {
-        //     acc.push(current);
-        //   }
-        //   return acc;
-        // }, []);
-
         // Sort by `createdAt` (latest first)
         return merged.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            Math.abs(new Date(a.createdAt).getTime() - Date.now()) -
+            Math.abs(new Date(b.createdAt).getTime() - Date.now())
         );
       });
     }
   }, [messages]);
+
+  const calculateTime = (date: string) => {
+    const now = new Date();
+    const postDate = new Date(date);
+    const secondsAgo = Math.floor((now.getTime() - postDate.getTime()) / 1000);
+
+    if (secondsAgo < 60) {
+      return `${secondsAgo} seconds ago`;
+    } else if (secondsAgo < 3600) {
+      const minutes = Math.floor(secondsAgo / 60);
+      return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    } else if (secondsAgo < 86400) {
+      const hours = Math.floor(secondsAgo / 3600);
+      return `${hours} hour${hours > 1 ? "s" : ""} `;
+    } else if (secondsAgo < 2592000) {
+      const days = Math.floor(secondsAgo / 86400);
+      return `${days} day${days > 1 ? "s" : ""} `;
+    } else if (secondsAgo < 31536000) {
+      const months = Math.floor(secondsAgo / 2592000);
+      return `${months} month${months > 1 ? "s" : ""} `;
+    } else {
+      const years = Math.floor(secondsAgo / 31536000);
+      return `${years} year${years > 1 ? "s" : ""} `;
+    }
+  };
 
   console.log(notifications);
 
@@ -96,59 +124,50 @@ const Notification = () => {
       <div className="w-full flex justify-center mt-3">
         <div className="max-w-2xl w-full">
           <div className="p-4">
-            {notifications.length > 0 ? (
-              <>
-                <ul role="list" className="divide-y divide-gray-200">
-                  {notifications.map((person) => (
-                    <li key={uuidv4()} className="flex gap-x-4 py-5">
-                      {/* Avatar */}
-                      <div className="relative flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
-                        <img
-                          src={person.metadata.profilePicture}
-                          alt={person.metadata.userName}
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                        <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">
-                            a
-                          </span>
-                        </div>
+            {loading ? (
+              <Loading />
+            ) : notifications.length > 0 ? (
+              <ul role="list" className="divide-y divide-gray-200">
+                {notifications.map((person) => (
+                  <li key={uuidv4()} className="flex gap-x-4 py-5">
+                    {/* Avatar */}
+                    <div className="relative flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
+                      <img
+                        src={person.metadata.profilePicture}
+                        alt={person.metadata.userName}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                      <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">a</span>
                       </div>
+                    </div>
 
-                      {/* Content */}
-                      <div className="min-w-0 flex-auto">
-                        <div className="flex items-center flex-wrap">
-                          <span className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">
-                            {person.metadata.userName}
-                          </span>
-                          <span className="text-gray-500 ml-2 text-xs sm:text-sm">
-                            3w
-                          </span>
-                        </div>
-                        <p className="mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base">
-                          {generateMessage(
-                            person.actionType,
-                            person.metadata.userName
-                          )}
-                        </p>
+                    {/* Content */}
+                    <div className="min-w-0 flex-auto">
+                      <div className="flex items-center flex-wrap">
+                        <span className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">
+                          {person.metadata.userName}
+                        </span>
+                        <span className="text-gray-500 ml-2 text-xs sm:text-sm">
+                          {calculateTime(person.createdAt)}
+                        </span>
                       </div>
-                      {/* <div>
-                    <button className="text-blue-500 hover:text-blue-700">
-                      View Profile
-                    </button>
-                  </div> */}
-                    </li>
-                  ))}
-                </ul>
-              </>
+                      <p className="mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base">
+                        {generateMessage(
+                          person.actionType,
+                          person.metadata.userName
+                        )}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-500 text-center">
-                    No notifications yet
-                  </h2>
-                </div>
-              </>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-500 text-center">
+                  No notifications yet
+                </h2>
+              </div>
             )}
           </div>
         </div>

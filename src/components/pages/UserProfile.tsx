@@ -68,11 +68,19 @@ export const UserProfile = () => {
     try {
       const response = await getUserProfile(id!, isLogin);
       const profileData = response.data;
-      setUser({
-        ...profileData,
-        ProfilePicture:
-          profileData.ProfilePicture ?? "https://github.com/shadcn.png",
-      });
+      if (!profileData.ProfilePicture) {
+        setUser({
+          ...profileData,
+          ProfilePicture: "https://github.com/shadcn.png",
+        });
+      } else {
+        setUser({
+          ...profileData,
+          ProfilePicture: `${
+            profileData.ProfilePicture
+          }?t=${new Date().getTime()}`, // Add timestamp
+        });
+      }
       setIsFollow(profileData.isFollowed);
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
