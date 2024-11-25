@@ -1,15 +1,12 @@
 import axiosInstance from "@/services/axiosClient";
 
-export const getPosts = async (pageParam?: string) => {
+export const getPosts = async (pageParam: number) => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
-  return axiosInstance.get(
-    `/post?size=15&page=${pageParam || ""}&orderBy=createdAt desc`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  return axiosInstance.get(`/post?size=10&pageNumber=${pageParam}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const createPost = async (data: object) => {

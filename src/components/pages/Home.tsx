@@ -8,21 +8,13 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { CreatePost } from "../common/CreatePost";
 import { Post } from "../common/Post";
-// import { useWebSocket } from "../context/NotificationProvider";
 
 const Home = () => {
   useDocumentTitle("Home - UNIT");
   const { ref, inView } = useInView();
   const [userAvatar, setUserAvatar] = useState<string>("");
-  // const { connect } = useWebSocket();
 
-  // useEffect(() => {
-  //   if (connect) {
-  //     connect();
-  //   }
-  // }, []);
-
-  const fetchPosts = async ({ pageParam }: { pageParam: string }) => {
+  const fetchPosts = async ({ pageParam }: { pageParam: number }) => {
     const res = await getPosts(pageParam);
     return res;
   };
@@ -44,11 +36,13 @@ const Home = () => {
   } = useInfiniteQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,
-    initialPageParam: "",
-    getNextPageParam: (lastPage) => {
-      const parsedResponse = JSON.parse(lastPage.headers["x-pagination"]);
-
-      return parsedResponse.NextPageKey;
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPage) => {
+      console.log(lastPage.data.length);
+      console.log(allPage.length);
+      const nextPage =
+        lastPage.data.length > 0 ? allPage.length + 1 : undefined;
+      return nextPage;
     },
   });
 
@@ -59,9 +53,7 @@ const Home = () => {
   }, [inView, hasNextPage]);
 
   useEffect(() => {
-    // refetch();
     getAvatar();
-    // Additional logic (e.g., reset states, refetch data, etc.)
   }, []);
 
   if (status === "pending") return <Loading />;
