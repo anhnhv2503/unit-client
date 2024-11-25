@@ -12,6 +12,8 @@ type WebSocketContextType = {
   messages: string[];
   connect: () => void;
   disconnect: () => void;
+  handleLogin: (loggedInUserId: string) => void;
+  handleLogout: () => void;
 };
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -36,9 +38,15 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   // Retrieve `userId` immediately
   const userId = useRef<string | null>(null);
   useEffect(() => {
-    userId.current = JSON.parse(localStorage.getItem("user_id") || "null");
+    const storedUserId = JSON.parse(localStorage.getItem("user_id") || "null");
+    if (storedUserId) {
+      userId.current = storedUserId;
+      connect();
+    }
+    return () => {
+      disconnect(); // Cleanup on unmount
+    };
   }, []);
-  console.log(userId.current);
 
   const connect = () => {
     if (!userId.current || socketRef.current) return; // Skip if no `userId` or already connected
@@ -83,6 +91,18 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const handleLogin = (loggedInUserId: string) => {
+    userId.current = loggedInUserId; // Set the userId
+    localStorage.setItem("user_id", JSON.stringify(loggedInUserId)); // Store userId in localStorage
+    connect(); // Connect to WebSocket
+  };
+
+  const handleLogout = () => {
+    disconnect(); // Disconnect WebSocket
+    userId.current = null; // Clear userId
+    localStorage.removeItem("user_id"); // Remove from localStorage
+  };
+
   // Automatically connect when provider mounts
   useEffect(() => {
     if (userId.current) {
@@ -95,7 +115,15 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <WebSocketContext.Provider
-      value={{ connect, sendMessage, isConnected, messages, disconnect }}
+      value={{
+        connect,
+        sendMessage,
+        isConnected,
+        messages,
+        disconnect,
+        handleLogin,
+        handleLogout,
+      }}
     >
       {children}
     </WebSocketContext.Provider>

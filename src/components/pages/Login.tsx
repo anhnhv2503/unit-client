@@ -17,7 +17,7 @@ const Login = () => {
   useDocumentTitle("Sign In");
   const nav = useNavigate();
   const [isToggle, setIsToggle] = useState(false);
-  const { connect } = useWebSocket();
+  const { connect, handleLogin } = useWebSocket();
 
   const {
     register: loginData,
@@ -33,7 +33,8 @@ const Login = () => {
     try {
       const response = await login(data.email, data.password);
       if (response.data.accessToken) {
-        decodeToken(response.data.accessToken);
+        const decodedToken = decodeToken(response.data.accessToken);
+        handleLogin((decodedToken as { username: string })?.username);
         if (connect) {
           connect();
         }
