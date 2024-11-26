@@ -14,6 +14,7 @@ type WebSocketContextType = {
   disconnect: () => void;
   handleLogin: (loggedInUserId: string) => void;
   handleLogout: () => void;
+  clearNotifications: () => void;
 };
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -103,6 +104,10 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem("user_id"); // Remove from localStorage
   };
 
+  const clearNotifications = () => {
+    setMessages([]); // Assuming `messages` is managed via state
+  };
+
   // Automatically connect when provider mounts
   useEffect(() => {
     if (userId.current) {
@@ -123,6 +128,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         disconnect,
         handleLogin,
         handleLogout,
+        clearNotifications,
       }}
     >
       {children}

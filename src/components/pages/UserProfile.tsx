@@ -84,7 +84,6 @@ export const UserProfile = () => {
       setIsFollow(profileData.isFollowed);
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
-    } finally {
       setUserLoaded(true);
     }
   };
@@ -120,6 +119,8 @@ export const UserProfile = () => {
     getUserProfileData();
   }, [isModalOpen, id]);
 
+  console.log(user);
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -142,6 +143,7 @@ export const UserProfile = () => {
       const form = new FormData();
       form.append("follow", id!);
       const response = await followUser(form);
+      getUserProfileData();
       console.log(response);
     } catch (err) {
       console.error("Failed to follow user:", err);
@@ -162,8 +164,6 @@ export const UserProfile = () => {
       return <Post key={post.postId} post={currentPost} innerRef={ref} />;
     });
   });
-
-  if (!userLoaded) return <Loading />;
 
   if (user.Private)
     return (
