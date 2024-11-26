@@ -153,8 +153,6 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     }
   };
 
-  console.log(index);
-
   return (
     <div
       className="max-w-2xl mt-3 rounded-3xl w-full"

@@ -7,3 +7,9 @@ export const getAllNotifications = async () => {
 export const deleteNotification = async (notificationId: string) => {
   return axiosInstance.delete(`/notification/${notificationId}`);
 };
+
+export const isSeenNotification = async (createdAt: string) => {
+  return axiosInstance.post(`/notification`, {
+    createdAt,
+  });
+};
