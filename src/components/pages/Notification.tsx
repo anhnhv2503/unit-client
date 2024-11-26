@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useWebSocket } from "../context/NotificationProvider";
-import { getAllNotifications } from "@/services/notificationService";
+import {
+  getAllNotifications,
+  isSeenNotification,
+} from "@/services/notificationService";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "../common/loading/Loading";
 import { useNavigate } from "react-router-dom";
 interface NotificationProps {
   id: string; // Unique identifier (e.g., a UUID)
-
+  isSeen: boolean;
   actionType: string;
   userName: string;
   postId?: string;
@@ -97,8 +100,6 @@ const Notification = () => {
     }
   }, [messages]);
 
-  console.log(notifications);
-
   const calculateTime = (date: string) => {
     const now = new Date();
     const postDate = new Date(date);
@@ -124,6 +125,16 @@ const Notification = () => {
     }
   };
 
+  const handleIsSeenNotification = async (createdAt: string) => {
+    try {
+      await isSeenNotification(createdAt);
+    } catch (error) {
+      console.error("Failed to mark notification as seen:", error);
+    }
+  };
+
+  console.log(notifications);
+
   return (
     <div className="flex flex-col items-center px-4 py-6 lg:px-8 min-h-screen bg-white dark:bg-black overflow-y-scroll no-scrollbar">
       <div className="w-full flex justify-center mt-3">
@@ -136,11 +147,13 @@ const Notification = () => {
                 {notifications.map((person) => (
                   <li
                     key={uuidv4()}
-                    className="flex gap-x-4 py-5 cursor-pointer"
+                    className="flex gap-x-4 py-5 cursor-pointer items-center"
                     onClick={() => {
                       nav(
                         `/post?postId=${person.affectedObjectId}&userId=${person.ownerId}`
                       );
+                      if (!person.isSeen)
+                        handleIsSeenNotification(person.createdAt);
                     }}
                   >
                     {/* Avatar */}
@@ -157,7 +170,13 @@ const Notification = () => {
 
                     {/* Content */}
                     <div className="min-w-0 flex items-center">
-                      <p className="mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base">
+                      <p
+                        className={`${
+                          person.isSeen
+                            ? "mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base"
+                            : "font-bold"
+                        } `}
+                      >
                         {generateMessage(
                           person.actionType,
                           person.metadata.userName
@@ -167,6 +186,14 @@ const Notification = () => {
                         </span>
                       </p>
                     </div>
+
+                    <div
+                      className={`ml-auto ${
+                        person.isSeen
+                          ? ""
+                          : "w-4 h-4 bg-blue-500 rounded-full border-2 border-white"
+                      }`}
+                    ></div>
                   </li>
                 ))}
               </ul>
