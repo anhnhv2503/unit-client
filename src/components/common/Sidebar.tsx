@@ -12,7 +12,7 @@ import { useWebSocket } from "../context/NotificationProvider";
 const Sidebar = () => {
   const nav = useNavigate();
   const user_id = JSON.parse(localStorage.getItem("user_id")!);
-  const { connect, messages } = useWebSocket();
+  const { messages, clearNotifications } = useWebSocket();
 
   return (
     <div className="dark:bg-black bg-white dark:text-white text-black sm:w-16 w-full sm:h-screen h-16 fixed sm:left-0 bottom-0 flex sm:flex-col flex-row sm:justify-between items-center">
@@ -35,7 +35,10 @@ const Sidebar = () => {
         </li>
         <li className="p-2 sm:p-4 hover:bg-gray-300 hover:text-zinc-800 rounded-lg transition hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none">
           <a
-            onClick={() => nav("/notify")}
+            onClick={() => {
+              clearNotifications(); // Clear the notifications
+              nav("/notify"); // Navigate to the notifications page
+            }}
             className="flex items-center justify-center cursor-pointer relative"
           >
             <BellIcon className="w-7 h-7" />

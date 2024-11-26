@@ -3,6 +3,7 @@ import { useWebSocket } from "../context/NotificationProvider";
 import { getAllNotifications } from "@/services/notificationService";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "../common/loading/Loading";
+import { useNavigate } from "react-router-dom";
 interface NotificationProps {
   id: string; // Unique identifier (e.g., a UUID)
 
@@ -17,6 +18,7 @@ interface NotificationProps {
 const Notification = () => {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const nav = useNavigate();
   const { messages } = useWebSocket();
 
   const getAllNotification = async () => {
@@ -41,24 +43,27 @@ const Notification = () => {
     getAllNotification();
   }, []);
 
-  const generateMessage = (actionType: string, userName: string): string => {
+  const generateMessage = (
+    actionType: string,
+    userName: string
+  ): JSX.Element => {
+    const boldUserName = <span className="font-bold">{userName}</span>;
+
     switch (actionType) {
       case "CommentPost":
-        return `${userName} commented on your post.`;
+        return <span>{boldUserName} commented on your post.</span>;
       case "LikePost":
-        return `${userName} liked your post.`;
+        return <span>{boldUserName} liked your post.</span>;
       case "ReplyComment":
-        return `${userName} replied to your comment.`;
+        return <span>{boldUserName} replied to your comment.</span>;
       case "LikeComment":
-        return `${userName} liked your comment.`;
+        return <span>{boldUserName} liked your comment.</span>;
       case "FollowRequest":
-        return `${userName} sent you a follow request.`;
+        return <span>{boldUserName} has follow you.</span>;
       default:
-        return "You have a new notification.";
+        return <span>You have a new notification.</span>;
     }
   };
-
-  console.log(messages);
 
   // Listen for real-time WebSocket updates
   const generateUniqueId = (notification: any) => {
@@ -92,6 +97,8 @@ const Notification = () => {
     }
   }, [messages]);
 
+  console.log(notifications);
+
   const calculateTime = (date: string) => {
     const now = new Date();
     const postDate = new Date(date);
@@ -117,8 +124,6 @@ const Notification = () => {
     }
   };
 
-  console.log(notifications);
-
   return (
     <div className="flex flex-col items-center px-4 py-6 lg:px-8 min-h-screen bg-white dark:bg-black overflow-y-scroll no-scrollbar">
       <div className="w-full flex justify-center mt-3">
@@ -129,7 +134,15 @@ const Notification = () => {
             ) : notifications.length > 0 ? (
               <ul role="list" className="divide-y divide-gray-200">
                 {notifications.map((person) => (
-                  <li key={uuidv4()} className="flex gap-x-4 py-5">
+                  <li
+                    key={uuidv4()}
+                    className="flex gap-x-4 py-5 cursor-pointer"
+                    onClick={() => {
+                      nav(
+                        `/post?postId=${person.affectedObjectId}&userId=${person.ownerId}`
+                      );
+                    }}
+                  >
                     {/* Avatar */}
                     <div className="relative flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
                       <img
@@ -143,20 +156,15 @@ const Notification = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="min-w-0 flex-auto">
-                      <div className="flex items-center flex-wrap">
-                        <span className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">
-                          {person.metadata.userName}
-                        </span>
-                        <span className="text-gray-500 ml-2 text-xs sm:text-sm">
-                          {calculateTime(person.createdAt)}
-                        </span>
-                      </div>
+                    <div className="min-w-0 flex items-center">
                       <p className="mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base">
                         {generateMessage(
                           person.actionType,
                           person.metadata.userName
                         )}
+                        <span className="text-gray-500 ml-2 text-xs sm:text-sm">
+                          {calculateTime(person.createdAt)}
+                        </span>
                       </p>
                     </div>
                   </li>
