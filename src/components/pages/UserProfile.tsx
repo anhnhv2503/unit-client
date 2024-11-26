@@ -46,7 +46,7 @@ export const UserProfile = () => {
   const isLogin = JSON.parse(localStorage.getItem("user_id")!) === id;
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalFollowOpen, setModalFollowOpen] = useState(false);
-  const [userLoaded, setUserLoaded] = useState(false);
+
   const currentUser = JSON.parse(localStorage.getItem("user_id")!);
   const [selectedTab, setSelectedTab] = useState("");
 
@@ -84,12 +84,10 @@ export const UserProfile = () => {
       setIsFollow(profileData.isFollowed);
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
-      setUserLoaded(true);
     }
   };
 
-  const fetchPosts = async ({ pageParam }: { pageParam: string }) => {
-    if (user.Private) throw new Error("This user profile is private.");
+  const fetchPosts = async ({ pageParam }: { pageParam: number }) => {
     const res = await getPostByUserId(id!, pageParam);
     return res;
   };
@@ -104,22 +102,19 @@ export const UserProfile = () => {
     refetch,
     isFetching,
   } = useInfiniteQuery({
-    queryKey: ["posts", id],
+    queryKey: ["post"],
     queryFn: fetchPosts,
-    enabled: userLoaded && !user.Private,
-    initialPageParam: "",
-    getNextPageParam: (lastPage) => {
-      const parsedResponse = JSON.parse(lastPage.headers["x-pagination"]);
-
-      return parsedResponse.NextPageKey;
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPage) => {
+      const nextPage =
+        lastPage.data.length > 0 ? allPage.length + 1 : undefined;
+      return nextPage;
     },
   });
 
   useEffect(() => {
     getUserProfileData();
   }, [isModalOpen, id]);
-
-  console.log(user);
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -150,22 +145,7 @@ export const UserProfile = () => {
     }
   };
 
-  if (status === "pending") return <Loading />;
-  if (status === "error")
-    return (
-      <div className="text-center text-red-500">
-        {user.Private ? "This profile is private." : `Error: ${error.message}`}
-      </div>
-    );
-
-  const content = data.pages.map((page) => {
-    return page.data.map((post: PostProps) => {
-      const currentPost = { ...post, profilePicture: user.ProfilePicture };
-      return <Post key={post.postId} post={currentPost} innerRef={ref} />;
-    });
-  });
-
-  if (user.Private)
+  if (user.Private && !isLogin)
     return (
       <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
         <div className="h-full w-4/5 lg:w-2/5">
@@ -189,7 +169,7 @@ export const UserProfile = () => {
                     }
                     alt="@UserAvatar"
                   />
-                  <AvatarFallback></AvatarFallback>
+                  <AvatarFallback>{user.UserName.charAt(0)}</AvatarFallback>
                 </Avatar>
               </div>
               <div className="inline-block text-gray-300 text-sm mt-2 cursor-pointer border-b-2  hover:border-b-2 hover:border-gray-300">
@@ -245,6 +225,21 @@ export const UserProfile = () => {
       </div>
     );
 
+  if (status === "pending") return <Loading />;
+  if (status === "error")
+    return (
+      <div className="text-center text-red-500">
+        {user.Private ? "This profile is private." : `Error: ${error.message}`}
+      </div>
+    );
+
+  const content = data.pages.map((page) => {
+    return page.data.map((post: PostProps) => {
+      const currentPost = { ...post, profilePicture: user.ProfilePicture };
+      return <Post key={post.postId} post={currentPost} innerRef={ref} />;
+    });
+  });
+
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
       <div className="h-full w-4/5 lg:w-2/5">
@@ -269,7 +264,7 @@ export const UserProfile = () => {
                   }
                   alt="@UserAvatar"
                 />
-                <AvatarFallback></AvatarFallback>
+                <AvatarFallback>{user.UserName.charAt(0)}</AvatarFallback>
               </Avatar>
             </div>
             <div

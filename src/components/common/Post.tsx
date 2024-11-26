@@ -19,6 +19,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
+  const [index, setIndex] = useState(0);
   const nav = useNavigate();
 
   const processMedia = (media: string[]): MediaItem[] => {
@@ -58,7 +59,8 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     }
   };
 
-  const handleImageClick = (images: string[]) => {
+  const handleImageClick = (images: string[], index: number) => {
+    setIndex(index);
     setSelectedImage(images);
     setIsModalOpen(true);
   };
@@ -151,6 +153,8 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     }
   };
 
+  console.log(index);
+
   return (
     <div
       className="max-w-2xl mt-3 rounded-3xl w-full"
@@ -186,7 +190,9 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           <p>{post.content}</p>
         </div>
         <div
-          className={`flex overflow-x-auto space-x-2 no-scrollbar cursor-grab no-nav`}
+          className={`flex space-x-2 ${
+            post.media.length > 2 ? "overflow-x-auto" : "overflow-x-hidden"
+          } no-scrollbar cursor-grab no-nav`}
           ref={scrollContainerRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -194,30 +200,34 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           onMouseLeave={handleMouseUpOrLeave}
         >
           {processMedia(post.media).map((media, index) => (
-            <div className="" key={index}>
+            <div
+              className={`${
+                post.media.length > 2
+                  ? "flex-shrink-0 relative h-48 lg:h-96"
+                  : "h-96 w-[650px] "
+              }`}
+              key={index}
+            >
               {media.type === "image" ? (
                 <img
-                  key={index}
                   src={media.url}
                   alt={`Image ${index + 1}`}
-                  className={`${
-                    post.media.length > 1 ? "w-64" : "w-full"
-                  } rounded `}
-                  onClick={() => handleImageClick(post.media)}
+                  className="w-full h-full object-cover rounded"
+                  onClick={() => handleImageClick(post.media, index)}
+                  loading="lazy"
                 />
               ) : (
                 <video
-                  key={index}
                   src={media.url}
-                  className={`${
-                    post.media.length > 1 ? "w-48" : "w-full"
-                  } rounded `}
-                  onClick={() => handleImageClick(post.media)}
+                  className="w-full h-full object-cover rounded"
+                  controls
+                  onClick={() => handleImageClick(post.media, index)}
                 />
               )}
             </div>
           ))}
         </div>
+
         <div className="flex items-center mt-3 p-2 text-gray-500 dark:text-gray-200 text-sm">
           <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
             <HeartIcon
@@ -255,6 +265,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           handleOverlayClick={handleOverlayClick}
           closeModal={closeModal}
           selectedImage={selectedImage}
+          initialIndex={index}
         />
       )}
     </div>

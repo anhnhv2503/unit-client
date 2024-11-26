@@ -40,28 +40,32 @@ const Search = () => {
           </Button>
         </div>
       </div>
-      <div className="p-4">
-        {data.map((member, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow p-4 mb-4 flex items-center text-black cursor-pointer"
-            onClick={() => nav(`/user-profile/${member.UserId}`)}
-          >
-            <img
-              className="w-12 h-12 rounded-full mr-4"
-              src={
-                member.ProfilePicture
-                  ? member.ProfilePicture
-                  : defaultProfilePicture
-              }
-              alt={member.ProfilePicture}
-            />
-            <div>
-              <div className="text-lg font-semibold">{member.UserName}</div>
-              <div className="text-gray-500">{member.Bio}</div>
+
+      {/* This wrapper div will give equal width to both sections */}
+      <div className="w-full max-w-lg">
+        <div className="p-4">
+          {data.map((member, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow p-4 mb-4 flex items-center text-black cursor-pointer"
+              onClick={() => nav(`/user-profile/${member.UserId}`)}
+            >
+              <img
+                className="w-12 h-12 rounded-full mr-4"
+                src={
+                  member.ProfilePicture
+                    ? member.ProfilePicture
+                    : defaultProfilePicture
+                }
+                alt={member.ProfilePicture}
+              />
+              <div>
+                <div className="text-lg font-semibold">{member.UserName}</div>
+                <div className="text-gray-500">{member.Bio}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

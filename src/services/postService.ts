@@ -25,12 +25,10 @@ export const refreshTokens = async () => {
   });
 };
 
-export const getPostByUserId = async (userId: string, pageParam?: string) => {
+export const getPostByUserId = async (userId: string, pageParam: number) => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
   return axiosInstance.get(
-    `/post?userId=${userId}&size=15&page=${
-      pageParam || ""
-    }&orderBy=createdAt desc`,
+    `/post?userId=${userId}&size=10&pageNumber=${pageParam}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

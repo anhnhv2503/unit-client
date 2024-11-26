@@ -38,8 +38,6 @@ const Home = () => {
     queryFn: fetchPosts,
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPage) => {
-      console.log(lastPage.data.length);
-      console.log(allPage.length);
       const nextPage =
         lastPage.data.length > 0 ? allPage.length + 1 : undefined;
       return nextPage;
@@ -50,7 +48,7 @@ const Home = () => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage]);
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     getAvatar();
@@ -67,7 +65,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
-      <div className="h-full">
+      <div className="h-full w-4/5 lg:w-2/5">
         {isFetching ? (
           <Loading />
         ) : (

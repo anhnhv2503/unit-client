@@ -65,10 +65,6 @@ function App() {
               path: "/notify",
               element: <Notification />,
             },
-            {
-              path: "/chat",
-              element: <Chat />,
-            },
           ],
         },
       ],
