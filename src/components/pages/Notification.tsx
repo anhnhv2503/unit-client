@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { useWebSocket } from "../context/NotificationProvider";
 import {
+  deleteNotification,
   getAllNotifications,
   isSeenNotification,
 } from "@/services/notificationService";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "../common/loading/Loading";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import {
+  acceptFollowRequest,
+  removeFollowRequest,
+} from "@/services/followService";
 interface NotificationProps {
   id: string; // Unique identifier (e.g., a UUID)
   isSeen: boolean;
@@ -21,6 +27,7 @@ interface NotificationProps {
 const Notification = () => {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const isPrivate = JSON.parse(localStorage.getItem("isPrivate")!);
   const nav = useNavigate();
   const { messages } = useWebSocket();
 
@@ -45,6 +52,8 @@ const Notification = () => {
   useEffect(() => {
     getAllNotification();
   }, []);
+
+  console.log(notifications);
 
   const generateMessage = (
     actionType: string,
@@ -128,12 +137,40 @@ const Notification = () => {
   const handleIsSeenNotification = async (createdAt: string) => {
     try {
       await isSeenNotification(createdAt);
+      getAllNotification();
     } catch (error) {
       console.error("Failed to mark notification as seen:", error);
     }
   };
 
-  console.log(notifications);
+  const handleAcceptFollowRequest = async (
+    followerId: string,
+    createdAt: string
+  ) => {
+    try {
+      const res = await acceptFollowRequest(followerId);
+      await deleteNotification(createdAt);
+
+      getAllNotification();
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleRemoveFollowRequest = async (
+    followId: string,
+    createdAt: string
+  ) => {
+    try {
+      await removeFollowRequest(followId);
+      await deleteNotification(createdAt);
+
+      getAllNotification();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center px-4 py-6 lg:px-8 min-h-screen bg-white dark:bg-black overflow-y-scroll no-scrollbar">
@@ -148,10 +185,22 @@ const Notification = () => {
                   <li
                     key={uuidv4()}
                     className="flex gap-x-4 py-5 cursor-pointer items-center"
-                    onClick={() => {
-                      nav(
-                        `/post?postId=${person.affectedObjectId}&userId=${person.ownerId}`
-                      );
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (
+                        person.actionType === "LikePost" ||
+                        person.actionType === "CommentPost" ||
+                        person.actionType === "ReplyComment" ||
+                        person.actionType === "LikeComment"
+                      ) {
+                        nav(
+                          `/post?postId=${person.affectedObjectId}&userId=${person.ownerId}`
+                        );
+                      } else {
+                        nav(
+                          `/user-profile/${person.metadata.lastestActionUserId}`
+                        );
+                      }
                       if (!person.isSeen)
                         handleIsSeenNotification(person.createdAt);
                     }}
@@ -187,13 +236,47 @@ const Notification = () => {
                       </p>
                     </div>
 
-                    <div
-                      className={`ml-auto ${
-                        person.isSeen
-                          ? ""
-                          : "w-4 h-4 bg-blue-500 rounded-full border-2 border-white"
-                      }`}
-                    ></div>
+                    {person.actionType === "FollowRequest" && isPrivate && (
+                      <div className="ml-auto">
+                        <span className="mr-1">
+                          <Button
+                            className="bg-blue-600 text-xs p-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAcceptFollowRequest(
+                                person.metadata.lastestActionUserId,
+                                person.createdAt
+                              );
+                            }}
+                          >
+                            Accepct
+                          </Button>
+                        </span>
+                        <span>
+                          <Button
+                            className="text-xs p-1 mt-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveFollowRequest(
+                                person.metadata.lastestActionUserId,
+                                person.createdAt
+                              );
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </span>
+                      </div>
+                    )}
+
+                    {!person.isSeen &&
+                      person.actionType !== "FollowRequest" && (
+                        <div
+                          className="ml-auto 
+                         w-4 h-4 bg-blue-500 rounded-full border-2 border-white
+                      "
+                        ></div>
+                      )}
                   </li>
                 ))}
               </ul>

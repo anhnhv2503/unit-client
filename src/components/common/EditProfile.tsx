@@ -80,6 +80,7 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
 
       const response = await updateProfile(formdata);
       if (response.status === 200) {
+        localStorage.setItem("isPrivate", JSON.stringify(profileData.Private));
         setLoading(false);
         toast.success("Profile Updated");
         onClose();

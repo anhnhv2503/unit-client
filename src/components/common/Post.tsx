@@ -155,7 +155,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
 
   return (
     <div
-      className="max-w-2xl mt-3 rounded-3xl w-full"
+      className="mt-3 rounded-3xl w-full"
       key={post.postId}
       ref={innerRef}
       {...props}
@@ -201,8 +201,8 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
             <div
               className={`${
                 post.media.length > 2
-                  ? "flex-shrink-0 relative h-48 lg:h-96"
-                  : "h-96 w-[650px] "
+                  ? "flex-shrink-0 h-48 lg:h-96"
+                  : "h-96 w-full "
               }`}
               key={index}
             >

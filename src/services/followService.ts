@@ -17,3 +17,16 @@ export const unfollowUser = async (userId: string) => {
   formData.append("follow", userId);
   return axiosInstance.post("user", formData);
 };
+
+export const acceptFollowRequest = async (followerId: string) => {
+  const formData = new FormData();
+  formData.append("follower", followerId);
+  formData.append("IsAcceptFollower", "true");
+  return axiosInstance.post("user", formData);
+};
+
+export const removeFollowRequest = async (followerId: string) => {
+  const formData = new FormData();
+  formData.append("follow", followerId);
+  return axiosInstance.post("user", formData);
+};

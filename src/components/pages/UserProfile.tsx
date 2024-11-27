@@ -24,6 +24,7 @@ type UserProfileProps = {
   NumberOfFollwers: number;
   NumberOfFollowing: number;
   isFollowed: boolean;
+  FollowRequests: [];
 };
 
 export const UserProfile = () => {
@@ -40,6 +41,7 @@ export const UserProfile = () => {
     ProfilePicture: "",
     isFollowed: false,
     NumberOfFollwers: 0,
+    FollowRequests: [],
     NumberOfFollowing: 0,
   });
   const [isFollow, setIsFollow] = useState(user.isFollowed);
@@ -145,7 +147,18 @@ export const UserProfile = () => {
     }
   };
 
-  if (user.Private && !isLogin)
+  const isRequested = () => {
+    return (
+      Array.isArray(user.FollowRequests) &&
+      user.FollowRequests.some(
+        (followrequest) => followrequest.followerId === currentUser
+      )
+    );
+  };
+
+  // console.log(isRequested());
+
+  if (user.Private && !isLogin && !isFollow)
     return (
       <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-screen overflow-y-scroll no-scrollbar">
         <div className="h-full w-4/5 lg:w-2/5">
@@ -193,14 +206,14 @@ export const UserProfile = () => {
                 </>
               ) : (
                 <>
-                  {isFollow ? (
+                  {!isFollow && isRequested() ? (
                     <>
                       {" "}
                       <div
                         className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white"
                         onClick={handleFollowUser}
                       >
-                        Following
+                        Requested
                       </div>
                     </>
                   ) : (

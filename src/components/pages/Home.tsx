@@ -65,7 +65,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
-      <div className="h-full w-4/5 lg:w-2/5">
+      <div className="h-full w-4/5 lg:w-1/2">
         {isFetching ? (
           <Loading />
         ) : (
