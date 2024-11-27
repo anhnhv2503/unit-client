@@ -20,6 +20,7 @@ export const CreatePost = ({ avatar, onRefresh }: CreatePostProps) => {
         </div>
         <div className="flex justify-center items-center">
           <CreatePostModal
+            avatar={avatar}
             title="What's New?"
             isPrimary={false}
             onRefresh={onRefresh}
@@ -27,6 +28,7 @@ export const CreatePost = ({ avatar, onRefresh }: CreatePostProps) => {
         </div>
         <div className="mt-2">
           <CreatePostModal
+            avatar={avatar}
             title="Post"
             isPrimary={true}
             onRefresh={onRefresh}
