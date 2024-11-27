@@ -24,25 +24,17 @@ const Home = () => {
     setUserAvatar(response.data.ProfilePicture);
   };
 
-  const {
-    data,
-    status,
-    error,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    refetch,
-    isFetching,
-  } = useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPage) => {
-      const nextPage =
-        lastPage.data.length > 0 ? allPage.length + 1 : undefined;
-      return nextPage;
-    },
-  });
+  const { data, status, error, fetchNextPage, hasNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: ["posts"],
+      queryFn: fetchPosts,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPage) => {
+        const nextPage =
+          lastPage.data.length > 0 ? allPage.length + 1 : undefined;
+        return nextPage;
+      },
+    });
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -65,17 +57,9 @@ const Home = () => {
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 dark:bg-black bg-white h-full overflow-y-scroll no-scrollbar">
-      <div className="h-full w-4/5 lg:w-1/2">
-        {isFetching ? (
-          <Loading />
-        ) : (
-          <>
-            <CreatePost avatar={userAvatar} onRefresh={refetch} />
-            {content}
-          </>
-        )}
-
-        {isFetchingNextPage && <Loading />}
+      <div className="h-full w-4/5 lg:w-1-2">
+        <CreatePost avatar={userAvatar} onRefresh={refetch} />
+        {content}
       </div>
     </div>
   );

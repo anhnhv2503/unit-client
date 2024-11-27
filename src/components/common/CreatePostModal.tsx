@@ -21,10 +21,12 @@ const CreatePostModal = ({
   title,
   isPrimary,
   onRefresh,
+  avatar,
 }: {
   title?: string | JSX.Element;
   isPrimary?: boolean;
   onRefresh: () => Promise<any>;
+  avatar?: string | null;
 }) => {
   const [previewMedia, setPreviewMedia] = useState<
     { url: string; type: string }[]
@@ -153,7 +155,7 @@ const CreatePostModal = ({
         <div className="">
           <div className="flex items-center mb-2 ">
             <img
-              src={fakeAvt}
+              src={avatar || fakeAvt}
               alt="Profile picture of the second user"
               className="w-10 h-10 rounded-full mr-2 no-nav"
             />

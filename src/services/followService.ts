@@ -29,4 +29,8 @@ export const removeFollowRequest = async (followerId: string) => {
   const formData = new FormData();
   formData.append("follow", followerId);
   return axiosInstance.post("user", formData);
+
+export const getFollowRequests = async (userId: string) => {
+  return axiosInstance.get(`user/p/${userId}?fields=FollowRequests`);
+
 };
