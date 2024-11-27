@@ -7,6 +7,7 @@ import { createComment, getCommentsByPostId } from "@/services/commentService";
 import { getPostDetail } from "@/services/postService";
 import { CommentResponse, PostProps } from "@/types";
 import { ArrowLeftIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -48,21 +49,35 @@ export const PostDetail = () => {
     }
   };
 
-  const getComments = async () => {
-    setIsLoading(true);
-    try {
-      const response = await getCommentsByPostId(postId!);
-      setComments(response.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
+  const getComments = async ({ pageParam }: { pageParam: number }) => {
+    const response = await getCommentsByPostId(postId!, pageParam);
+    return response.data;
   };
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["comments"],
+    queryFn: getComments,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      const nextPage = lastPage.length > 0 ? pages.length + 1 : undefined;
+      return nextPage;
+    },
+  });
 
   useEffect(() => {
     getPost();
-    getComments();
   }, [postId, userId]);
+
+  if (status === "pending") return <SmallLoading />;
+  if (status === "error") return <div>Error: {error.message}</div>;
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,10 +88,10 @@ export const PostDetail = () => {
         userId: userId!,
       });
       if (response.status === 200) {
+        refetch();
         setContent("");
         toast.success("Comment Posted");
         setCommentLoading(false);
-        getComments();
       }
     } catch (error) {
       setCommentLoading(true);
@@ -98,7 +113,7 @@ export const PostDetail = () => {
           </div>
         </div>
         <div className="">
-          {!isLoading && post.userId !== "" ? (
+          {post.userId !== "" ? (
             <>
               <Post post={post} />
               <div className="max-w-2xl mt-2 rounded-3xl w-full">
@@ -132,17 +147,27 @@ export const PostDetail = () => {
           ) : (
             <SmallLoading />
           )}
-
-          {comments.length > 0 ? (
-            <h2 className="text-lg font-semibold">Comments</h2>
-          ) : (
-            <h2 className="text-lg font-semibold text-gray-500 text-center">
-              No comments yet
-            </h2>
+          <>
+            {data?.pages.map((page) => {
+              return page.map((comment: CommentResponse) => {
+                return <Reply key={comment.CommentId} {...comment} />;
+              });
+            })}
+          </>
+          {hasNextPage && (
+            <div className="flex justify-center mt-3">
+              <Button
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+              >
+                {isFetchingNextPage
+                  ? "Loading more..."
+                  : hasNextPage
+                  ? "Load More"
+                  : "Nothing more to load"}
+              </Button>
+            </div>
           )}
-          {comments.map((comment) => (
-            <Reply key={comment.CommentId} {...comment} />
-          ))}
         </div>
       </div>
     </div>

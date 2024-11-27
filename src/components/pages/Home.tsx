@@ -24,25 +24,17 @@ const Home = () => {
     setUserAvatar(response.data.ProfilePicture);
   };
 
-  const {
-    data,
-    status,
-    error,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    refetch,
-    isFetching,
-  } = useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPage) => {
-      const nextPage =
-        lastPage.data.length > 0 ? allPage.length + 1 : undefined;
-      return nextPage;
-    },
-  });
+  const { data, status, error, fetchNextPage, hasNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: ["posts"],
+      queryFn: fetchPosts,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPage) => {
+        const nextPage =
+          lastPage.data.length > 0 ? allPage.length + 1 : undefined;
+        return nextPage;
+      },
+    });
 
   useEffect(() => {
     if (inView && hasNextPage) {

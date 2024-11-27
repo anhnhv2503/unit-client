@@ -4,6 +4,7 @@ import { followUser } from "@/services/authService";
 import {
   getFollowers,
   getFollowing,
+  getFollowRequests,
   unfollowUser,
 } from "@/services/followService";
 import { Dialog, Transition } from "@headlessui/react";
@@ -33,7 +34,9 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
   const [activeTab, setActiveTab] = useState(selectedTab);
   const [followers, setFollowers] = useState<FollowProps[]>([]);
   const [following, setFollowing] = useState<FollowProps[]>([]);
+  const [followRequests, setFollowRequests] = useState<FollowProps[]>([]);
   const [followingMsg, setFollowingMsg] = useState<string>("");
+  const isLogin = JSON.parse(localStorage.getItem("user_id")!) === userId;
 
   const fetchFollowers = async () => {
     try {
@@ -53,10 +56,19 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
     }
   };
 
+  const fetchFollowRequests = async () => {
+    try {
+      const response = await getFollowRequests(userId!);
+      setFollowRequests(response.data.FollowRequests);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchFollowers();
-
     fetchFollowing();
+    fetchFollowRequests();
   }, [userId]);
 
   const handleTabClick = (tab: string) => {
@@ -97,7 +109,7 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 lg:p-8 text-center">
+          <div className="flex min-h-full items-start justify-center p-4 sm:p-6 lg:p-8 text-center">
             <Transition.Child
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
@@ -106,8 +118,30 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md sm:max-w-lg lg:max-w-xl transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-800 p-4 sm:p-6 lg:p-8 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md sm:max-w-lg lg:max-w-xl transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-800 p-4 sm:p-6 lg:p-8 text-left align-middle shadow-xl transition-all max-h-[80vh] overflow-y-auto">
                 <div className="flex justify-between items-center border-b px-4 py-2">
+                  {isLogin && (
+                    <div
+                      className={`flex-1 text-center cursor-pointer ${
+                        activeTab === "follow_requests"
+                          ? "font-semibold text-gray-500 dark:text-gray-300"
+                          : "text-gray-400"
+                      }`}
+                      onClick={() => handleTabClick("follow_requests")}
+                    >
+                      <h2>Follow Requests</h2>
+                      <p
+                        className={`text-sm ${
+                          activeTab === "followers"
+                            ? "text-gray-500"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        0
+                      </p>
+                    </div>
+                  )}
+
                   <div
                     className={`flex-1 text-center cursor-pointer ${
                       activeTab === "followers"
@@ -147,8 +181,7 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                     </p>
                   </div>
                 </div>
-
-                <div className="">
+                <div>
                   {activeTab === "followers" ? (
                     <div className="divide-y">
                       {followers.map((item, index) => (
@@ -179,7 +212,7 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                               </p>
                             </div>
                           </div>
-                          {!item.isFollowed && (
+                          {isLogin && !item.isFollowed && (
                             <Button
                               onClick={() => handleFollowBack(item.UserId)}
                             >
@@ -189,7 +222,7 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                         </div>
                       ))}
                     </div>
-                  ) : (
+                  ) : activeTab === "following" ? (
                     <div className="divide-y">
                       {following.map((item, index) => (
                         <div
@@ -219,13 +252,15 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                               </p>
                             </div>
                           </div>
-                          <Button
-                            className="dark:bg-zinc-700 dark:border dark:border-zinc-800 dark:hover:bg-zinc-600"
-                            variant={"outline"}
-                            onClick={() => handleUnfollow(item.UserId)}
-                          >
-                            Following
-                          </Button>
+                          {isLogin && (
+                            <Button
+                              className="dark:bg-zinc-700 dark:border dark:border-zinc-800 dark:hover:bg-zinc-600"
+                              variant={"outline"}
+                              onClick={() => handleUnfollow(item.UserId)}
+                            >
+                              Following
+                            </Button>
+                          )}
                         </div>
                       ))}
                       {following.length === 0 && (
@@ -234,6 +269,52 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
                         </div>
                       )}
                     </div>
+                  ) : (
+                    activeTab === "follow_requests" && (
+                      <div className="text-center py-4">
+                        {followRequests.length === 0 ? (
+                          <p className="text-gray-400">No requests</p>
+                        ) : (
+                          followRequests.map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between px-4 py-2"
+                            >
+                              <div className="flex items-center">
+                                <Avatar className="rounded-full w-10 h-10">
+                                  <AvatarImage
+                                    src={
+                                      item.ProfilePicture !== null
+                                        ? item.ProfilePicture
+                                        : "https://github"
+                                    }
+                                    alt="@UserAvatar"
+                                  />
+                                  <AvatarFallback>
+                                    {item.UserName.charAt(0)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="ml-3">
+                                  <p className="font-semibold text-gray-800 dark:text-white">
+                                    {item.UserName}
+                                  </p>
+                                  <p className="text-sm text-gray-500 dark:text-white">
+                                    {item.UserName}
+                                  </p>
+                                </div>
+                              </div>
+                              {isLogin && (
+                                <Button
+                                  onClick={() => handleFollowBack(item.UserId)}
+                                >
+                                  Accept
+                                </Button>
+                              )}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    )
                   )}
                 </div>
               </Dialog.Panel>

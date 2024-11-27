@@ -336,14 +336,7 @@ export const UserProfile = () => {
               <CreatePost avatar={user.ProfilePicture} onRefresh={refetch} />
             )}
           </div>
-          {isFetching ? (
-            <Loading />
-          ) : (
-            <>
-              {isFetchingNextPage && <Loading />}
-              <>{content}</>
-            </>
-          )}
+          {content}
         </div>
       </div>
     </div>

@@ -1,12 +1,18 @@
 import axiosInstance from "@/services/axiosClient";
 
-export const getCommentsByPostId = async (postId: string) => {
+export const getCommentsByPostId = async (
+  postId: string,
+  pageParam: number
+) => {
   const token = JSON.parse(localStorage.getItem("accessToken") || "{}");
-  return axiosInstance.get(`post/${postId}/comments`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axiosInstance.get(
+    `post/${postId}/comments?orderBy=createdAt desc&pageNumber=${pageParam}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export const createComment = async (postId: string | undefined, data: any) => {
