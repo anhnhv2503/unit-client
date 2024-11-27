@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { decodeToken } from "@/lib/utils";
 import { LoginBody, LoginBodyType } from "@/schema/auth.schema";
-import { login } from "@/services/authService";
+import { getUserProfile, login } from "@/services/authService";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
@@ -35,6 +35,15 @@ const Login = () => {
       if (response.data.accessToken) {
         const decodedToken = decodeToken(response.data.accessToken);
         handleLogin((decodedToken as { username: string })?.username);
+
+        setTimeout(async () => {
+          const user = await getUserProfile(
+            (decodedToken as { username: string }).username,
+            true
+          );
+          localStorage.setItem("isPrivate", JSON.stringify(user.data.Private));
+        }, 1000);
+
         if (connect) {
           connect();
         }

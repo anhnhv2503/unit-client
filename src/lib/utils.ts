@@ -13,7 +13,7 @@ export function decodeToken(token: string) {
       "user_id",
       JSON.stringify((decoded as { username: string }).username)
     );
-    // console.log("Decoded payload:", decoded);
+
     return decoded;
   } catch (error) {
     console.error("Invalid token:", error);

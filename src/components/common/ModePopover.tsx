@@ -37,6 +37,7 @@ const ModePopover = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user_id");
+        localStorage.removeItem("isPrivate");
       }
     };
 
