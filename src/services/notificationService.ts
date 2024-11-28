@@ -1,7 +1,7 @@
 import axiosInstance from "@/services/axiosClient";
 
 export const getAllNotifications = async () => {
-  return axiosInstance.get("/notification");
+  return axiosInstance.get("/notification?orderBy=createdAt desc");
 };
 
 export const deleteNotification = async (createdAt: string) => {
