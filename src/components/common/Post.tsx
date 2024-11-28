@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 const fakeAvt = `https://github.com/shadcn.png`;
 
-export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
+export const Post: FC<PostProp> = ({ post, innerRef, onRefresh, ...props }) => {
   const likeRef = useRef(post.likeCount);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(post.isLiked);
@@ -94,6 +94,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
         likeRef.current += 1;
         setLikeCount(likeRef.current);
       }
+      onRefresh?.();
     } catch (error) {
       console.error(error);
       toast.error("Failed to update like status.");

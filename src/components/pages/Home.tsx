@@ -51,7 +51,14 @@ const Home = () => {
 
   const content = data.pages.map((page) => {
     return page.data.map((post: PostProps) => {
-      return <Post key={post.postId} post={post} innerRef={ref} />;
+      return (
+        <Post
+          key={post.postId}
+          post={post}
+          innerRef={ref}
+          onRefresh={refetch}
+        />
+      );
     });
   });
 

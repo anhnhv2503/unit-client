@@ -249,7 +249,14 @@ export const UserProfile = () => {
   const content = data.pages.map((page) => {
     return page.data.map((post: PostProps) => {
       const currentPost = { ...post, profilePicture: user.ProfilePicture };
-      return <Post key={post.postId} post={currentPost} innerRef={ref} />;
+      return (
+        <Post
+          key={post.postId}
+          post={currentPost}
+          innerRef={ref}
+          onRefresh={refetch}
+        />
+      );
     });
   });
 
