@@ -79,7 +79,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     throttle.current = true;
     setTimeout(() => {
       throttle.current = false;
-    }, 700); // Adjust interval as needed
+    }, 700);
 
     setIsLiked((prev) => !prev);
 
@@ -99,19 +99,6 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
       toast.error("Failed to update like status.");
     }
   };
-
-  // const handleGetLikeOfPost = async () => {
-  //   try {
-  //     const response = await getLikeOfPost(post.postId);
-  //     console.log(response);
-  //     setLikeOfPost(response.data);
-  //   } catch (error) {
-  //     if (error.status === 404) {
-  //       setLikeOfPost([]);
-  //       console.log("No like found");
-  //     }
-  //   }
-  // };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -252,6 +239,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
           >
             <div className="flex items-center">
               <ChatBubbleOvalLeftIcon className="h-6 w-6 mr-1 cursor-pointer" />
+              {post.commentCount}
             </div>
           </div>
           <div className="flex items-center p-1 mr-3 no-nav transition rounded-xl hover:ease-out motion-reduce:transition-none motion-reduce:hover:transform-none hover:bg-slate-100 hover:rounded-xl dark:hover:bg-zinc-700 dark:hover:text-white">
