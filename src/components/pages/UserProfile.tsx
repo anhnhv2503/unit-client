@@ -134,7 +134,7 @@ export const UserProfile = () => {
       throttle.current = false;
     }, 700);
 
-    setIsFollow((prev) => !prev);
+    // setIsFollow((prev) => !prev);
 
     try {
       const form = new FormData();
@@ -210,7 +210,7 @@ export const UserProfile = () => {
                     <>
                       {" "}
                       <div
-                        className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white"
+                        className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white hover:bg-gray-50 hover:scale-105 transition transform duration-300 ease-in-out"
                         onClick={handleFollowUser}
                       >
                         Requested
@@ -220,7 +220,7 @@ export const UserProfile = () => {
                     <>
                       {" "}
                       <div
-                        className="mt-20 p-2 text-center bg-black text-white rounded-lg cursor-pointer dark:bg-white dark:text-black"
+                        className="mt-20 p-2 text-center bg-black text-white rounded-lg cursor-pointer dark:bg-white dark:text-black hover:bg-gray-900 hover:scale-105 transition transform duration-300 ease-in-out"
                         onClick={handleFollowUser}
                       >
                         Follow
@@ -304,7 +304,7 @@ export const UserProfile = () => {
               <>
                 <div
                   onClick={openModal}
-                  className="mt-14 p-2 font-semibold text-center rounded-lg border cursor-pointer bg-black text-white dark:text-black dark:bg-white"
+                  className="mt-14 p-2 font-semibold text-center rounded-lg border cursor-pointer bg-black text-white dark:text-black dark:bg-white hover:bg-gray-900 hover:scale-105 transition transform duration-300 ease-in-out"
                 >
                   Edit Profile
                 </div>
@@ -322,7 +322,7 @@ export const UserProfile = () => {
                   <>
                     {" "}
                     <div
-                      className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white"
+                      className="mt-20 p-2 text-center rounded-lg border  cursor-pointer dark:text-white dark:border-white hover:bg-gray-50 hover:scale-105 transition transform duration-300 ease-in-out"
                       onClick={handleFollowUser}
                     >
                       Following

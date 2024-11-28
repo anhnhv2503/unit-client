@@ -223,7 +223,7 @@ const Notification = () => {
                         className={`${
                           person.isSeen
                             ? "mt-1 text-gray-500 dark:text-gray-300 text-xs sm:text-sm md:text-base"
-                            : "font-bold"
+                            : "text-sm font-bold"
                         } `}
                       >
                         {generateMessage(

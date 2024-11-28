@@ -19,6 +19,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string[] | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [index, setIndex] = useState(0);
   const nav = useNavigate();
 
@@ -39,6 +40,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
       scrollContainerRef.current.dataset.scrollLeft =
         scrollContainerRef.current.scrollLeft.toString();
     }
+    setIsDragging(false);
   };
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -50,6 +52,8 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
       const x = e.pageX - scrollContainerRef.current.offsetLeft;
       const walk = x - startX;
       scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+
+      setIsDragging(true);
     }
   };
 
@@ -57,9 +61,11 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.dataset.isDragging = "false";
     }
+    setTimeout(() => setIsDragging(false), 0);
   };
 
   const handleImageClick = (images: string[], index: number) => {
+    if (isDragging) return; // Prevent image click action if dragging occurred
     setIndex(index);
     setSelectedImage(images);
     setIsModalOpen(true);
@@ -161,7 +167,7 @@ export const Post: FC<PostProp> = ({ post, innerRef, ...props }) => {
       {...props}
     >
       <div
-        className="bg-white dark:bg-zinc-800 p-4 shadow  border cursor-pointer rounded-2xl"
+        className="bg-white dark:bg-zinc-800 p-4 shadow  border cursor-pointer rounded-2xl hover:shadow-lg hover:scale-[1.02] transition-transform duration-300 ease-in-out"
         onClick={handleMainClick}
       >
         <div className="flex items-center mb-2 ">
