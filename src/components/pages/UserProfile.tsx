@@ -94,25 +94,17 @@ export const UserProfile = () => {
     return res;
   };
 
-  const {
-    data,
-    status,
-    error,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    refetch,
-    isFetching,
-  } = useInfiniteQuery({
-    queryKey: ["post"],
-    queryFn: fetchPosts,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPage) => {
-      const nextPage =
-        lastPage.data.length > 0 ? allPage.length + 1 : undefined;
-      return nextPage;
-    },
-  });
+  const { data, status, error, fetchNextPage, hasNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: ["post"],
+      queryFn: fetchPosts,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPage) => {
+        const nextPage =
+          lastPage.data.length > 0 ? allPage.length + 1 : undefined;
+        return nextPage;
+      },
+    });
 
   useEffect(() => {
     getUserProfileData();

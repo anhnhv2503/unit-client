@@ -1,5 +1,5 @@
 import NotFound from "@/components/error/NotFound";
-import Chat from "@/components/pages/Chat";
+import ConfirmEmail from "@/components/pages/ConfirmEmail";
 import Home from "@/components/pages/Home";
 import Login from "@/components/pages/Login";
 import Notification from "@/components/pages/Notification";
@@ -9,11 +9,10 @@ import UserRoute from "@/routes/UserRoute";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import "./App.css";
-import { PostDetail } from "./components/pages/PostDetail";
-import { UserProfile } from "./components/pages/UserProfile";
-import ConfirmEmail from "@/components/pages/ConfirmEmail";
-import { ResetPassword } from "./components/pages/ResetPassword";
 import { ForgotPassword } from "./components/pages/ForgotPassword";
+import { PostDetail } from "./components/pages/PostDetail";
+import { ResetPassword } from "./components/pages/ResetPassword";
+import { UserProfile } from "./components/pages/UserProfile";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 function App() {
