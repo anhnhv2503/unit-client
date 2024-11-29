@@ -13,14 +13,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const fakeAvt = `https://github.com/shadcn.png`;
-
 const Header = () => {
   const nav = useNavigate();
   const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const currentUser = JSON.parse(localStorage.getItem("user_id")!);
   const handleClick = () => {
     toast.promise(
       new Promise((resolve) => {

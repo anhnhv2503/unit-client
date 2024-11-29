@@ -17,7 +17,6 @@ export const PostDetail = () => {
   const [param] = useSearchParams();
   const postId = param.get("postId");
   const userId = param.get("userId");
-  const [isLoading, setIsLoading] = useState(true);
 
   const [post, setPost] = useState<PostProps>({
     userId: "",
@@ -32,20 +31,15 @@ export const PostDetail = () => {
     reactions: [],
     isLiked: false,
   });
-
-  const [comments, setComments] = useState<CommentResponse[]>([]);
   const [content, setContent] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
 
   const getPost = async () => {
-    setIsLoading(true);
     try {
       const response = await getPostDetail(postId!, userId!);
       setPost(response.data[0]);
-      setIsLoading(false);
     } catch (error) {
       console.error(error);
-      setIsLoading(true);
     }
   };
 

@@ -1,4 +1,5 @@
 import SmallLoading from "@/components/common/loading/SmallLoading";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -154,16 +155,10 @@ const CreatePostModal = ({
         </DialogHeader>
         <div className="">
           <div className="flex items-center mb-2 ">
-            <img
-              src={avatar || fakeAvt}
-              alt="Profile picture of the second user"
-              className="w-10 h-10 rounded-full mr-2 no-nav"
-            />
-            <div>
-              <div className="font-semibold dark:text-white text-black">
-                User{" "}
-              </div>
-            </div>
+            <Avatar className="w-10 h-10 rounded-full mr-2 no-nav">
+              <AvatarImage src={avatar || fakeAvt} alt="@UserAvatar" />
+              <AvatarFallback></AvatarFallback>
+            </Avatar>
           </div>
           <div className=" items-center">
             <Textarea

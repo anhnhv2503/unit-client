@@ -24,7 +24,7 @@ type UserProfileProps = {
   NumberOfFollwers: number;
   NumberOfFollowing: number;
   isFollowed: boolean;
-  FollowRequests: [];
+  FollowRequests: { followerId: string }[];
 };
 
 export const UserProfile = () => {
@@ -151,7 +151,8 @@ export const UserProfile = () => {
     return (
       Array.isArray(user.FollowRequests) &&
       user.FollowRequests.some(
-        (followrequest) => followrequest.followerId === currentUser
+        (followrequest: { followerId: string }) =>
+          followrequest.followerId === currentUser
       )
     );
   };

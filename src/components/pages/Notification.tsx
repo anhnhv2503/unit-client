@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useWebSocket } from "../context/NotificationProvider";
+import {
+  acceptFollowRequest,
+  removeFollowRequest,
+} from "@/services/followService";
 import {
   deleteNotification,
   getAllNotifications,
   isSeenNotification,
 } from "@/services/notificationService";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "../common/loading/Loading";
-import { useNavigate } from "react-router-dom";
+import { useWebSocket } from "../context/NotificationProvider";
 import { Button } from "../ui/button";
-import {
-  acceptFollowRequest,
-  removeFollowRequest,
-} from "@/services/followService";
 interface NotificationProps {
   id: string; // Unique identifier (e.g., a UUID)
   isSeen: boolean;
@@ -22,6 +22,13 @@ interface NotificationProps {
   userId?: string;
   pictureProfile?: string;
   createdAt: string; // ISO string for sorting
+  metadata: {
+    userName: string;
+    profilePicture: string;
+    lastestActionUserId: string;
+  };
+  ownerId: string;
+  affectedObjectId: string;
 }
 
 const Notification = () => {
@@ -37,7 +44,7 @@ const Notification = () => {
       const res = await getAllNotifications();
       setNotifications(
         res.data.sort(
-          (a, b) =>
+          (a: NotificationProps, b: NotificationProps) =>
             Math.abs(new Date(a.createdAt).getTime() - Date.now()) -
             Math.abs(new Date(b.createdAt).getTime() - Date.now())
         )
@@ -86,7 +93,7 @@ const Notification = () => {
   useEffect(() => {
     if (messages.length > 0) {
       const newNotifications = messages.map((message) => {
-        const { notification } = message;
+        const { notification } = JSON.parse(message);
         const id = generateUniqueId(notification);
 
         return {
