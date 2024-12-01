@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -55,16 +56,23 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
     }
   };
 
-  const { register: userProfileData, handleSubmit } =
-    useForm<UserProfileBodyType>({
-      resolver: zodResolver(UserProfileBody),
-      defaultValues: {
-        username: profileData.UserName,
-        bio: profileData.Bio,
-        phonenumber: profileData.PhoneNumber,
-        dateofbirth: profileData.DateOfBirth,
-      },
-    });
+  const formattedDate = initialData.DateOfBirth
+    ? format(new Date(initialData.DateOfBirth), "yyyy-MM-dd")
+    : ""; // Fallback to an empty string if no date is provided
+
+  const {
+    register: userProfileData,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserProfileBodyType>({
+    resolver: zodResolver(UserProfileBody),
+    defaultValues: {
+      username: profileData.UserName,
+      bio: profileData.Bio,
+      phonenumber: profileData.PhoneNumber,
+      dateofbirth: formattedDate,
+    },
+  });
 
   async function onSubmit(values: UserProfileBodyType) {
     const date = new Date(values.dateofbirth).toISOString();
@@ -146,6 +154,11 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
                         className="w-full mt-1 p-6 input border-none dark:text-black"
                         placeholder="Your name"
                       />
+                      {errors.username && (
+                        <div className=" mt-0 text-red-500 ">
+                          {errors.username.message}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 relative overflow-hidden">
                       {selectedImage ? (
@@ -196,6 +209,11 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
                       className="w-full mt-1 p-6 input border-none dark:text-black"
                       placeholder="Write bio"
                     />
+                    {errors.bio && (
+                      <div className=" mt-0 text-red-500 ">
+                        {errors.bio.message}
+                      </div>
+                    )}
                   </div>
                   <div className=" items-center">
                     <Label
@@ -211,6 +229,11 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
                       className="w-full mt-1 p-6 input border-none dark:text-black"
                       placeholder="Input phone"
                     />
+                    {errors.phonenumber && (
+                      <div className=" mt-0 text-red-500 ">
+                        {errors.phonenumber.message}
+                      </div>
+                    )}
                   </div>
                   <div className=" items-center">
                     <Label
@@ -225,6 +248,11 @@ const EditProfile: React.FC<EditProfileModalProps> = ({
                       type="Date"
                       className="w-full mt-1 p-6 input border-none dark:text-black"
                     />
+                    {errors.dateofbirth && (
+                      <div className=" mt-0 text-red-500 ">
+                        {errors.dateofbirth.message}
+                      </div>
+                    )}
                   </div>
                   <div className="flex justify-between items-center">
                     <Label

@@ -106,8 +106,13 @@ export const UserProfileBody = z
     username: z
       .string()
       .max(255)
-      .regex(/^\S*$/, "Username must not contain spaces"), // No spaces allowed
-    phonenumber: z.string().max(10),
+      .regex(/^\S*$/, "Username must not contain spaces"),
+    phonenumber: z
+      .string()
+      .regex(
+        /^0\d{9}$/,
+        "Phone number must be a valid 10-digit number and start with 0"
+      ),
     dateofbirth: z.string().max(100),
     bio: z.string().max(255),
   })

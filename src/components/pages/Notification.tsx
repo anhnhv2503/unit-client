@@ -91,13 +91,14 @@ const Notification = () => {
   };
 
   useEffect(() => {
+    console.log(messages);
     if (messages.length > 0) {
       const newNotifications = messages.map((message) => {
-        const { notification } = JSON.parse(message);
-        const id = generateUniqueId(notification);
+        console.log(message);
+        const id = generateUniqueId(message.notification);
 
         return {
-          ...notification,
+          ...message.notification,
           id, // Generated unique ID
           isNew: true, // Mark as new
         };

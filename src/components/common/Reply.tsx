@@ -65,7 +65,7 @@ export const Reply: React.FC<CommentResponse> = ({
   return (
     <>
       <div
-        className="bg-white dark:bg-zinc-800 p-4 shadow border dark:border-b-gray-500 rounded-sm"
+        className=" bg-white dark:bg-zinc-800 p-4 shadow border dark:border-b-gray-500 rounded-sm"
         id={CommentId}
       >
         <div className="flex items-top mb-2">

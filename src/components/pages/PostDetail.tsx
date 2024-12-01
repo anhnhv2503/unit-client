@@ -11,6 +11,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { Input } from "../ui/input";
 
 export const PostDetail = () => {
   const nav = useNavigate();
@@ -110,15 +111,14 @@ export const PostDetail = () => {
           {post.userId !== "" ? (
             <>
               <Post post={post} />
-              <div className="max-w-2xl mt-2 rounded-3xl w-full">
+              <div className=" mt-2 rounded-3xl w-full">
                 <div className="bg-white dark:bg-black p-4 shadow rounded-3xl">
                   <form
                     onSubmit={handleComment}
                     className="flex flex-col gap-4"
                   >
-                    <Textarea
+                    <Input
                       className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:text-gray-300"
-                      rows={1}
                       placeholder="Write your comment here..."
                       value={content}
                       onChange={(e) => setContent(e.target.value)}

@@ -92,6 +92,8 @@ const CreatePostModal = ({
       if (item.type.startsWith("image/")) {
         const file = item.getAsFile();
         if (file) {
+          setImages((prev) => [...prev, file]);
+
           const imageUrl = {
             url: URL.createObjectURL(file),
             type: file.type,
@@ -101,6 +103,8 @@ const CreatePostModal = ({
       }
     }
   };
+
+  console.log(images);
 
   const removeMedia = (index: number) => {
     setPreviewMedia((prev) => prev.filter((_, i) => i !== index));

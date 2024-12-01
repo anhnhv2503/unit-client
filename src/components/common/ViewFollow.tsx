@@ -120,28 +120,6 @@ export const ViewFollow: React.FC<ViewFollowModalProps> = ({
             >
               <Dialog.Panel className="w-full max-w-md sm:max-w-lg lg:max-w-xl transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-800 p-4 sm:p-6 lg:p-8 text-left align-middle shadow-xl transition-all max-h-[80vh] overflow-y-auto">
                 <div className="flex justify-between items-center border-b px-4 py-2">
-                  {isLogin && (
-                    <div
-                      className={`flex-1 text-center cursor-pointer ${
-                        activeTab === "follow_requests"
-                          ? "font-semibold text-gray-500 dark:text-gray-300"
-                          : "text-gray-400"
-                      }`}
-                      onClick={() => handleTabClick("follow_requests")}
-                    >
-                      <h2>Follow Requests</h2>
-                      <p
-                        className={`text-sm ${
-                          activeTab === "followers"
-                            ? "text-gray-500"
-                            : "text-gray-400"
-                        }`}
-                      >
-                        0
-                      </p>
-                    </div>
-                  )}
-
                   <div
                     className={`flex-1 text-center cursor-pointer ${
                       activeTab === "followers"

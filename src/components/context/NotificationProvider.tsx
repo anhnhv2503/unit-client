@@ -6,15 +6,37 @@ import React, {
   useState,
 } from "react";
 
+interface NotificationProps {
+  id: string; // Unique identifier (e.g., a UUID)
+  isSeen: boolean;
+  actionType: string;
+  userName: string;
+  postId?: string;
+  userId?: string;
+  pictureProfile?: string;
+  createdAt: string; // ISO string for sorting
+  metadata: {
+    userName: string;
+    profilePicture: string;
+    lastestActionUserId: string;
+  };
+  ownerId: string;
+  affectedObjectId: string;
+}
+
 type WebSocketContextType = {
   sendMessage: (message: string) => void;
   isConnected: boolean;
-  messages: string[];
+  messages: WebSocketMessage[];
   connect: () => void;
   disconnect: () => void;
   handleLogin: (loggedInUserId: string) => void;
   handleLogout: () => void;
   clearNotifications: () => void;
+};
+
+type WebSocketMessage = {
+  notification: NotificationProps;
 };
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -31,7 +53,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<WebSocketMessage[]>([]);
   const socketRef = useRef<WebSocket | null>(null);
   const webSocketURL =
     "wss://v3jhk6p1a6.execute-api.ap-southeast-1.amazonaws.com/develop/";
@@ -63,6 +85,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     socket.onmessage = (event) => {
       console.log("WebSocket message received:", event.data);
       const data = JSON.parse(event.data);
+      console.log("data", data);
       setMessages((prev) => [...prev, data]);
     };
 
