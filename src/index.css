@@ -65,7 +65,7 @@
   }
 }
 @layer utilities {
-  /* Chrome, Safari and Opera */
+  /* Hide scrollbar */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -74,4 +74,9 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+}
+
+input[type="password"]::-ms-reveal {
+  display: none !important;
+  pointer-events: none; /* Ensures no interaction */
 }

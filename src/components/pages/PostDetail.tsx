@@ -2,7 +2,6 @@ import SmallLoading from "@/components/common/loading/SmallLoading";
 import { Post } from "@/components/common/Post";
 import { Reply } from "@/components/common/Reply";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { createComment, getCommentsByPostId } from "@/services/commentService";
 import { getPostDetail } from "@/services/postService";
 import { CommentResponse, PostProps } from "@/types";

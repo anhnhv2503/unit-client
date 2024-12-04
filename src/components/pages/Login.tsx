@@ -126,22 +126,18 @@ const Login = () => {
                   className="w-full mt-1 p-6 input input-bordered bg-white text-black border-gray-300"
                   placeholder="Enter your password"
                 />
-
-                {isToggle ? (
-                  <>
-                    <EyeIcon
-                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-                      onClick={() => setIsToggle(!isToggle)}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <EyeSlashIcon
-                      className="size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-                      onClick={() => setIsToggle(!isToggle)}
-                    />
-                  </>
-                )}
+                <EyeIcon
+                  className={`size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer ${
+                    isToggle ? "hidden" : "block"
+                  }`}
+                  onClick={() => setIsToggle(!isToggle)}
+                />
+                <EyeSlashIcon
+                  className={`size-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer ${
+                    isToggle ? "block" : "hidden"
+                  }`}
+                  onClick={() => setIsToggle(!isToggle)}
+                />
               </div>
               {errors.password && (
                 <div className="text-red-500">{errors.password.message}</div>
