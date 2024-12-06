@@ -38,28 +38,28 @@ function App() {
       element: <ForgotPassword />,
     },
     {
-      element: <UserRoute />,
+      element: <ProtectedRoute />,
       children: [
         {
-          path: "/",
-          element: <Home />,
-        },
-        {
-          path: "/post",
-          element: <PostDetail />,
-        },
-
-        {
-          path: "/search",
-          element: <Search />,
-        },
-        {
-          path: "/user-profile/:id",
-          element: <UserProfile />,
-        },
-        {
-          element: <ProtectedRoute />,
+          element: <UserRoute />,
           children: [
+            {
+              path: "/",
+              element: <Home />,
+            },
+            {
+              path: "/post",
+              element: <PostDetail />,
+            },
+
+            {
+              path: "/search",
+              element: <Search />,
+            },
+            {
+              path: "/user-profile/:id",
+              element: <UserProfile />,
+            },
             {
               path: "/notify",
               element: <Notification />,

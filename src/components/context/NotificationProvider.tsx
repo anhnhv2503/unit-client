@@ -1,3 +1,4 @@
+import { getAllNotifications } from "@/services/notificationService";
 import React, {
   createContext,
   useContext,
@@ -33,6 +34,7 @@ type WebSocketContextType = {
   handleLogin: (loggedInUserId: string) => void;
   handleLogout: () => void;
   clearNotifications: () => void;
+  notificationCount: number;
 };
 
 type WebSocketMessage = {
@@ -54,9 +56,35 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const socketRef = useRef<WebSocket | null>(null);
   const webSocketURL =
     "wss://v3jhk6p1a6.execute-api.ap-southeast-1.amazonaws.com/develop/";
+  const isClear = localStorage.getItem("isClear");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getAllNotification = async () => {
+    try {
+      const res = await getAllNotifications();
+      if (!isClear) {
+        res.data.map((item: any) => {
+          if (item.isSeen === false) {
+            setNotificationCount((prev) => prev + 1);
+          }
+        });
+      } else {
+        setNotificationCount(0);
+      }
+      console.log(notificationCount);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+      return 0; // Return 0 if there is an error
+    }
+  };
+
+  useEffect(() => {
+    getAllNotification();
+  }, []);
 
   // Retrieve `userId` immediately
   const userId = useRef<string | null>(null);
@@ -87,6 +115,8 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       const data = JSON.parse(event.data);
       console.log("data", data);
       setMessages((prev) => [...prev, data]);
+      setNotificationCount((prev) => prev + 1);
+      localStorage.setItem("isClear", JSON.stringify(false));
     };
 
     socket.onerror = (error) => {
@@ -119,6 +149,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     userId.current = loggedInUserId; // Set the userId
     localStorage.setItem("user_id", JSON.stringify(loggedInUserId)); // Store userId in localStorage
     connect(); // Connect to WebSocket
+    getAllNotification();
   };
 
   const handleLogout = () => {
@@ -128,7 +159,8 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const clearNotifications = () => {
-    setMessages([]); // Assuming `messages` is managed via state
+    setNotificationCount(0); // Assuming `messages` is managed via state
+    localStorage.setItem("isClear", JSON.stringify(true));
   };
 
   // Automatically connect when provider mounts
@@ -152,6 +184,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         handleLogin,
         handleLogout,
         clearNotifications,
+        notificationCount,
       }}
     >
       {children}

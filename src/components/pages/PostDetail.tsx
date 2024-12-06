@@ -33,6 +33,9 @@ export const PostDetail = () => {
   });
   const [content, setContent] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
+  const previousUrl = sessionStorage.getItem("previousUrl");
+
+  const isFromLoginPage = previousUrl?.includes("/login");
 
   const getPost = async () => {
     try {
@@ -99,7 +102,14 @@ export const PostDetail = () => {
         <div className="max-w-2xl mt-4">
           <div className="top-4 left-4">
             <Button
-              onClick={() => nav(-1)}
+              onClick={() => {
+                if (isFromLoginPage) {
+                  nav("/"); // Redirect to a default page instead of login
+                  sessionStorage.removeItem("previousUrl");
+                } else {
+                  nav(-1); // Go to the previous page
+                }
+              }}
               className="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:bg-zinc-800 dark:text-gray-300"
             >
               <ArrowLeftIcon className="h-6 w-6" />

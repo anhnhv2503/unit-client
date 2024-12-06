@@ -216,7 +216,11 @@ const Notification = () => {
                     {/* Avatar */}
                     <div className="relative flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
                       <img
-                        src={person.metadata.profilePicture}
+                        src={
+                          person.metadata.profilePicture
+                            ? person.metadata.profilePicture
+                            : "https://github.com/shadcn.png"
+                        }
                         alt={person.metadata.userName}
                         className="w-full h-full rounded-full object-cover"
                       />

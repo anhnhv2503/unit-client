@@ -7,10 +7,10 @@ import { getUserProfile, login } from "@/services/authService";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDocumentTitle } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useWebSocket } from "../context/NotificationProvider";
 
 const Login = () => {
@@ -18,6 +18,12 @@ const Login = () => {
   const nav = useNavigate();
   const [isToggle, setIsToggle] = useState(false);
   const { connect, handleLogin } = useWebSocket();
+  const location = useLocation();
+
+  useEffect(() => {
+    const currentUrl = location.pathname + location.search;
+    sessionStorage.setItem("previousUrl", currentUrl);
+  }, [location]);
 
   const {
     register: loginData,
@@ -33,6 +39,7 @@ const Login = () => {
     try {
       const response = await login(data.email, data.password);
       if (response.data.accessToken) {
+        const redirectPath = localStorage.getItem("redirectAfterLogin");
         const decodedToken = decodeToken(response.data.accessToken);
         handleLogin((decodedToken as { username: string })?.username);
 
@@ -60,7 +67,12 @@ const Login = () => {
           duration: 500,
         });
         setTimeout(() => {
-          nav("/");
+          if (redirectPath) {
+            localStorage.removeItem("redirectAfterLogin"); // Clear redirect path
+            nav(redirectPath); // Redirect to the saved path
+          } else {
+            nav("/"); // Default path after login
+          }
         }, 1000);
         reset();
       }

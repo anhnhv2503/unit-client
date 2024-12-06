@@ -38,6 +38,7 @@ const ModePopover = () => {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user_id");
         localStorage.removeItem("isPrivate");
+        localStorage.removeItem("isClear");
       }
     };
 
@@ -68,6 +69,8 @@ const ModePopover = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user_id");
+      localStorage.removeItem("isPrivate");
+      localStorage.removeItem("isClear");
       nav("/login");
     } catch (error) {
       console.log(error);
